@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.company.project.dao.PersonMapper">
+  <resultMap id="BaseResultMap" type="com.company.project.model.Person">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="LAST_UPDATE_TIME" jdbcType="TIMESTAMP" property="lastUpdateTime" />
+    <result column="VERSION_NUMBER" jdbcType="DECIMAL" property="versionNumber" />
+    <result column="PERSON_NAME" jdbcType="VARCHAR" property="personName" />
+    <result column="GENDER" jdbcType="CHAR" property="gender" />
+    <result column="BIRTH_TIME" jdbcType="TIMESTAMP" property="birthTime" />
+    <result column="IDENTITY_NUMBER" jdbcType="VARCHAR" property="identityNumber" />
+    <result column="MARITAL_STATUS" jdbcType="CHAR" property="maritalStatus" />
+    <result column="SPOUSE_NAME" jdbcType="VARCHAR" property="spouseName" />
+  </resultMap>
+
+
+
+
+
+  <sql id="pagePrefix">
+		select * from ( select vv.*,rownum rownum_cus
+			from (
+	</sql>
+
+  <sql id="pageSuffix">
+    ) vv  )
+    <where>
+      <if test="curPageNum != null">
+        rownum_cus between  ((#{curPageNum} - 1 ) * #{pageSize})+1 and  #{curPageNum} * #{pageSize}
+      </if>
+    </where>
+  </sql>
+
+
+
+ <!-- 查询条件  【查询条件】姓名、身份证号码、性别、出生年份-->
+  <sql id="fromCls_Person">
+    from person
+     <if test="personName != null and personName != ''">
+      and PERSON_NAME = #{personName}
+    </if>
+    <if test="identityNumber != null and identityNumber != ''">
+      and IDENTITY_NUMBER = #{identityNumber}
+    </if>
+    <if test="gender != null and gender != ''">
+      and GENDER = #{gender}
+    </if>
+    <if test="birthTime != null and birthTime != ''">
+      and  to_char(BIRTH_TIME, 'yyyy')  = #{birthTime}
+    </if>
+
+  </sql>
+
+
+
+
+  <select id="queryMapByMap"  parameterType="map" resultType="map">
+    <include refid="pagePrefix"/>
+    <!-- 查询字段-->
+    select
+    person_name,
+    identity_number,
+    gender,
+    fn_getDictName('GENDER',gender) genderName,
+    birth_time,
+    marital_status,
+    fn_getDictName('MARITAL_STATUS',marital_status) marital_statusName,
+    spouse_name
+    <include refid="fromCls_Person"/>
+    <include refid="pageSuffix"/>
+  </select>
+
+
+
+  <select id="PERSON_Q_CNT_Q" parameterType="map" resultType="Integer">
+    select  count(1)
+    <include refid="fromCls_Person"/>
+  </select>
+
+
+</mapper>
