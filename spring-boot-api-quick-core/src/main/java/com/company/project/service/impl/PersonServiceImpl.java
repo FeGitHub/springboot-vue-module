@@ -5,6 +5,7 @@ import com.company.project.dao.PersonMapper;
 import com.company.project.model.Person;
 import com.company.project.service.PersonService;
 import com.company.project.core.AbstractService;
+import com.company.project.utils.CommUtils;
 import com.company.project.utils.ValidationUtil;
 import com.company.project.vo.PersonVo;
 import org.apache.commons.lang3.StringUtils;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
 
@@ -27,7 +29,7 @@ public class PersonServiceImpl extends AbstractService<Person> implements Person
     private PersonMapper personMapper;
 
     @Override
-    public void save(PersonVo personVo) {
+    public void save(PersonVo personVo) throws ParseException {
         ValidationUtil.ValidResult validResult = ValidationUtil.validateBean(personVo);
         if(validResult.hasErrors()){
             String errors = validResult.getErrors();
@@ -35,12 +37,18 @@ public class PersonServiceImpl extends AbstractService<Person> implements Person
         }
         Person person=new Person();
         BeanUtils.copyProperties(personVo, person); // vo转po
-            this.save(person);
+        person.setBirthTime(CommUtils.strToDateYYYMMDD(personVo.getBirthTime()));
+        this.save(person);
 
     }
 
     @Override
     public List<Map<String, Object>> queryMapByMap(Map<String, Object> param) {
         return  personMapper.queryMapByMap(param);
+    }
+
+    @Override
+    public Integer CNT_Q(Map<String, Object> param) {
+        return personMapper.CNT_Q(param);
     }
 }

@@ -8,4 +8,6 @@ import java.util.Map;
 
 public interface PersonMapper extends Mapper<Person> {
     List<Map<String, Object>> queryMapByMap(Map<String, Object> param);
+
+    Integer CNT_Q(Map<String, Object> param);
 }

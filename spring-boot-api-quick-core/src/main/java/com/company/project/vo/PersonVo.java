@@ -2,7 +2,6 @@ package com.company.project.vo;
 
 import org.hibernate.validator.constraints.NotBlank;
 
-import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 
@@ -14,16 +13,16 @@ public class PersonVo {
     @NotBlank(message = "性别不能为空")
     private String gender;
 
-    public Date getBirthTime() {
+    public String getBirthTime() {
         return birthTime;
     }
 
-    public void setBirthTime(Date birthTime) {
+    public void setBirthTime(String birthTime) {
         this.birthTime = birthTime;
     }
 
     @NotNull(message = "出生日期不能为空")
-    private Date birthTime;
+    private String birthTime;
 
 
     @NotBlank(message = "身份证号码不能为空")
@@ -34,6 +33,16 @@ public class PersonVo {
 
 
     private String spouseName;
+
+    public String getBirthYear() {
+        return birthYear;
+    }
+
+    public void setBirthYear(String birthYear) {
+        this.birthYear = birthYear;
+    }
+
+    private String birthYear;
 
 
 

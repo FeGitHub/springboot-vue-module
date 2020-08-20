@@ -1,13 +1,12 @@
 import axios from "axios";
 import qs from "qs";
-let baseUrl = "http://localhost:8888";
-
+let baseUrl = "http://localhost:8085";
 axios.defaults.timeout = 5000; //响应时间
 axios.defaults.headers.post["Content-Type"] =
   "application/x-www-form-urlencoded;charset=UTF-8"; //配置请求头
 axios.defaults.baseURL = baseUrl; //配置接口地址
 
-//POST传参序列化(添加请求拦截器)
+//POST传参序列化(添加请求拦截器)`
 axios.interceptors.request.use(
   config => {
     //在发送请求之前做某件事

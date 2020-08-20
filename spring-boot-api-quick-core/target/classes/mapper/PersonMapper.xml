@@ -39,7 +39,7 @@
 
  <!-- 查询条件  【查询条件】姓名、身份证号码、性别、出生年份-->
   <sql id="fromCls_Person">
-    from person
+    from person where 1=1
      <if test="personName != null and personName != ''">
       and PERSON_NAME = #{personName}
     </if>
@@ -49,8 +49,8 @@
     <if test="gender != null and gender != ''">
       and GENDER = #{gender}
     </if>
-    <if test="birthTime != null and birthTime != ''">
-      and  to_char(BIRTH_TIME, 'yyyy')  = #{birthTime}
+    <if test="birthYear != null and birthYear != ''">
+      and  to_char(BIRTH_TIME, 'yyyy')  = #{birthYear}
     </if>
 
   </sql>
@@ -62,11 +62,12 @@
     <include refid="pagePrefix"/>
     <!-- 查询字段-->
     select
+    ID,
     person_name,
     identity_number,
     gender,
     fn_getDictName('GENDER',gender) genderName,
-    birth_time,
+    to_char(birth_time,'YYYY-MM-DD') birth_time,
     marital_status,
     fn_getDictName('MARITAL_STATUS',marital_status) marital_statusName,
     spouse_name
@@ -76,7 +77,7 @@
 
 
 
-  <select id="PERSON_Q_CNT_Q" parameterType="map" resultType="Integer">
+  <select id="CNT_Q" parameterType="map" resultType="Integer">
     select  count(1)
     <include refid="fromCls_Person"/>
   </select>
