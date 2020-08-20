@@ -1,9 +1,7 @@
 package com.company.project.vo;
-
+import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
-
 import javax.validation.constraints.NotNull;
-import java.util.Date;
 
 public class PersonVo {
 
@@ -18,8 +16,10 @@ public class PersonVo {
     private String id;
 
     @NotBlank(message = "姓名不能为空")
+    @Length(max = 15,min = 0,message = "姓名字段长度不能超过15")
     private String personName;
 
+    @Length(max = 1,min = 0,message = "性别字段长度不能超过1")
     @NotBlank(message = "性别不能为空")
     private String gender;
 
@@ -36,12 +36,14 @@ public class PersonVo {
 
 
     @NotBlank(message = "身份证号码不能为空")
+    @Length(max = 30,min = 0,message = "身份证号码字段长度不能超过30")
     private String identityNumber;
 
+    @Length(max = 2,min = 0,message = "婚姻状况字段长度不能超过2")
     @NotBlank(message = "婚姻状况不能为空")
     private String maritalStatus;
 
-
+    @Length(max = 15,min = 0,message = "配偶姓名字段长度不能超过15")
     private String spouseName;
 
     public String getBirthYear() {

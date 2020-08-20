@@ -52,7 +52,8 @@
     <if test="birthYear != null and birthYear != ''">
       and  to_char(BIRTH_TIME, 'yyyy')  = #{birthYear}
     </if>
-
+  <!-- 默认按出生日期倒序排列-->
+  order by  BIRTH_TIME desc
   </sql>
 
 

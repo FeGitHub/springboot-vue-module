@@ -20,6 +20,7 @@
                   prop="personName">
           <i-input placeholder="请输入..."
                    style="width: 220px"
+                   :maxlength="15"
                    v-model="ModalForm.personName"></i-input>
         </FormItem>
 
@@ -27,12 +28,14 @@
                   prop="identityNumber">
           <i-input placeholder="请输入..."
                    style="width: 220px"
+                   :maxlength="30"
                    v-model="ModalForm.identityNumber"></i-input>
         </FormItem>
         <FormItem label="性别"
                   prop="gender">
           <i-select placeholder="性别"
                     style="width:220px;margin-right:10px;"
+                    :maxlength="1"
                     v-model="ModalForm.gender">
             <i-option v-for="item in dicts.GENDER"
                       :value="item.CODE"
@@ -46,8 +49,8 @@
                        style="width: 220px"
                        @on-change="dateChange"
                        type="datetime"
-                       format="yyyy-MM-dd"
-                       v-model="ModalForm.birthTime"></Date-picker>
+                       :value="ModalForm.birthTime"
+                       format="yyyy-MM-dd"></Date-picker>
 
         </FormItem>
 
@@ -55,6 +58,7 @@
                   prop="maritalStatus">
           <i-select placeholder="婚姻情况"
                     style="width:220px;margin-right:10px;"
+                    :maxlength="2"
                     v-model="ModalForm.maritalStatus">
             <i-option v-for="item in dicts.MARITAL_STATUS"
                       :value="item.CODE"
@@ -65,6 +69,7 @@
                   prop="spouseName">
           <i-input placeholder="请输入..."
                    style="width: 220px"
+                   :maxlength="15"
                    v-model="ModalForm.spouseName"></i-input>
         </FormItem>
 
@@ -200,10 +205,10 @@ export default {
       modal: false,//模态框的展示
       titleContent: "",//弹出框标题
       queryForm: {
-        IDENTITY_NUMBER: "",
-        PERSON_NAME: "",
-        GENDER: "",
-        BIRTH_YEAR: ""
+        identityNumber: "",
+        personName: "",
+        gender: "",
+        birthYear: ""
       },
       dicts: {
         MARITAL_STATUS: [],
@@ -228,6 +233,10 @@ export default {
           key: 'BIRTH_TIME'
         },
         {
+          title: '婚姻状况',
+          key: 'MARITAL_STATUSNAME'
+        },
+        {
           title: '配偶姓名',
           key: 'SPOUSE_NAME'
         },
@@ -238,9 +247,10 @@ export default {
           align: 'center'
         }
       ],
+      /**
+       * 列表数据
+       */
       pageData: [
-
-
       ]
     }
   },
@@ -310,10 +320,17 @@ export default {
     },
 
     checkBeforeResearch () {
-      //3、出生年份，文本录入，只能录入数字，比如2015；
       //查询为精确查找
       let params = this.queryForm;
       let times = 0;
+      //3、出生年份，文本录入，只能录入数字，比如2015；
+      var reg = /^[0-9]+?$/; //校验规则    
+      console.log(params);
+      if (params.birthYear && (!reg.test(params.birthYear))) {
+        this.$Message.error('只能录入数字', 4);
+        return;
+      }
+
       //1、若不输入“身份证号码”，“姓名、性别、出生年份”查询条件至少要填写其中两项才能进行查询，否则提示：至少输入两个条件。
       if (!params.identityNumber) {
         for (let key in params) {
@@ -399,11 +416,13 @@ export default {
      * 保存前校验
      */
     checkBeforeSave () {
+      //身份证号码长度为18位，尾数如果输入小写x，保存时，自动转换成大写X(直接转换成大写)
+      this.ModalForm.identityNumber = this.ModalForm.identityNumber.toUpperCase();
       if (!utils.isCardId(this.ModalForm.identityNumber)) {
         this.$Message.error('不合法的身份证号码!');
         return false;
       }
-      if (this.ModalForm.birthTime != utils.getBirthday(this.ModalForm.identityNumber)) {
+      if (dayjs(this.ModalForm.birthTime).format('YYYY-MM-DD') != utils.getBirthday(this.ModalForm.identityNumber)) {
         console.log(utils.getBirthday(this.ModalForm.identityNumber));
         this.$Message.error('出生日期与身份证号码不匹配!');
         return false;
@@ -419,20 +438,20 @@ export default {
      * 保存人员
      */
     savePerson (name) {
-      let url = !this.ModalForm.ID ? "/person/add" : "/person/update";
+      let url = !this.ModalForm.id ? "/person/add" : "/person/update";
+      let info = !this.ModalForm.id ? "新建个人信息保存成功" : "修改个人信息保存成功";
       this.$refs[name].validate((valid) => {
         if (valid) {
           if (!this.checkBeforeSave()) {
             return;
           }
-          //身份证号码长度为18位，尾数如果输入小写x，保存时，自动转换成大写X(直接转换成大写)
-          this.ModalForm.identityNumber = this.ModalForm.identityNumber.toUpperCase();
+
           https
             .Post(url, this.ModalForm)
             .then(res => {
               let data = res.data;
               if (data.code == 200) {
-                this.$Message.success('保存成功!');
+                this.$Message.success(info);
                 this.close();
                 this.research("");
               } else {
