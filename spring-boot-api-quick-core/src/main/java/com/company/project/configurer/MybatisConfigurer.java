@@ -1,5 +1,6 @@
 package com.company.project.configurer;
 
+import com.baomidou.mybatisplus.extension.plugins.OptimisticLockerInterceptor;
 import com.github.pagehelper.PageHelper;
 import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -64,6 +65,10 @@ public class MybatisConfigurer {
         return mapperScannerConfigurer;
     }
 
+    @Bean
+    public OptimisticLockerInterceptor optimisticLockerInterceptor() {
+        return new OptimisticLockerInterceptor();
+    }
 
 
 

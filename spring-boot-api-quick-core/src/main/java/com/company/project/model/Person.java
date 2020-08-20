@@ -16,6 +16,7 @@ public class Person {
     @Column(name = "LAST_UPDATE_TIME")
     private Date lastUpdateTime;
 
+    @Version
     @Column(name = "VERSION_NUMBER")
     private Short versionNumber;
 

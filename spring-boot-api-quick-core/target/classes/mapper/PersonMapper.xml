@@ -82,5 +82,29 @@
     <include refid="fromCls_Person"/>
   </select>
 
+  <!-- 保存时，系统需校验身份证号码的唯一性；如果身份证号码存在，不允许保存并提示：该人身份证号码已存在！-->
+  <select id="is_exist_identity_number" parameterType="map" resultType="Integer">
+    select  count(1) from person where  identity_number=#{identity_number}
+    <if test="id != null and id != ''">
+       and id!= #{id}
+    </if>
+  </select>
 
-</mapper>
+
+  <update id="updateOneByMapper"  parameterType="map">
+    UPDATE PERSON
+    <trim prefix="set" suffixOverrides=",">
+      VERSION_NUMBER=VERSION_NUMBER+1,
+      <if test="personName!=null">PERSON_NAME=#{personName},</if>
+      <if test="gender!=null">GENDER=#{gender},</if>
+      <if test="birthTime!=null">BIRTH_TIME=#{birthTime},</if>
+      <if test="identityNumber!=null">IDENTITY_NUMBER=#{identityNumber},</if>
+      <if test="maritalStatus!=null">MARITAL_STATUS=#{maritalStatus},</if>
+      <if test="spouseName!=null">SPOUSE_NAME=#{spouseName},</if>
+    </trim>
+    WHERE id=#{id}
+    and VERSION_NUMBER=#{versionNumber}
+  </update>
+
+
+  </mapper>
