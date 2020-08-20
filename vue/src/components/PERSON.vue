@@ -1,6 +1,5 @@
 <template>
   <div>
-
     <Modal title="信息维护"
            v-model="modal"
            :maskClosable="false"
@@ -72,7 +71,6 @@
                    :maxlength="15"
                    v-model="ModalForm.spouseName"></i-input>
         </FormItem>
-
       </Form>
       <div slot="footer">
         <div>
@@ -105,7 +103,7 @@
              v-model="queryForm.birthYear"
              :maxlength="4" />
       <Button type="primary"
-              @click="research('check')"
+              @click="query('check')"
               style="margin-right:10px;">查询</Button>
       <Button type="primary"
               @click="addPerson()">新建</Button>
@@ -154,7 +152,6 @@ export default {
       .then(res => {
         let data = res.data;
         this.dicts = data.data;
-
       })
       .catch(err => {
         console.log(err);
@@ -255,9 +252,8 @@ export default {
     }
   },
   methods: {
-
     changeGender (value) {
-      console.log(value);
+      // console.log(value);
     },
     dateChange (date) { // 检测日期组件的改变
       this.ModalForm.birthTime = date;
@@ -269,20 +265,30 @@ export default {
       this.ModalForm = { ...this.clearModalForm };
       this.$refs.modal.visible = false;
       this.titleContent = "";
+      this.resetFields('ModalForm');
     },
+    /**
+     * 当前页的变化
+     */
     onPagechange (curPageNum) {
       this.page.curPageNum = curPageNum;
-      this.research("");
+      this.query();
     },
+    /***
+     * 页码的变化
+     */
     onPageSizeChange (pageSize) {
-      console.log(pageSize);
       this.page.pageSize = pageSize;
-      this.research("");
+      //this.query();
     },
+    /***
+     * 打开模态框
+     */
     open () {
       this.ModalForm = { ...this.clearModalForm };
       this.$refs.modal.visible = true;
       this.modalLoading = false;
+      this.resetFields('ModalForm');
     },
     ok () {
       this.$refs.modal.visible = true;
@@ -291,20 +297,31 @@ export default {
       return
 
     },
+    /***
+     * 重置表单错误信息
+     */
+    resetFields (name) {
+      this.$refs[name].fields.forEach(function (e) {
+        e.resetField()
+      })
+    },
+
     /**
      * 查询
      */
-    research (flag) {
-      if (flag == 'check' && !this.checkBeforeResearch()) {
+    query () {
+      if (!this.checkBeforeQuery()) {
         return;
       }
       let params = {
         ...this.queryForm,
         ...this.page
       };
+      this.$Loading.start();
       https
         .Post("/person/queryList", params)
         .then(res => {
+          this.$Loading.finish();
           let data = res.data;
           if (data.code == 200) {
             this.pageData = data.data.dataset;
@@ -314,23 +331,24 @@ export default {
           }
         })
         .catch(err => {
-          console.log(err);
           this.close();
+          this.$Loading.finish();
         });
     },
 
-    checkBeforeResearch () {
+    /***
+     * 查询前限制
+     */
+    checkBeforeQuery () {
       //查询为精确查找
       let params = this.queryForm;
       let times = 0;
       //3、出生年份，文本录入，只能录入数字，比如2015；
       var reg = /^[0-9]+?$/; //校验规则    
-      console.log(params);
       if (params.birthYear && (!reg.test(params.birthYear))) {
         this.$Message.error('只能录入数字', 4);
         return;
       }
-
       //1、若不输入“身份证号码”，“姓名、性别、出生年份”查询条件至少要填写其中两项才能进行查询，否则提示：至少输入两个条件。
       if (!params.identityNumber) {
         for (let key in params) {
@@ -361,14 +379,13 @@ export default {
               let data = res.data;
               if (data.code == 200) {
                 this.$Message.error('删除成功', 4);
-                this.research("");
+                this.query("");
               } else {
                 this.$Message.error(res.data.message);
               }
             })
             .catch(err => {
               console.log(err);
-
             });
         }
       });
@@ -395,6 +412,7 @@ export default {
      */
     handlePersoninfo (id) {
       this.open();
+      this.$Loading.start();
       https
         .Post("/person/detail", { "id": id })
         .then(res => {
@@ -406,10 +424,12 @@ export default {
           } else {
             this.$Message.error(res.data.message);
           }
+          this.$Loading.finish();
         })
         .catch(err => {
-          console.log(err);
+          this.$Message.error(err);
           this.close();
+          this.$Loading.finish();
         });
     },
     /***
@@ -423,7 +443,6 @@ export default {
         return false;
       }
       if (dayjs(this.ModalForm.birthTime).format('YYYY-MM-DD') != utils.getBirthday(this.ModalForm.identityNumber)) {
-        console.log(utils.getBirthday(this.ModalForm.identityNumber));
         this.$Message.error('出生日期与身份证号码不匹配!');
         return false;
       }
@@ -453,7 +472,7 @@ export default {
               if (data.code == 200) {
                 this.$Message.success(info);
                 this.close();
-                this.research("");
+                this.query();
               } else {
                 this.$Message.error(data.message);
               }
