@@ -151,10 +151,15 @@ export default {
       .Post("/comm/getDicts", param)
       .then(res => {
         let data = res.data;
-        this.dicts = data.data;
+        if (data.code == 200) {
+          this.dicts = data.data;
+        } else {
+          this.$Message.error(res.data.message);
+        }
+
       })
       .catch(err => {
-        console.log(err);
+        this.$Message.error(res.data.message);
       });
   },
   data () {

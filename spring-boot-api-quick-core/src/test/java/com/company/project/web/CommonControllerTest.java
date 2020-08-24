@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.util.DigestUtils;
 import org.springframework.web.context.WebApplicationContext;
 import org.hamcrest.Matchers;
 
@@ -46,6 +47,10 @@ public class CommonControllerTest  extends Tester {
         String springBootVersion = SpringBootVersion.getVersion();
         System.out.println("springVersion:"+springVersion);
         System.out.println("springBootVersion:"+springBootVersion);
-
+    }
+    @Test
+    public void MD5TOKEN(){
+        String TOKEN= DigestUtils.md5DigestAsHex("AD74E242CBB22602E053DA00A8C09786ADMIN".getBytes());
+        System.out.println(TOKEN);//a38b4b83d97cac745529ea3dbb587b68
     }
 }

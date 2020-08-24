@@ -5,6 +5,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * 公用组件工具类
+ */
 public class CommUtils {
 
     public static Date strToDateYYYMMDD(String strDate) throws ParseException {

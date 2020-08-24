@@ -47,6 +47,8 @@ CODE VARCHAR2(6) NOT NULL,
 NAME VARCHAR2(32) NOT NULL,
 PRIMARY KEY (ID)
 );
+comment on table DICTS
+  is '字典表';
 comment on column DICTS.ID
   is '主键';
 comment on column DICTS.ITEMCODE
@@ -55,3 +57,22 @@ comment on column DICTS.ITEMCODE
   is '字典代码值';
   comment on column DICTS.NAME
   is '字典中文';
+
+
+-- 用户表
+CREATE TABLE SYS_USER (
+ID VARCHAR2(32) NOT NULL,
+USERNAME VARCHAR2(32) NOT NULL,
+PASSWORD VARCHAR2(32) NOT NULL,
+PRIMARY KEY (ID)
+);
+
+-- Add comments to the table
+comment on table SYS_USER
+  is '用户表';
+comment on column SYS_USER.ID
+  is '主键';
+  comment on column SYS_USER.USERNAME
+  is '用户名';
+    comment on column SYS_USER.PASSWORD
+  is '密码';

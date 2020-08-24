@@ -6,6 +6,7 @@ import iView from "view-design";
 import "babel-polyfill";
 import "./styles/index.scss";
 import axios from "axios";
+import store from './store'
 import QS from "qs";
 Vue.prototype.$axios = axios;
 Vue.config.productionTip = false;
@@ -14,5 +15,6 @@ Vue.use(iView);
 new Vue({
   el: "#app",
   router,
+  store,
   render: h => h(App)
 });

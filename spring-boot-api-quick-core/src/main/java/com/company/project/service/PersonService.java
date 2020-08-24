@@ -13,7 +13,7 @@ import java.util.Map;
  * Created by CodeGenerator on 2020/08/18.
  */
 public interface PersonService extends Service<Person> {
-    public void saveOrUpdate(PersonVo personVo) throws ParseException, IllegalAccessException, NoSuchMethodException, InvocationTargetException, Exception;
+    void saveOrUpdate(PersonVo personVo) throws ParseException, IllegalAccessException, NoSuchMethodException, InvocationTargetException, Exception;
 
     List<Map<String ,Object>> queryMapByMap(Map<String ,Object> param);
 
