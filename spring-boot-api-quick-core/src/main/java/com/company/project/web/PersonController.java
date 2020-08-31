@@ -2,11 +2,13 @@ package com.company.project.web;
 import com.company.project.core.Result;
 import com.company.project.core.ResultGenerator;
 import com.company.project.core.ServiceException;
+import com.company.project.dubbo.service.DubboTestService;
 import com.company.project.model.Person;
 import com.company.project.service.PersonService;
 import com.company.project.utils.CommUtils;
 import com.company.project.vo.PersonVo;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,6 +28,9 @@ public class PersonController {
     @Resource
     private PersonService personService;
 
+
+    @Reference(version = "1.0.0")
+    private DubboTestService dubboTestService;
     /***
      * 新增
      * @param personVo

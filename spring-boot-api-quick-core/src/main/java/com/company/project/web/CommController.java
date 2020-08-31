@@ -2,10 +2,12 @@ package com.company.project.web;
 import com.company.project.core.Result;
 import com.company.project.core.ResultGenerator;
 import com.company.project.core.ServiceException;
+import com.company.project.dubbo.service.DubboTestService;
 import com.company.project.service.DictsService;
 import com.company.project.service.SysUserService;
 import com.company.project.utils.RedisUtils;
 import com.company.project.vo.SysUserVo;
+import org.apache.dubbo.config.annotation.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +34,9 @@ public class CommController {
 
     @Autowired
     private SysUserService sysUserService;
+
+    @Reference(version = "1.0.0")
+    private DubboTestService dubboTestService;
 
     /***
      * 字典接口
@@ -104,6 +109,20 @@ public class CommController {
         }
         return ResultGenerator.genSuccessResult();
     }
+
+
+    /***
+     * 测试dubbo
+     * @return
+     */
+   @PostMapping("/testDubbo")
+    public Result testDubbo() {
+        String retMsg=dubboTestService.testDubboService();
+        log.info("dubboService:"+retMsg);
+       return ResultGenerator.genSuccessResult(retMsg);
+    }
+
+
 
   /*  @PostMapping("/testRedis")
     public Result testRedis(@NotNull(message = "主键信息不能为空") @RequestParam String id) {
