@@ -3,6 +3,7 @@ import com.company.project.core.Result;
 import com.company.project.core.ResultGenerator;
 import com.company.project.core.ServiceException;
 import com.company.project.dubbo.service.DubboTestService;
+import com.company.project.kafka.producer.UserLogProducer;
 import com.company.project.service.DictsService;
 import com.company.project.service.SysUserService;
 import com.company.project.utils.RedisUtils;
@@ -37,6 +38,10 @@ public class CommController {
 
     @Reference(version = "1.0.0")
     private DubboTestService dubboTestService;
+
+
+    @Autowired
+    private UserLogProducer kafkaSender;
 
     /***
      * 字典接口
@@ -122,7 +127,18 @@ public class CommController {
        return ResultGenerator.genSuccessResult(retMsg);
     }
 
-
+    /***
+     * 测试kafka
+     * @return
+     */
+    @PostMapping("/testKafka")
+    public Result testKafka() {
+        for (int i = 0; i < 10; i++) {
+            //调用消息发送类中的消息发送方法
+            kafkaSender.sendLog(String.valueOf(i));
+        }
+        return ResultGenerator.genSuccessResult();
+    }
 
   /*  @PostMapping("/testRedis")
     public Result testRedis(@NotNull(message = "主键信息不能为空") @RequestParam String id) {
