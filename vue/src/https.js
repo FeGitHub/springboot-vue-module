@@ -1,6 +1,8 @@
 import axios from "axios";
 import qs from "qs";
-let RUNTYPE = "DEV";//DEV PROD TEST
+let RUNTYPE = "PROD";//DEV PROD TEST
+// 本地开启环境直接使用chrome的关闭跨越限制 直接请求后端接口 8085
+//正式环境的话使用nginx(端口：8888)去反向请求后端接口 8085
 let baseUrl = RUNTYPE == "DEV" ? "http://localhost:8085" : "http://localhost:8888/api";
 axios.defaults.timeout = 5000; //响应时间
 axios.defaults.headers.post["Content-Type"] =
@@ -19,6 +21,7 @@ axios.interceptors.request.use(
       config.headers.token = localStorage.getItem('token');
     }
     if (RUNTYPE == "DEV") {
+      //用于测试的token
       config.headers.token = "a38b4b83d97cac745529ea3dbb587b68";
     }
     return config;
@@ -39,8 +42,8 @@ axios.interceptors.response.use(
     return res;
   },
   error => {
-    console.log("网络异常");
-    return Promise.reject(error);
+    console.log(error);
+    return Promise.reject("网络异常");
   }
 );
 

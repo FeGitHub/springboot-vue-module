@@ -159,7 +159,7 @@ export default {
 
       })
       .catch(err => {
-        this.$Message.error(res.data.message);
+        this.$Message.error(err);
       });
   },
   data () {
@@ -338,6 +338,7 @@ export default {
         .catch(err => {
           this.close();
           this.$Loading.finish();
+          this.$Message.error(err);
         });
     },
 

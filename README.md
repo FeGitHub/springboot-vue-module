@@ -18,13 +18,17 @@
 dubbo服务下的服务提供者
 
 
-### 项目部署
-(1)oracle数据库准备
-(2)提供redis服务
-(3)提供zookeeper服务
-(4)提供kafka服务
-(5)安装nodejs(建议使用yarm管理包)
+
 
 
 ### 补充说明
 (1)接口测试可以直接用 swagger-ui.html
+(2) CodeGenerator.java生成基础代码
+
+
+### 启动步骤
+(1)https.js: 如果不使用nginx，直接使用RUNTYPE = "DEV"
+(2)这里推荐使用yarn(安装npm,使用npm安装yarn 命令：npm install -g yarn)  vue 下启动前端   yarn run dev     //前端启动完毕
+(3)启动redis,zookeeper,kafka 
+(4)启动 spring-boot-api-quick-core   http://localhost:8085/swagger-ui.html
+(5)启动 spring-boot-api-dubbo-service   (可以不启动，主要是作为dubbo的服务提供者)

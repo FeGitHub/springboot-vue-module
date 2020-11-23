@@ -76,3 +76,21 @@ comment on column SYS_USER.ID
   is '用户名';
     comment on column SYS_USER.PASSWORD
   is '密码';
+
+  --  异常信息日志表
+CREATE TABLE ERROR_LOG (
+ID VARCHAR2(32) NOT NULL,
+REQUEST_URL VARCHAR2(32) NOT NULL,
+CREATE_TIME TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+ERROR_INFO CLOB,
+PRIMARY KEY (ID)
+);
+
+comment on table ERROR_LOG
+  is '异常信息日志表';
+comment on column ERROR_LOG.REQUEST_URL
+  is '请求接口';
+  comment on column ERROR_LOG.ERROR_INFO
+  is '错误信息';
+comment on column ERROR_LOG.CREATE_TIME
+  is '创建时间';

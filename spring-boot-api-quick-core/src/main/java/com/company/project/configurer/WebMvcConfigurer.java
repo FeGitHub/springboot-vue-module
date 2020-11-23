@@ -1,34 +1,28 @@
 package com.company.project.configurer;
-
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.support.config.FastJsonConfig;
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
-
 import com.company.project.core.Result;
 import com.company.project.core.ResultCode;
 import com.company.project.core.ServiceException;
-import com.company.project.service.SysUserService;
+import com.company.project.model.ErrorLog;
+import com.company.project.service.ErrorLogService;
 import com.company.project.utils.RedisUtils;
-import com.company.project.vo.SysUserVo;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -39,7 +33,6 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.config.annotation.*;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
-
 /**
  * Spring MVC 配置
  */
@@ -53,6 +46,9 @@ public class WebMvcConfigurer extends WebMvcConfigurerAdapter {
     @Autowired
     private RedisUtils redisUtils;
 
+    @Autowired
+    private ErrorLogService errorLogService;
+
 
 
 
@@ -65,7 +61,6 @@ public class WebMvcConfigurer extends WebMvcConfigurerAdapter {
         //SerializerFeature.WriteNullStringAsEmpty,//String null -> ""
         //SerializerFeature.WriteNullNumberAsZero//Number null -> 0
         // 按需配置，更多参考FastJson文档哈
-
         converter.setFastJsonConfig(config);
         converter.setDefaultCharset(Charset.forName("UTF-8"));
         converter.setSupportedMediaTypes(Arrays.asList(MediaType.APPLICATION_JSON_UTF8));
@@ -121,6 +116,11 @@ public class WebMvcConfigurer extends WebMvcConfigurerAdapter {
                     logger.error(message, e);
                 }
                 responseResult(response, result);
+                //异常信息日志记录
+                ErrorLog errorLog=new ErrorLog();
+                errorLog.setRequestUrl(request.getRequestURI());
+                errorLog.setErrorInfo(e.getMessage());
+                errorLogService.saveByUuid(errorLog);
                 return new ModelAndView();
             }
 
