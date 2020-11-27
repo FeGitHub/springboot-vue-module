@@ -19,11 +19,10 @@ dubbo服务下的服务提供者
 
 
 
-
-
 ### 补充说明
 (1)接口测试可以直接用 swagger-ui.html
 (2) CodeGenerator.java生成基础代码
+
 
 
 ### 启动步骤

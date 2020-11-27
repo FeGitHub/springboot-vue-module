@@ -39,7 +39,7 @@ public class CodeGenerator {
     public static void main(String[] args) {
        // genCode("demo");
       //  genCode("输入表名");
-        genCodeByCustomModelName("ERROR_LOG","ErrorLog");
+        genCodeByCustomModelName("TOKEN_CREATE","TokenCreate");
     }
 
     /**

@@ -14,11 +14,10 @@ import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
 import com.company.project.core.Result;
 import com.company.project.core.ResultCode;
 import com.company.project.core.ServiceException;
-import com.company.project.model.ErrorLog;
+import com.company.project.service.ApiLogService;
 import com.company.project.service.ErrorLogService;
+import com.company.project.utils.CommUtils;
 import com.company.project.utils.RedisUtils;
-import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,14 +42,18 @@ public class WebMvcConfigurer extends WebMvcConfigurerAdapter {
     @Value("${spring.profiles.active}")
     private String env;//当前激活的配置文件
 
+
+    @Value("${api.log.switch}")
+    private boolean apiLogSwitch;//当前激活的配置文件
+
     @Autowired
     private RedisUtils redisUtils;
 
     @Autowired
     private ErrorLogService errorLogService;
 
-
-
+    @Autowired
+    private ApiLogService apiLogService;
 
     //使用阿里 FastJson 作为JSON MessageConverter
     @Override
@@ -58,8 +61,6 @@ public class WebMvcConfigurer extends WebMvcConfigurerAdapter {
         FastJsonHttpMessageConverter converter = new FastJsonHttpMessageConverter();
         FastJsonConfig config = new FastJsonConfig();
         config.setSerializerFeatures(SerializerFeature.WriteMapNullValue,SerializerFeature.WriteNullStringAsEmpty);//保留空的字段
-        //SerializerFeature.WriteNullStringAsEmpty,//String null -> ""
-        //SerializerFeature.WriteNullNumberAsZero//Number null -> 0
         // 按需配置，更多参考FastJson文档哈
         converter.setFastJsonConfig(config);
         converter.setDefaultCharset(Charset.forName("UTF-8"));
@@ -79,12 +80,13 @@ public class WebMvcConfigurer extends WebMvcConfigurerAdapter {
             registry.addResourceHandler("/webjars/**")
                     .addResourceLocations("classpath:/META-INF/resources/webjars/");
         }
-
     }
 
 
-
-    //统一异常处理
+    /***
+     * 统一异常处理
+     * @param exceptionResolvers
+     */
     @Override
     public void configureHandlerExceptionResolvers(List<HandlerExceptionResolver> exceptionResolvers) {
         exceptionResolvers.add(new HandlerExceptionResolver() {
@@ -117,26 +119,33 @@ public class WebMvcConfigurer extends WebMvcConfigurerAdapter {
                 }
                 responseResult(response, result);
                 //异常信息日志记录
-                ErrorLog errorLog=new ErrorLog();
-                errorLog.setRequestUrl(request.getRequestURI());
-                errorLog.setErrorInfo(e.getMessage());
-                errorLogService.saveByUuid(errorLog);
+                errorLogService.saveErrorLog(request,e);
                 return new ModelAndView();
             }
-
         });
     }
 
     //解决跨域问题
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        //registry.addMapping("/**");
+        //使用此方法配置之后再使用自定义拦截器时跨域相关配置会失效。
+       // registry.addMapping("/**");
     }
 
     //添加拦截器
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        //接口签名认证拦截器，该签名认证比较简单，实际项目中可以使用Json Web Token或其他更好的方式替代。
+        //日志拦截器
+        if(apiLogSwitch){
+            registry.addInterceptor(new HandlerInterceptorAdapter() {
+                @Override
+                public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+                    apiLogService.saveApiLog(request);
+                    return true;
+                }
+            }) .excludePathPatterns("/swagger-resources/**", "/webjars/**", "/v2/**", "/swagger-ui.html/**");
+        }
+        //接口签名认证拦截器
         if (!"dev".equals(env)) { //开发环境忽略token认证和签名认证
             registry.addInterceptor(new HandlerInterceptorAdapter() {
                 @Override
@@ -147,23 +156,11 @@ public class WebMvcConfigurer extends WebMvcConfigurerAdapter {
                         responseResult(response, result);
                         return false;
                     }
-                    //验证签名(暂时屏蔽掉)
-                  //  boolean pass = validateSign(request);
-                    boolean pass = true;
-                    if (pass) {
-                        return true;
-                    } else {
-                        logger.warn("签名认证失败，请求接口：{}，请求IP：{}，请求参数：{}",
-                                request.getRequestURI(), getIpAddress(request), JSON.toJSONString(request.getParameterMap()));
-                        result.setCode(ResultCode.UNAUTHORIZED).setMessage("签名认证失败");
-                        responseResult(response, result);
-                        return false;
-                    }
+                    return true;
                 }
             })      .excludePathPatterns("/comm/**")//公用请求
                     .excludePathPatterns("/swagger-resources/**", "/webjars/**", "/v2/**", "/swagger-ui.html/**");
-        }  //开发环境忽略token认证和签名认证
-
+        }
     }
 
 
@@ -192,6 +189,15 @@ public class WebMvcConfigurer extends WebMvcConfigurerAdapter {
      */
     private Result handleToken(HttpServletRequest request) {
         Result result = new Result();
+        //验证签名(暂时屏蔽掉)
+      /*  boolean pass = CommUtils.validateSign(request);
+        if (!pass) {
+
+            logger.warn("签名认证失败，请求接口：{}，请求IP：{}，请求参数：{}",
+                    request.getRequestURI(), CommUtils.getIpAddress(request), JSON.toJSONString(request.getParameterMap()));
+            result.setCode(ResultCode.UNAUTHORIZED).setMessage("签名认证失败");
+            return result;
+        } */
         result.setCode(ResultCode.SUCCESS);
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
         String lastUpdateStr= df.format(new Date()).toString();//最后更新时间
@@ -204,59 +210,5 @@ public class WebMvcConfigurer extends WebMvcConfigurerAdapter {
         }
         redisUtils.set(token,lastUpdateStr,10L, TimeUnit.MINUTES);
         return result;
-    }
-
-
-    /**
-     * 一个简单的签名认证，规则：
-     * 1. 将请求参数按ascii码排序
-     * 2. 拼接为a=value&b=value...这样的字符串（不包含sign）
-     * 3. 混合密钥（secret）进行md5获得签名，与请求的签名进行比较
-     */
-    private boolean validateSign(HttpServletRequest request) {
-        String requestSign = request.getParameter("sign");//获得请求签名，如sign=19e907700db7ad91318424a97c54ed57
-        if (StringUtils.isEmpty(requestSign)) {
-            return false;
-        }
-        List<String> keys = new ArrayList<String>(request.getParameterMap().keySet());
-        keys.remove("sign");//排除sign参数
-        Collections.sort(keys);//排序
-
-        StringBuilder sb = new StringBuilder();
-        for (String key : keys) {
-            sb.append(key).append("=").append(request.getParameter(key)).append("&");//拼接字符串
-        }
-        String linkString = sb.toString();
-        linkString = StringUtils.substring(linkString, 0, linkString.length() - 1);//去除最后一个'&'
-
-        String secret = "Potato";//密钥，自己修改
-        String sign = DigestUtils.md5Hex(linkString + secret);//混合密钥md5
-
-        return StringUtils.equals(sign, requestSign);//比较
-    }
-
-    private String getIpAddress(HttpServletRequest request) {
-        String ip = request.getHeader("x-forwarded-for");
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("Proxy-Client-IP");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("WL-Proxy-Client-IP");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("HTTP_CLIENT_IP");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("HTTP_X_FORWARDED_FOR");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getRemoteAddr();
-        }
-        // 如果是多级代理，那么取第一个ip为客户端ip
-        if (ip != null && ip.indexOf(",") != -1) {
-            ip = ip.substring(0, ip.indexOf(",")).trim();
-        }
-
-        return ip;
     }
 }

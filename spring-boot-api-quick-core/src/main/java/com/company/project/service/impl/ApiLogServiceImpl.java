@@ -1,38 +1,36 @@
 package com.company.project.service.impl;
+
 import com.alibaba.fastjson.JSON;
-import com.company.project.dao.ErrorLogMapper;
+import com.company.project.dao.ApiLogMapper;
+import com.company.project.model.ApiLog;
 import com.company.project.model.ErrorLog;
-import com.company.project.service.ErrorLogService;
+import com.company.project.service.ApiLogService;
 import com.company.project.core.AbstractService;
 import com.company.project.utils.CommUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 
 
 /**
- * Created by CodeGenerator on 2020/11/10.
+ * Created by CodeGenerator on 2020/11/26.
  */
 @Service
 @Transactional
-public class ErrorLogServiceImpl extends AbstractService<ErrorLog> implements ErrorLogService {
+public class ApiLogServiceImpl extends AbstractService<ApiLog> implements ApiLogService {
     @Resource
-    private ErrorLogMapper errorLogMapper;
+    private ApiLogMapper apiLogMapper;
 
-    /***
-     * 错误日志信息记录
-     * @param request
-     * @param e
-     */
     @Override
-    public void saveErrorLog(HttpServletRequest request, Exception e) {
+    public void saveApiLog(HttpServletRequest request) {
         String token = request.getHeader("token")==null?"": request.getHeader("token");
-        ErrorLog log=new ErrorLog();
+        ApiLog log=new ApiLog();
         log.setToken(token);
+        log.setRequestIp(CommUtils.getIpAddress(request));
         log.setRequestUrl(request.getRequestURI());
-        log.setErrorInfo(e.getMessage());
         log.setRequestParams(JSON.toJSONString(request.getParameterMap()));
         log.setId(CommUtils.createUUID());
         log.setCreateTime(new Date());

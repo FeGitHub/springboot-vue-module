@@ -1,3 +1,4 @@
+-- 根据字典值获取字典中文
 CREATE OR REPLACE FUNCTION fn_getDictName(p_type IN VARCHAR2, p_key IN VARCHAR2) RETURN varchar2
 IS dic_name VARCHAR2(32);
 BEGIN

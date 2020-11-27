@@ -1,3 +1,4 @@
+-- 个人数据产生序列
 create sequence SEQ_FW_PERSON
 MINVALUE 1 MAXVALUE 999999999999
 start with 1 INCREMENT by 1 NOCACHE CYCLE;

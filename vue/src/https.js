@@ -1,6 +1,6 @@
 import axios from "axios";
 import qs from "qs";
-let RUNTYPE = "PROD";//DEV PROD TEST
+let RUNTYPE = "DEV";//DEV PROD TEST
 // 本地开启环境直接使用chrome的关闭跨越限制 直接请求后端接口 8085
 //正式环境的话使用nginx(端口：8888)去反向请求后端接口 8085
 let baseUrl = RUNTYPE == "DEV" ? "http://localhost:8085" : "http://localhost:8888/api";
