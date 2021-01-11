@@ -1,10 +1,10 @@
 module.exports = {
-  //axios域代理，解决axios跨域问题
+  //axios域代理，解决axios跨域问题   https://www.cnblogs.com/eye-like/p/13305801.html
   baseUrl: "/",
   devServer: {
     proxy: {
       "": {
-        target: "http://127.0.0.1:2333",
+        target: "http://localhost:8888",
         changeOrigin: true,
         ws: true,
         pathRewrite: {}
