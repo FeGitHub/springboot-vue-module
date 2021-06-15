@@ -1,5 +1,5 @@
 package com.company.project.service;
-import com.company.project.model.ApiLog;
+import com.company.project.master.model.ApiLog;
 import com.company.project.core.Service;
 
 import javax.servlet.http.HttpServletRequest;

@@ -1,4 +1,4 @@
-package com.company.project.model;
+package com.company.project.master.model;
 
 import java.util.Date;
 import javax.persistence.*;

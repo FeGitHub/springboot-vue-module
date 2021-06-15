@@ -1,7 +1,7 @@
 package com.company.project.service.impl;
 
-import com.company.project.dao.TokenCreateMapper;
-import com.company.project.model.TokenCreate;
+import com.company.project.master.dao.TokenCreateMapper;
+import com.company.project.master.model.TokenCreate;
 import com.company.project.service.TokenCreateService;
 import com.company.project.core.AbstractService;
 import com.company.project.utils.CommUtils;

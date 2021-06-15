@@ -149,3 +149,11 @@ comment on column TOKEN_CREATE.TOKEN
   is 'TOKEN';
 comment on column TOKEN_CREATE.CREATE_TIME
   is '创建时间';
+
+
+  -- 测试表
+CREATE TABLE  TEST_TABLE(
+ID VARCHAR2(32) NOT NULL,
+TEST_NAME VARCHAR2(32)  NULL,
+PRIMARY KEY (ID)
+);

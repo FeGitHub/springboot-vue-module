@@ -1,5 +1,5 @@
 package com.company.project.service;
-import com.company.project.model.Person;
+import com.company.project.master.model.Person;
 import com.company.project.core.Service;
 import com.company.project.vo.PersonVo;
 

@@ -1,7 +1,7 @@
 package com.company.project.service.impl;
 
-import com.company.project.dao.DictsMapper;
-import com.company.project.model.Dicts;
+import com.company.project.master.dao.DictsMapper;
+import com.company.project.master.model.Dicts;
 import com.company.project.service.DictsService;
 import com.company.project.core.AbstractService;
 import org.springframework.stereotype.Service;

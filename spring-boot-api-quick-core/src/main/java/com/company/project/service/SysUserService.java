@@ -1,9 +1,7 @@
 package com.company.project.service;
-import com.company.project.model.SysUser;
+import com.company.project.master.model.SysUser;
 import com.company.project.core.Service;
 import com.company.project.vo.SysUserVo;
-
-import java.util.Map;
 
 
 /**

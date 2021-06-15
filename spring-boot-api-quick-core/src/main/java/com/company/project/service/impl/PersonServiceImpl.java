@@ -1,7 +1,7 @@
 package com.company.project.service.impl;
 import com.company.project.core.ServiceException;
-import com.company.project.dao.PersonMapper;
-import com.company.project.model.Person;
+import com.company.project.master.dao.PersonMapper;
+import com.company.project.master.model.Person;
 import com.company.project.service.PersonService;
 import com.company.project.core.AbstractService;
 import com.company.project.utils.CommUtils;

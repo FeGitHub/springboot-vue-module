@@ -6,6 +6,8 @@ import com.company.project.dubbo.service.DubboTestService;
 import com.company.project.kafka.producer.UserLogProducer;
 import com.company.project.service.DictsService;
 import com.company.project.service.SysUserService;
+import com.company.project.service.TestTableService;
+import com.company.project.slave.model.TestTable;
 import com.company.project.utils.RedisUtils;
 import com.company.project.vo.SysUserVo;
 import org.apache.dubbo.config.annotation.Reference;
@@ -29,6 +31,9 @@ public class CommController {
     public static final Logger log = LoggerFactory.getLogger(CommController.class);
     @Resource
     private DictsService dictsService;
+
+    @Autowired
+    TestTableService testTableService;
 
     @Autowired
     private RedisUtils redisUtils;
@@ -60,6 +65,14 @@ public class CommController {
         }
         return ResultGenerator.genSuccessResult(rtnMap);
     }
+
+    @PostMapping("/testSlaveQuery")
+    public Result testSlaveQuery() {
+        TestTable t= testTableService.testQuery();
+        return ResultGenerator.genSuccessResult(t);
+    }
+
+
 
     /**
      * 用户账号注册注册接口

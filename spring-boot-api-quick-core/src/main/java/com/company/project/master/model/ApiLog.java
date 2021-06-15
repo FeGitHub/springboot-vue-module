@@ -1,17 +1,20 @@
-package com.company.project.model;
+package com.company.project.master.model;
 
 import java.util.Date;
 import javax.persistence.*;
 
-@Table(name = "ERROR_LOG")
-public class ErrorLog {
+@Table(name = "API_LOG")
+public class ApiLog {
     @Id
     @Column(name = "ID")
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
+
+    @Column(name = "REQUEST_IP")
+    private String requestIp;
 
     @Column(name = "REQUEST_URL")
     private String requestUrl;
-
 
     @Column(name = "REQUEST_PARAMS")
     private String requestParams;
@@ -19,22 +22,9 @@ public class ErrorLog {
     @Column(name = "CREATE_TIME")
     private Date createTime;
 
+
     @Column(name = "TOKEN")
     private String token;
-
-
-
-    @Column(name = "ERROR_INFO")
-    private String errorInfo;
-
-
-    public String getRequestParams() {
-        return requestParams;
-    }
-
-    public void setRequestParams(String requestParams) {
-        this.requestParams = requestParams;
-    }
 
     public String getToken() {
         return token;
@@ -43,6 +33,7 @@ public class ErrorLog {
     public void setToken(String token) {
         this.token = token;
     }
+
     /**
      * @return ID
      */
@@ -55,6 +46,20 @@ public class ErrorLog {
      */
     public void setId(String id) {
         this.id = id;
+    }
+
+    /**
+     * @return REQUEST_IP
+     */
+    public String getRequestIp() {
+        return requestIp;
+    }
+
+    /**
+     * @param requestIp
+     */
+    public void setRequestIp(String requestIp) {
+        this.requestIp = requestIp;
     }
 
     /**
@@ -72,6 +77,20 @@ public class ErrorLog {
     }
 
     /**
+     * @return REQUEST_PARAMS
+     */
+    public String getRequestParams() {
+        return requestParams;
+    }
+
+    /**
+     * @param requestParams
+     */
+    public void setRequestParams(String requestParams) {
+        this.requestParams = requestParams;
+    }
+
+    /**
      * @return CREATE_TIME
      */
     public Date getCreateTime() {
@@ -83,21 +102,5 @@ public class ErrorLog {
      */
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
-    }
-
-
-
-    /**
-     * @return ERROR_INFO
-     */
-    public String getErrorInfo() {
-        return errorInfo;
-    }
-
-    /**
-     * @param errorInfo
-     */
-    public void setErrorInfo(String errorInfo) {
-        this.errorInfo = errorInfo;
     }
 }

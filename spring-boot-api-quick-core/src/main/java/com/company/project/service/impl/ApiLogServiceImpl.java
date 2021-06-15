@@ -1,9 +1,8 @@
 package com.company.project.service.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.company.project.dao.ApiLogMapper;
-import com.company.project.model.ApiLog;
-import com.company.project.model.ErrorLog;
+import com.company.project.master.dao.ApiLogMapper;
+import com.company.project.master.model.ApiLog;
 import com.company.project.service.ApiLogService;
 import com.company.project.core.AbstractService;
 import com.company.project.utils.CommUtils;

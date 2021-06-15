@@ -18,9 +18,9 @@ import static com.company.project.core.ProjectConstant.*;
  */
 public class CodeGenerator {
     //JDBC配置，请修改为你项目的实际配置
-    private static final String JDBC_URL = "jdbc:oracle:thin:@192.168.0.218:1521:orcl";
-    private static final String JDBC_USERNAME = "HOMEWORK";
-    private static final String JDBC_PASSWORD = "123";
+    private static final String JDBC_URL = "jdbc:oracle:thin:@127.0.0.1:1521:orcl";
+    private static final String JDBC_USERNAME = "root";
+    private static final String JDBC_PASSWORD = "root";
     private static final String JDBC_DIVER_CLASS_NAME = "oracle.jdbc.driver.OracleDriver";
 
     private static final String PROJECT_PATH = System.getProperty("user.dir");//项目在硬盘上的基础路径
@@ -39,7 +39,7 @@ public class CodeGenerator {
     public static void main(String[] args) {
        // genCode("demo");
       //  genCode("输入表名");
-        genCodeByCustomModelName("TOKEN_CREATE","TokenCreate");
+        genCodeByCustomModelName("TEST_TABLE","TestTable");
     }
 
     /**

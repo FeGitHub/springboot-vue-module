@@ -1,7 +1,7 @@
-package com.company.project.dao;
+package com.company.project.master.dao;
 
 import com.company.project.core.Mapper;
-import com.company.project.model.Dicts;
+import com.company.project.master.model.Dicts;
 
 import java.util.List;
 import java.util.Map;

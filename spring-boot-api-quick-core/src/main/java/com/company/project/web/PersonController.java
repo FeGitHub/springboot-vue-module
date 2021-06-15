@@ -3,7 +3,7 @@ import com.company.project.core.Result;
 import com.company.project.core.ResultGenerator;
 import com.company.project.core.ServiceException;
 import com.company.project.dubbo.service.DubboTestService;
-import com.company.project.model.Person;
+import com.company.project.master.model.Person;
 import com.company.project.service.PersonService;
 import com.company.project.utils.CommUtils;
 import com.company.project.vo.PersonVo;

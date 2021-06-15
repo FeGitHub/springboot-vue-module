@@ -1,5 +1,5 @@
 package com.company.project.service;
-import com.company.project.model.Dicts;
+import com.company.project.master.model.Dicts;
 import com.company.project.core.Service;
 import java.util.List;
 import java.util.Map;

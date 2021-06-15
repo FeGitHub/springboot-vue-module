@@ -1,7 +1,6 @@
 package com.company.project.service;
-import com.company.project.model.TokenCreate;
+import com.company.project.master.model.TokenCreate;
 import com.company.project.core.Service;
-import com.company.project.vo.SysUserVo;
 
 
 /**

@@ -1,7 +1,7 @@
 package com.company.project.service.impl;
 import com.alibaba.fastjson.JSON;
-import com.company.project.dao.ErrorLogMapper;
-import com.company.project.model.ErrorLog;
+import com.company.project.master.dao.ErrorLogMapper;
+import com.company.project.master.model.ErrorLog;
 import com.company.project.service.ErrorLogService;
 import com.company.project.core.AbstractService;
 import com.company.project.utils.CommUtils;

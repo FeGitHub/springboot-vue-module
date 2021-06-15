@@ -1,7 +1,7 @@
 package com.company.project.service.impl;
 import com.company.project.core.ServiceException;
-import com.company.project.dao.SysUserMapper;
-import com.company.project.model.SysUser;
+import com.company.project.master.dao.SysUserMapper;
+import com.company.project.master.model.SysUser;
 import com.company.project.service.SysUserService;
 import com.company.project.core.AbstractService;
 import com.company.project.service.TokenCreateService;

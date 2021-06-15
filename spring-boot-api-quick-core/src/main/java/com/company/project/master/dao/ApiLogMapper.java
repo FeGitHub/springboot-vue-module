@@ -1,7 +1,7 @@
-package com.company.project.dao;
+package com.company.project.master.dao;
 
 import com.company.project.core.Mapper;
-import com.company.project.model.ApiLog;
+import com.company.project.master.model.ApiLog;
 
 public interface ApiLogMapper extends Mapper<ApiLog> {
 }
