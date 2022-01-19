@@ -146,7 +146,7 @@ public class WebMvcConfigurer extends WebMvcConfigurerAdapter {
             }) .excludePathPatterns("/swagger-resources/**", "/webjars/**", "/v2/**", "/swagger-ui.html/**");
         }
         //接口签名认证拦截器
-        if (!"dev".equals(env)) { //开发环境忽略token认证和签名认证
+     //   if (!"dev".equals(env)) { //开发环境忽略token认证和签名认证
             registry.addInterceptor(new HandlerInterceptorAdapter() {
                 @Override
                 public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -160,7 +160,7 @@ public class WebMvcConfigurer extends WebMvcConfigurerAdapter {
                 }
             })      .excludePathPatterns("/comm/**")//公用请求
                     .excludePathPatterns("/swagger-resources/**", "/webjars/**", "/v2/**", "/swagger-ui.html/**");
-        }
+      //  }
     }
 
 

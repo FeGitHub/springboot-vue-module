@@ -98,7 +98,7 @@ public class CommController {
             throw new ServiceException("登录验证失败！");
         }
         redisUtils.set(tokenMd5,lastUpdateStr,10L,TimeUnit.MINUTES);
-        return ResultGenerator.genSuccessResult();
+        return ResultGenerator.genSuccessResult(tokenMd5);
     }
 
 

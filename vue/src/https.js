@@ -3,7 +3,7 @@ import qs from "qs";
 
 //正式环境的话使用nginx(端口：8888)去反向请求后端接口 8085 (项目部署到nginx的html文件夹下)
 //let baseUrl =  "http://localhost:8085";  //本地开启环境直接使用chrome的关闭跨越限制 直接请求后端接口 8085
-let baseUrl =  "http://localhost:8888/api";//通过nginx去处理跨越问题，用nginx（启动端口8888）去代理前端和后端
+let baseUrl =  "http://192.168.186.129:8888/api";//通过nginx去处理跨越问题，用nginx（启动端口8888）去代理前端和后端
 axios.defaults.timeout = 5000; //响应时间
 axios.defaults.headers.post["Content-Type"] =
   "application/x-www-form-urlencoded;charset=UTF-8"; //配置请求头
@@ -20,10 +20,10 @@ axios.interceptors.request.use(
     if (localStorage.getItem('token')) {
       config.headers.token = localStorage.getItem('token');
     }
-    if (RUNTYPE == "DEV") {
+  //  if (RUNTYPE == "DEV") {
       //用于测试的token
       config.headers.token = "a38b4b83d97cac745529ea3dbb587b68";
-    }
+  //  }
     return config;
   },
   error => {
