@@ -1,6 +1,7 @@
 package com.company.project.core;
 
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.ApiInfoBuilder;
@@ -20,6 +21,7 @@ import java.util.List;
 
 @Configuration
 @EnableSwagger2
+@ConditionalOnExpression("${swagger.onlion:true}")
 public class Swagger2Config {
 
 
