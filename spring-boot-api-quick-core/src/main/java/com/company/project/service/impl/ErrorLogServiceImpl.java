@@ -27,7 +27,7 @@ public class ErrorLogServiceImpl extends AbstractService<ErrorLog> implements Er
      * @param e
      */
     @Override
-    public void saveErrorLog(HttpServletRequest request, Exception e) {
+    public String saveErrorLog(HttpServletRequest request, Exception e) {
         String token = request.getHeader("token")==null?"": request.getHeader("token");
         ErrorLog log=new ErrorLog();
         log.setToken(token);
@@ -37,5 +37,6 @@ public class ErrorLogServiceImpl extends AbstractService<ErrorLog> implements Er
         log.setId(CommUtils.createUUID());
         log.setCreateTime(new Date());
         this.save(log);
+        return log.getId();
     }
 }

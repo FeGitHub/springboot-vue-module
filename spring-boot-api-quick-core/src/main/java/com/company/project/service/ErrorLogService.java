@@ -10,6 +10,6 @@ import javax.servlet.http.HttpServletRequest;
  */
 public interface ErrorLogService extends Service<ErrorLog> {
 
-    public void saveErrorLog(HttpServletRequest request,Exception e);
+    public String saveErrorLog(HttpServletRequest request,Exception e);
 
 }

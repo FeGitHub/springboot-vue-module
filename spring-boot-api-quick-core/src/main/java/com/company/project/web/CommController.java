@@ -112,20 +112,25 @@ public class CommController {
     public Result testAddOrDelRedis(@NotNull(message = "操作类型不能为空") @RequestParam String type) {
         String token="a38b4b83d97cac745529ea3dbb587b68";//用于测试的token信息
         boolean hasKey = redisUtils.exists(token);
+        String tip;
         if("ADD".equals(type)){
             if(!hasKey){
                 redisUtils.set(token,"TEST",10L,TimeUnit.MINUTES);
-                log.info("数据插入缓存..." );
+                tip="数据成功插入缓存";
+            }else{
+                tip="该数据缓存已存在，不做重复插入";
             }
         }else if("DEL".equals(type)){
             if(hasKey){
                 redisUtils.remove(token);
-                log.info("数据删除缓存..." );
+                tip="数据成功在缓存去除";
+            }else{
+                tip="该数据在缓存不存在，无需删除";
             }
         }else{
             throw new ServiceException("只能输入ADD,DEL操作类型！");
         }
-        return ResultGenerator.genSuccessResult();
+        return ResultGenerator.genSuccessResult(tip);
     }
 
 
