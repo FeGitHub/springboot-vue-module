@@ -41,12 +41,6 @@ public class CommController {
     @Autowired
     private SysUserService sysUserService;
 
-    @Reference(version = "1.0.0")
-    private DubboTestService dubboTestService;
-
-
-    @Autowired
-    private UserLogProducer kafkaSender;
 
     /***
      * 字典接口
@@ -65,13 +59,6 @@ public class CommController {
         }
         return ResultGenerator.genSuccessResult(rtnMap);
     }
-
-    @PostMapping("/testSlaveQuery")
-    public Result testSlaveQuery() {
-        TestTable t= testTableService.testQuery();
-        return ResultGenerator.genSuccessResult(t);
-    }
-
 
 
     /**
@@ -100,81 +87,5 @@ public class CommController {
         redisUtils.set(tokenMd5,lastUpdateStr,10L,TimeUnit.MINUTES);
         return ResultGenerator.genSuccessResult(tokenMd5);
     }
-
-
-
-    /***
-     * 删除或新增用于测试的token数据信息
-     * @param type
-     * @return
-     */
-    @PostMapping("/testAddOrDelRedis")
-    public Result testAddOrDelRedis(@NotNull(message = "操作类型不能为空") @RequestParam String type) {
-        String token="a38b4b83d97cac745529ea3dbb587b68";//用于测试的token信息
-        boolean hasKey = redisUtils.exists(token);
-        String tip;
-        if("ADD".equals(type)){
-            if(!hasKey){
-                redisUtils.set(token,"TEST",10L,TimeUnit.MINUTES);
-                tip="数据成功插入缓存";
-            }else{
-                tip="该数据缓存已存在，不做重复插入";
-            }
-        }else if("DEL".equals(type)){
-            if(hasKey){
-                redisUtils.remove(token);
-                tip="数据成功在缓存去除";
-            }else{
-                tip="该数据在缓存不存在，无需删除";
-            }
-        }else{
-            throw new ServiceException("只能输入ADD,DEL操作类型！");
-        }
-        return ResultGenerator.genSuccessResult(tip);
-    }
-
-
-    /***
-     * 测试dubbo
-     * @return
-     */
-   @PostMapping("/testDubbo")
-    public Result testDubbo() {
-        String retMsg=dubboTestService.testDubboService();
-        log.info("dubboService:"+retMsg);
-       return ResultGenerator.genSuccessResult(retMsg);
-    }
-
-    /***
-     * 测试kafka
-     * @return
-     */
-    @PostMapping("/testKafka")
-    public Result testKafka() {
-        for (int i = 0; i < 10; i++) {
-            //调用消息发送类中的消息发送方法
-            kafkaSender.sendLog(String.valueOf(i));
-        }
-        return ResultGenerator.genSuccessResult();
-    }
-
-  /*  @PostMapping("/testRedis")
-    public Result testRedis(@NotNull(message = "主键信息不能为空") @RequestParam String id) {
-        boolean hasKey = redisUtils.exists(id);
-        if(hasKey){
-            //获取缓存
-            Object object =  redisUtils.get(id);
-            log.info("从缓存获取的数据:"+ object);
-        }else{
-            //从数据库中获取信息
-            log.info("从数据库中获取数据");
-            // str = testService.test();
-            String str="redis存储信息";
-            //数据插入缓存（set中的参数含义：key值，user对象，缓存存在时间10（long类型），时间单位）
-            redisUtils.set(id,str,10L,TimeUnit.MINUTES);
-            log.info("数据插入缓存:" + str);
-        }
-        return ResultGenerator.genSuccessResult();
-    }  */
 
 }

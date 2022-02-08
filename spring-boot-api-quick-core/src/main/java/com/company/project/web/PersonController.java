@@ -7,6 +7,8 @@ import com.company.project.master.model.Person;
 import com.company.project.service.PersonService;
 import com.company.project.utils.CommUtils;
 import com.company.project.vo.PersonVo;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,7 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 /**
- * Created by jeffqiu
+ * 人员控制器（业务控制器的一个例子）
  */
 @RestController
 @RequestMapping("/person")
@@ -85,14 +87,28 @@ public class PersonController {
 
 
     /***
-     * 查询分页信息
+     * 查询分页信息(通过分页插件)
+     * @param personVo
+     * @return
+     * @throws Exception
+     */
+    @PostMapping("/queryListByPageHelper")
+    public Result queryListByPageHelper(PersonVo personVo) throws Exception {
+        PageHelper.startPage(1, 5);
+        List<Person> list = personService.findAll();
+        PageInfo<Person> info = new PageInfo<Person>(list);
+        return ResultGenerator.genSuccessResult(info);
+    }
+
+    /***
+     * 查询分页信息（原生sql）
      * @param personVo
      * @return
      * @throws Exception
      */
     @PostMapping("/queryList")
     public Result queryList(PersonVo personVo) throws Exception {
-        Map<String,Object> param = PropertyUtils.describe(personVo);
+       Map<String,Object> param = PropertyUtils.describe(personVo);
         Map<String,Object> rtMap = new HashMap<String,Object>();
         List<Map<String ,Object>> resultMap=personService.queryMapByMap(param);
         Integer CNT=personService.CNT_Q(param);
@@ -100,4 +116,6 @@ public class PersonController {
         rtMap.put("total",CNT);//总记录数
         return ResultGenerator.genSuccessResult(rtMap);
     }
+
+
 }

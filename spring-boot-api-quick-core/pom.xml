@@ -89,11 +89,19 @@
             <artifactId>mapper</artifactId>
             <version>3.4.2</version>
         </dependency>
-        <dependency>
+     <!--   <dependency>
             <groupId>com.github.pagehelper</groupId>
             <artifactId>pagehelper</artifactId>
             <version>4.2.1</version>
+        </dependency> -->
+
+        <dependency>
+            <groupId>com.github.pagehelper</groupId>
+            <artifactId>pagehelper-spring-boot-starter</artifactId>
+            <version>1.2.10</version>
         </dependency>
+
+
         <!--阿里 FastJson依赖-->
         <dependency>
             <groupId>com.alibaba</groupId>
@@ -197,6 +205,14 @@
             <groupId>org.springframework.kafka</groupId>
             <artifactId>spring-kafka</artifactId>
         </dependency>
+
+
+        <dependency>
+            <groupId>io.codearte.accurest</groupId>
+            <artifactId>accurest-converters</artifactId>
+            <version>1.1.1</version>
+        </dependency>
+
 
     </dependencies>
 

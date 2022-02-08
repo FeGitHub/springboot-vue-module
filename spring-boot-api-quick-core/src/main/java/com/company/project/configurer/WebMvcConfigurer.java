@@ -158,7 +158,7 @@ public class WebMvcConfigurer extends WebMvcConfigurerAdapter {
                     }
                     return true;
                 }
-            })      .excludePathPatterns("/comm/**")//公用请求
+            })      .excludePathPatterns("/comm/**","/test/**")//公用,测试请求
                     .excludePathPatterns("/swagger-resources/**", "/webjars/**", "/v2/**", "/swagger-ui.html/**");
       //  }
     }
