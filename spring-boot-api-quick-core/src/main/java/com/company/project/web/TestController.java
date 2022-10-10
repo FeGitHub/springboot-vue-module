@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
 import javax.annotation.Resource;
 import javax.validation.constraints.NotNull;
 import java.util.HashMap;
@@ -45,7 +46,6 @@ public class TestController {
     private RedisUtils redisUtils;
 
 
-
     @Reference(version = "1.0.0")
     private DubboTestService dubboTestService;
 
@@ -59,12 +59,12 @@ public class TestController {
      * @return
      */
     @PostMapping("/testDicts")
-    public Result testDicts(@RequestParam String dicts ) {
+    public Result testDicts(@RequestParam String dicts) {
         String[] arr = dicts.split(",");
-        Map<String,Object> rtnMap = new HashMap<String, Object>();
-        for(String dictStr : arr){
-            List<Map<String, Object>> list= dictsService.getDict(dictStr);
-            if(list!=null&&list.size()>0){
+        Map<String, Object> rtnMap = new HashMap<String, Object>();
+        for (String dictStr : arr) {
+            List<Map<String, Object>> list = dictsService.getDict(dictStr);
+            if (list != null && list.size() > 0) {
                 rtnMap.put(dictStr, list);
             }
         }
@@ -77,7 +77,7 @@ public class TestController {
      */
     @PostMapping("/testSlaveQuery")
     public Result testSlaveQuery() {
-        TestTable t= testTableService.testQuery();
+        TestTable t = testTableService.testQuery();
         return ResultGenerator.genSuccessResult(t);
     }
 
@@ -89,24 +89,24 @@ public class TestController {
      */
     @PostMapping("/testAddOrDelRedis")
     public Result testAddOrDelRedis(@NotNull(message = "操作类型不能为空") @RequestParam String type) {
-        String token="a38b4b83d97cac745529ea3dbb587b68";//用于测试的token信息
+        String token = "a38b4b83d97cac745529ea3dbb587b68";//用于测试的token信息
         boolean hasKey = redisUtils.exists(token);
         String tip;
-        if("ADD".equals(type)){
-            if(!hasKey){
-                redisUtils.set(token,"TEST",10L,TimeUnit.MINUTES);
-                tip="数据成功插入缓存";
-            }else{
-                tip="该数据缓存已存在，不做重复插入";
+        if ("ADD".equals(type)) {
+            if (!hasKey) {
+                redisUtils.set(token, "TEST", 10L, TimeUnit.MINUTES);
+                tip = "数据成功插入缓存";
+            } else {
+                tip = "该数据缓存已存在，不做重复插入";
             }
-        }else if("DEL".equals(type)){
-            if(hasKey){
+        } else if ("DEL".equals(type)) {
+            if (hasKey) {
                 redisUtils.remove(token);
-                tip="数据成功在缓存去除";
-            }else{
-                tip="该数据在缓存不存在，无需删除";
+                tip = "数据成功在缓存去除";
+            } else {
+                tip = "该数据在缓存不存在，无需删除";
             }
-        }else{
+        } else {
             throw new ServiceException("只能输入ADD,DEL操作类型！");
         }
         return ResultGenerator.genSuccessResult(tip);
@@ -117,11 +117,11 @@ public class TestController {
      * 测试dubbo
      * @return
      */
-   @PostMapping("/testDubbo")
+    @PostMapping("/testDubbo")
     public Result testDubbo() {
-        String retMsg=dubboTestService.testDubboService();
-        log.info("dubboService:"+retMsg);
-       return ResultGenerator.genSuccessResult(retMsg);
+        String retMsg = dubboTestService.testDubboService();
+        log.info("dubboService:" + retMsg);
+        return ResultGenerator.genSuccessResult(retMsg);
     }
 
     /***
@@ -144,8 +144,8 @@ public class TestController {
      */
     @PostMapping("/testPostUrl")
     public Result testPostUrl() {
-        String url="http://192.168.186.129:8085/comm/getDicts?dicts=GENDER";
-        String result=HttpURLConnectionUtils.doPostByJson(url,null);
+        String url = "http://192.168.186.129:8085/comm/getDicts?dicts=GENDER";
+        String result = HttpURLConnectionUtils.doPostByJson(url, null);
         return ResultGenerator.genSuccessResult(result);
     }
 
@@ -164,7 +164,6 @@ public class TestController {
         }
         return ResultGenerator.genSuccessResult();
     }
-
 
 
 }

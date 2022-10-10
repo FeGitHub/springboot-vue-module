@@ -74,12 +74,12 @@ public class WebMvcConfigurer extends WebMvcConfigurerAdapter {
      */
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        if("dev".equals(env)||"test".equals(env)){//开发环境和测试环境才打开swagger-ui.html测试接口
+     //   if("dev".equals(env)||"test".equals(env)){//开发环境和测试环境才打开swagger-ui.html测试接口
             registry.addResourceHandler("swagger-ui.html")
                     .addResourceLocations("classpath:/META-INF/resources/");
             registry.addResourceHandler("/webjars/**")
                     .addResourceLocations("classpath:/META-INF/resources/webjars/");
-        }
+     //   }
     }
 
 

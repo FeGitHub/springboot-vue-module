@@ -1,4 +1,5 @@
 package com.company.project.web;
+
 import com.company.project.core.Result;
 import com.company.project.core.ResultGenerator;
 import com.company.project.core.ServiceException;
@@ -16,11 +17,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.apache.commons.beanutils.PropertyUtils;
+
 import javax.annotation.Resource;
 import javax.validation.constraints.NotNull;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 /**
  * 人员控制器（业务控制器的一个例子）
  */
@@ -33,6 +36,7 @@ public class PersonController {
 
     @Reference(version = "1.0.0")
     private DubboTestService dubboTestService;
+
     /***
      * 新增
      * @param personVo
@@ -47,24 +51,26 @@ public class PersonController {
 
     /**
      * 物理删除
+     *
      * @param id
      * @return
      */
     @PostMapping("/delete")
     public Result delete(@NotNull(message = "主键信息不能为空") @RequestParam String id) {
-       personService.deleteById(id);
-       return ResultGenerator.genSuccessResult();
+        personService.deleteById(id);
+        return ResultGenerator.genSuccessResult();
     }
 
     /**
      * 更新
+     *
      * @param personVo
      * @return
      * @throws Exception
      */
     @PostMapping("/update")
     public Result update(PersonVo personVo) throws Exception {
-        if(StringUtils.isEmpty(personVo.getId())){
+        if (StringUtils.isEmpty(personVo.getId())) {
             throw new ServiceException("主键信息不能为空！");
         }
         personService.saveOrUpdate(personVo);
@@ -73,6 +79,7 @@ public class PersonController {
 
     /**
      * 详情信息
+     *
      * @param id
      * @return
      * @throws Exception
@@ -80,7 +87,7 @@ public class PersonController {
     @PostMapping("/detail")
     public Result detail(@NotNull(message = "主键信息不能为空") @RequestParam String id) throws Exception {
         Person person = personService.findById(id);
-        Map<String,Object> rtMap = PropertyUtils.describe(person);
+        Map<String, Object> rtMap = PropertyUtils.describe(person);
         rtMap.put("birthTime", CommUtils.timestampToDateYYYMMDD(person.getBirthTime()));
         return ResultGenerator.genSuccessResult(rtMap);
     }
@@ -108,12 +115,12 @@ public class PersonController {
      */
     @PostMapping("/queryList")
     public Result queryList(PersonVo personVo) throws Exception {
-       Map<String,Object> param = PropertyUtils.describe(personVo);
-        Map<String,Object> rtMap = new HashMap<String,Object>();
-        List<Map<String ,Object>> resultMap=personService.queryMapByMap(param);
-        Integer CNT=personService.CNT_Q(param);
-        rtMap.put("dataset",resultMap);//具体页面数据
-        rtMap.put("total",CNT);//总记录数
+        Map<String, Object> param = PropertyUtils.describe(personVo);
+        Map<String, Object> rtMap = new HashMap<String, Object>();
+        List<Map<String, Object>> resultMap = personService.queryMapByMap(param);
+        Integer CNT = personService.CNT_Q(param);
+        rtMap.put("dataset", resultMap);//具体页面数据
+        rtMap.put("total", CNT);//总记录数
         return ResultGenerator.genSuccessResult(rtMap);
     }
 

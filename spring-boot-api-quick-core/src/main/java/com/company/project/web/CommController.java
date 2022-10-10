@@ -1,4 +1,5 @@
 package com.company.project.web;
+
 import com.company.project.core.Result;
 import com.company.project.core.ResultGenerator;
 import com.company.project.core.ServiceException;
@@ -15,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
 import javax.annotation.Resource;
 import javax.validation.constraints.NotNull;
 import java.text.SimpleDateFormat;
@@ -48,12 +50,12 @@ public class CommController {
      * @return
      */
     @PostMapping("/getDicts")
-    public Result getDicts(@RequestParam String dicts ) {
+    public Result getDicts(@RequestParam String dicts) {
         String[] arr = dicts.split(",");
-        Map<String,Object> rtnMap = new HashMap<String, Object>();
-        for(String dictStr : arr){
-            List<Map<String, Object>> list= dictsService.getDict(dictStr);
-            if(list!=null&&list.size()>0){
+        Map<String, Object> rtnMap = new HashMap<String, Object>();
+        for (String dictStr : arr) {
+            List<Map<String, Object>> list = dictsService.getDict(dictStr);
+            if (list != null && list.size() > 0) {
                 rtnMap.put(dictStr, list);
             }
         }
@@ -63,6 +65,7 @@ public class CommController {
 
     /**
      * 用户账号注册注册接口
+     *
      * @param sysUserVo
      * @return
      */
@@ -71,20 +74,22 @@ public class CommController {
         sysUserService.saveSysUser(sysUserVo);
         return ResultGenerator.genSuccessResult();
     }
+
     /**
      * 登录信息验证
+     *
      * @param sysUserVo
      * @return
      */
     @PostMapping("/login")
     public Result login(SysUserVo sysUserVo) {
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
-        String lastUpdateStr= df.format(new Date()).toString();//最后更新时间
-        String tokenMd5=sysUserService.checkLogin(sysUserVo);
-        if("".equals(tokenMd5)){
+        String lastUpdateStr = df.format(new Date()).toString();//最后更新时间
+        String tokenMd5 = sysUserService.checkLogin(sysUserVo);
+        if ("".equals(tokenMd5)) {
             throw new ServiceException("登录验证失败！");
         }
-        redisUtils.set(tokenMd5,lastUpdateStr,10L,TimeUnit.MINUTES);
+        redisUtils.set(tokenMd5, lastUpdateStr, 10L, TimeUnit.MINUTES);
         return ResultGenerator.genSuccessResult(tokenMd5);
     }
 

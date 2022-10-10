@@ -21,19 +21,19 @@ public class CommUtils {
     }
 
 
-    public static String  timestampToDateYYYMMDD(Date timestamp) throws ParseException {
+    public static String timestampToDateYYYMMDD(Date timestamp) throws ParseException {
         DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        String    dateStr = sdf.format(timestamp);
-         return dateStr;
+        String dateStr = sdf.format(timestamp);
+        return dateStr;
     }
 
     /**
      * 创建uuid
      */
-    public static String  createUUID ()   {
-         String uuid = UUID.randomUUID().toString();  //转化为String对象
-         uuid = uuid.replace("-", "");
-         return uuid;
+    public static String createUUID() {
+        String uuid = UUID.randomUUID().toString();  //转化为String对象
+        uuid = uuid.replace("-", "");
+        return uuid;
     }
 
     /**

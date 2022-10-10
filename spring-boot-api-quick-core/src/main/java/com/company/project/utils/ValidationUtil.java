@@ -1,27 +1,31 @@
 package com.company.project.utils;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+
+import org.hibernate.validator.HibernateValidator;
+import org.springframework.util.StringUtils;
+
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
-import org.springframework.util.StringUtils;
-import org.hibernate.validator.HibernateValidator;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 public class ValidationUtil {
     /**
      * 开启快速结束模式 failFast (true)
      */
     private static Validator validator = Validation.byProvider(HibernateValidator.class).configure().failFast(false).buildValidatorFactory().getValidator();
+
     /**
      * 校验对象
      *
-     * @param t bean
+     * @param t      bean
      * @param groups 校验组
      * @return ValidResult
      */
-    public static <T> ValidResult validateBean(T t,Class<?>...groups) {
+    public static <T> ValidResult validateBean(T t, Class<?>... groups) {
         ValidResult result = new ValidationUtil().new ValidResult();
-        Set<ConstraintViolation<T>> violationSet = validator.validate(t,groups);
+        Set<ConstraintViolation<T>> violationSet = validator.validate(t, groups);
         boolean hasError = violationSet != null && violationSet.size() > 0;
         result.setHasErrors(hasError);
         if (hasError) {
@@ -31,6 +35,7 @@ public class ValidationUtil {
         }
         return result;
     }
+
     /**
      * 校验bean的某一个属性
      *
@@ -50,6 +55,7 @@ public class ValidationUtil {
         }
         return result;
     }
+
     /**
      * 校验结果类
      */
@@ -69,6 +75,7 @@ public class ValidationUtil {
         public ValidResult() {
             this.errors = new ArrayList<>();
         }
+
         public boolean hasErrors() {
             return hasErrors;
         }
@@ -79,23 +86,26 @@ public class ValidationUtil {
 
         /**
          * 获取所有验证信息
+         *
          * @return 集合形式
          */
         public List<ErrorMessage> getAllErrors() {
             return errors;
         }
+
         /**
          * 获取所有验证信息
+         *
          * @return 字符串形式
          */
-        public String getErrors(){
+        public String getErrors() {
             StringBuilder sb = new StringBuilder("");
             for (ErrorMessage error : errors) {
                 //sb.append(error.getPropertyPath()).append(":").append(error.getMessage()).append(",");
                 sb.append(error.getMessage()).append(",");
             }
-            if(!StringUtils.isEmpty(sb.toString())){
-                sb.deleteCharAt(sb.length()-1);
+            if (!StringUtils.isEmpty(sb.toString())) {
+                sb.deleteCharAt(sb.length() - 1);
                 sb.append(".");
             }
             return sb.toString();
