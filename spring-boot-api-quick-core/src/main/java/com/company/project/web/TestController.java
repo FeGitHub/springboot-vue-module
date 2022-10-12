@@ -8,23 +8,21 @@ import com.company.project.kafka.producer.UserLogProducer;
 import com.company.project.service.DictsService;
 import com.company.project.service.TestTableService;
 import com.company.project.slave.model.TestTable;
+import com.company.project.utils.ExportExcelUtil;
 import com.company.project.utils.HttpURLConnectionUtils;
 import com.company.project.utils.RedisUtils;
 import nl.flotsam.xeger.Xeger;
 import org.apache.dubbo.config.annotation.Reference;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 
@@ -52,6 +50,30 @@ public class TestController {
 
     @Autowired
     private UserLogProducer kafkaSender;
+
+
+    /***
+     *  原生poi生成excel文件
+     * @param response
+     */
+    @GetMapping("/downloadCustomExcel")
+    // http://localhost:8085/test/downloadCustomExcel
+    public void downloadToFrequency(HttpServletResponse response) {
+        ExportExcelUtil.CreateExcelDataVo createExcelDataVo = new ExportExcelUtil.CreateExcelDataVo();
+        createExcelDataVo.setTitle("标题");
+        createExcelDataVo.setSheetName("excel");
+        createExcelDataVo.setHeaders(new ArrayList<String>(Arrays.asList("甲", "乙", "丙")));
+        String[][] content = {
+                {"1", "2", "3"},
+                {"4", "5", "6"},
+                {"7", "8", "9"}
+        };
+        createExcelDataVo.setContent(content);
+        HSSFWorkbook hSSFWorkbook = ExportExcelUtil.createHSSFWorkbook(createExcelDataVo);
+        //这里可以自定义处理
+        ExportExcelUtil.createExcel(hSSFWorkbook, response, "下载");
+    }
+
 
     /***
      * 字典接口

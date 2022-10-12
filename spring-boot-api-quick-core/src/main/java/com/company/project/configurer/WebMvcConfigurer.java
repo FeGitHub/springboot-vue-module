@@ -1,12 +1,5 @@
 package com.company.project.configurer;
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.support.config.FastJsonConfig;
@@ -16,7 +9,6 @@ import com.company.project.core.ResultCode;
 import com.company.project.core.ServiceException;
 import com.company.project.service.ApiLogService;
 import com.company.project.service.ErrorLogService;
-import com.company.project.utils.CommUtils;
 import com.company.project.utils.RedisUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,8 +22,23 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.NoHandlerFoundException;
-import org.springframework.web.servlet.config.annotation.*;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
 /**
  * Spring MVC 配置
  */
@@ -60,7 +67,7 @@ public class WebMvcConfigurer extends WebMvcConfigurerAdapter {
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
         FastJsonHttpMessageConverter converter = new FastJsonHttpMessageConverter();
         FastJsonConfig config = new FastJsonConfig();
-        config.setSerializerFeatures(SerializerFeature.WriteMapNullValue,SerializerFeature.WriteNullStringAsEmpty);//保留空的字段
+        config.setSerializerFeatures(SerializerFeature.WriteMapNullValue, SerializerFeature.WriteNullStringAsEmpty);//保留空的字段
         // 按需配置，更多参考FastJson文档哈
         converter.setFastJsonConfig(config);
         converter.setDefaultCharset(Charset.forName("UTF-8"));
@@ -70,16 +77,17 @@ public class WebMvcConfigurer extends WebMvcConfigurerAdapter {
 
     /**
      * 手动给swagger-ui.html指定路径
+     *
      * @param registry
      */
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-     //   if("dev".equals(env)||"test".equals(env)){//开发环境和测试环境才打开swagger-ui.html测试接口
-            registry.addResourceHandler("swagger-ui.html")
-                    .addResourceLocations("classpath:/META-INF/resources/");
-            registry.addResourceHandler("/webjars/**")
-                    .addResourceLocations("classpath:/META-INF/resources/webjars/");
-     //   }
+        //   if("dev".equals(env)||"test".equals(env)){//开发环境和测试环境才打开swagger-ui.html测试接口
+        registry.addResourceHandler("swagger-ui.html")
+                .addResourceLocations("classpath:/META-INF/resources/");
+        registry.addResourceHandler("/webjars/**")
+                .addResourceLocations("classpath:/META-INF/resources/webjars/");
+        //   }
     }
 
 
@@ -92,20 +100,19 @@ public class WebMvcConfigurer extends WebMvcConfigurerAdapter {
         exceptionResolvers.add(new HandlerExceptionResolver() {
             public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object handler, Exception e) {
                 //异常信息日志记录
-                String appErrId=errorLogService.saveErrorLog(request,e);
+                String appErrId = errorLogService.saveErrorLog(request, e);
                 Result result = new Result();
                 if (e instanceof ServiceException) {//业务失败的异常，如“账号或密码错误”
                     result.setCode(ResultCode.FAIL).setMessage(e.getMessage());
                     logger.info(e.getMessage());
                 } else if (e instanceof NoHandlerFoundException) {
-                    result.setCode(ResultCode.NOT_FOUND).setMessage("接口 [" + request.getRequestURI() + "] 不存在"+","+appErrId);
+                    result.setCode(ResultCode.NOT_FOUND).setMessage("接口 [" + request.getRequestURI() + "] 不存在" + "," + appErrId);
                 } else if (e instanceof ServletException) {
-                    result.setCode(ResultCode.FAIL).setMessage(e.getMessage()+","+appErrId);
+                    result.setCode(ResultCode.FAIL).setMessage(e.getMessage() + "," + appErrId);
                 } else if (e instanceof BindException) {
-                    result.setCode(ResultCode.FAIL).setMessage(e.getMessage()+","+appErrId);
-                }
-                else {
-                    result.setCode(ResultCode.INTERNAL_SERVER_ERROR).setMessage("接口 [" + request.getRequestURI() + "] 内部错误，请联系管理员"+","+appErrId);
+                    result.setCode(ResultCode.FAIL).setMessage(e.getMessage() + "," + appErrId);
+                } else {
+                    result.setCode(ResultCode.INTERNAL_SERVER_ERROR).setMessage("接口 [" + request.getRequestURI() + "] 内部错误，请联系管理员" + "," + appErrId);
                     String message;
                     if (handler instanceof HandlerMethod) {
                         HandlerMethod handlerMethod = (HandlerMethod) handler;
@@ -129,43 +136,44 @@ public class WebMvcConfigurer extends WebMvcConfigurerAdapter {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         //使用此方法配置之后再使用自定义拦截器时跨域相关配置会失效。
-       // registry.addMapping("/**");
+        // registry.addMapping("/**");
     }
 
     //添加拦截器
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         //日志拦截器
-        if(apiLogSwitch){
+        if (apiLogSwitch) {
             registry.addInterceptor(new HandlerInterceptorAdapter() {
                 @Override
                 public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
                     apiLogService.saveApiLog(request);
                     return true;
                 }
-            }) .excludePathPatterns("/swagger-resources/**", "/webjars/**", "/v2/**", "/swagger-ui.html/**");
+            }).excludePathPatterns("/swagger-resources/**", "/webjars/**", "/v2/**", "/swagger-ui.html/**");
         }
         //接口签名认证拦截器
-     //   if (!"dev".equals(env)) { //开发环境忽略token认证和签名认证
-            registry.addInterceptor(new HandlerInterceptorAdapter() {
-                @Override
-                public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-                    //token认证
-                    Result result = handleToken(request);
-                    if(result.getCode()!=200){
-                        responseResult(response, result);
-                        return false;
-                    }
-                    return true;
+        //   if (!"dev".equals(env)) { //开发环境忽略token认证和签名认证
+        registry.addInterceptor(new HandlerInterceptorAdapter() {
+            @Override
+            public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+                //token认证
+                Result result = handleToken(request);
+                if (result.getCode() != 200) {
+                    responseResult(response, result);
+                    return false;
                 }
-            })      .excludePathPatterns("/comm/**","/test/**")//公用,测试请求
-                    .excludePathPatterns("/swagger-resources/**", "/webjars/**", "/v2/**", "/swagger-ui.html/**");
-      //  }
+                return true;
+            }
+        }).excludePathPatterns("/comm/**", "/test/**")//公用,测试请求
+                .excludePathPatterns("/swagger-resources/**", "/webjars/**", "/v2/**", "/swagger-ui.html/**");
+        //  }
     }
 
 
     /**
      * 处理封装返回参数
+     *
      * @param response
      * @param result
      */
@@ -200,15 +208,15 @@ public class WebMvcConfigurer extends WebMvcConfigurerAdapter {
         } */
         result.setCode(ResultCode.SUCCESS);
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
-        String lastUpdateStr= df.format(new Date()).toString();//最后更新时间
+        String lastUpdateStr = df.format(new Date()).toString();//最后更新时间
         //非公用请求，验证token
-        String token = request.getHeader("token")==null?"": request.getHeader("token");//头部参数携带token
-        String tokenRedis=redisUtils.get(token)==null?"":redisUtils.get(token).toString();
-        if("".equals(tokenRedis)){//没有对应的token信息
+        String token = request.getHeader("token") == null ? "" : request.getHeader("token");//头部参数携带token
+        String tokenRedis = redisUtils.get(token) == null ? "" : redisUtils.get(token).toString();
+        if ("".equals(tokenRedis)) {//没有对应的token信息
             result.setCode(ResultCode.TOKEN_FAIL).setMessage("无效的登录信息");
             return result;
         }
-        redisUtils.set(token,lastUpdateStr,10L, TimeUnit.MINUTES);
+        redisUtils.set(token, lastUpdateStr, 10L, TimeUnit.MINUTES);
         return result;
     }
 }
