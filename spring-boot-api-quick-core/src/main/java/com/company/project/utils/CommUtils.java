@@ -4,37 +4,16 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * 公用组件工具类
  */
+//    http://www.esjson.com/jsontopojo.html   json在线工具类
 public class CommUtils {
 
-    public static Date strToDateYYYMMDD(String strDate) throws ParseException {
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        Date strtodate = formatter.parse(strDate);
-        return strtodate;
-    }
-
-
-    public static String timestampToDateYYYMMDD(Date timestamp) throws ParseException {
-        DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        String dateStr = sdf.format(timestamp);
-        return dateStr;
-    }
-
-    /**
-     * 创建uuid
-     */
-    public static String createUUID() {
-        String uuid = UUID.randomUUID().toString();  //转化为String对象
-        uuid = uuid.replace("-", "");
-        return uuid;
-    }
 
     /**
      * 一个简单的签名认证，规则：

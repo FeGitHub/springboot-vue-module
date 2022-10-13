@@ -1,6 +1,6 @@
-package com.conpany.project.utils;
-import com.company.project.utils.MyBeanUtils;
-import com.conpany.project.Tester;
+package com.company.project.utils;
+
+import com.company.project.Tester;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -10,12 +10,12 @@ public class MyBeanUtilsTester extends Tester {
 
     @Test
     public void testCopy() throws Exception {
-        Map<String,Object> testMap= new  HashMap<String,Object>();
-        testMap.put("test1","字段1");
-        testMap.put("test2","字段2");
-        testMap.put("test3","字段3");
-        TestVo vo= MyBeanUtils.copyProperties(testMap,TestVo.class);
-      System.out.println(vo.getAllField());
+        Map<String, Object> testMap = new HashMap<String, Object>();
+        testMap.put("test1", "字段1");
+        testMap.put("test2", "字段2");
+        testMap.put("test3", "字段3");
+        TestVo vo = MyBeanUtils.copyProperties(testMap, TestVo.class);
+        System.out.println(vo.getAllField());
     }
 
     public static class TestVo {
@@ -49,8 +49,8 @@ public class MyBeanUtilsTester extends Tester {
             this.TEST_3 = TEST_3;
         }
 
-        public String getAllField(){
-            return  "test1:"+test1+",TEST2:"+TEST2+",TEST_3:"+TEST_3;
+        public String getAllField() {
+            return "test1:" + test1 + ",TEST2:" + TEST2 + ",TEST_3:" + TEST_3;
         }
     }
 }

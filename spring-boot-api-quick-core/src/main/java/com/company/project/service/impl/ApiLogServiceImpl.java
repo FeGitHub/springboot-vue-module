@@ -1,11 +1,12 @@
 package com.company.project.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.company.project.core.AbstractService;
 import com.company.project.master.dao.ApiLogMapper;
 import com.company.project.master.model.ApiLog;
 import com.company.project.service.ApiLogService;
-import com.company.project.core.AbstractService;
 import com.company.project.utils.CommUtils;
+import com.company.project.utils.UuidUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,13 +26,13 @@ public class ApiLogServiceImpl extends AbstractService<ApiLog> implements ApiLog
 
     @Override
     public void saveApiLog(HttpServletRequest request) {
-        String token = request.getHeader("token")==null?"": request.getHeader("token");
-        ApiLog log=new ApiLog();
+        String token = request.getHeader("token") == null ? "" : request.getHeader("token");
+        ApiLog log = new ApiLog();
         log.setToken(token);
         log.setRequestIp(CommUtils.getIpAddress(request));
         log.setRequestUrl(request.getRequestURI());
         log.setRequestParams(JSON.toJSONString(request.getParameterMap()));
-        log.setId(CommUtils.createUUID());
+        log.setId(UuidUtils.getUuid());
         log.setCreateTime(new Date());
         this.save(log);
     }

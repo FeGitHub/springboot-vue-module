@@ -1,6 +1,6 @@
 package com.company.project.web;
 
-import com.conpany.project.Tester;
+import com.company.project.Tester;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -6,17 +6,17 @@ import com.company.project.core.ServiceException;
 import com.company.project.dubbo.service.DubboTestService;
 import com.company.project.master.model.Person;
 import com.company.project.service.PersonService;
-import com.company.project.utils.CommUtils;
+import com.company.project.utils.DateUtils;
 import com.company.project.vo.PersonVo;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.apache.commons.beanutils.PropertyUtils;
 
 import javax.annotation.Resource;
 import javax.validation.constraints.NotNull;
@@ -88,7 +88,7 @@ public class PersonController {
     public Result detail(@NotNull(message = "主键信息不能为空") @RequestParam String id) throws Exception {
         Person person = personService.findById(id);
         Map<String, Object> rtMap = PropertyUtils.describe(person);
-        rtMap.put("birthTime", CommUtils.timestampToDateYYYMMDD(person.getBirthTime()));
+        rtMap.put("birthTime", DateUtils.formatDate(person.getBirthTime(), DateUtils.yyyy_MM_dd));
         return ResultGenerator.genSuccessResult(rtMap);
     }
 

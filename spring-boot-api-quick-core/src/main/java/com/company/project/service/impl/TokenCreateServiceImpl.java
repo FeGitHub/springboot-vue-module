@@ -1,10 +1,10 @@
 package com.company.project.service.impl;
 
+import com.company.project.core.AbstractService;
 import com.company.project.master.dao.TokenCreateMapper;
 import com.company.project.master.model.TokenCreate;
 import com.company.project.service.TokenCreateService;
-import com.company.project.core.AbstractService;
-import com.company.project.utils.CommUtils;
+import com.company.project.utils.UuidUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,8 +23,8 @@ public class TokenCreateServiceImpl extends AbstractService<TokenCreate> impleme
 
     @Override
     public void tokenRecord(String token, String userId, String userName) {
-        TokenCreate tokenCreate=new TokenCreate();
-        tokenCreate.setId(CommUtils.createUUID());
+        TokenCreate tokenCreate = new TokenCreate();
+        tokenCreate.setId(UuidUtils.getUuid());
         tokenCreate.setToken(token);
         tokenCreate.setCreateTime(new Date());
         tokenCreate.setUserId(userId);
