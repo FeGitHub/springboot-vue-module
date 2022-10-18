@@ -11,6 +11,7 @@ import com.company.project.slave.model.TestTable;
 import com.company.project.utils.ExportExcelUtil;
 import com.company.project.utils.HttpURLConnectionUtils;
 import com.company.project.utils.RedisUtils;
+import com.company.project.vo.TestValidationVo;
 import nl.flotsam.xeger.Xeger;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -145,6 +146,22 @@ public class TestController {
         log.info("dubboService:" + retMsg);
         return ResultGenerator.genSuccessResult(retMsg);
     }
+
+
+    /***
+     * 测试 檢驗
+     * @return
+     */
+    @PostMapping("/testValidation")
+    public Result testValidation(TestValidationVo testValidationVo) {
+     /*   ValidationUtil.ValidResult validResult = ValidationUtil.validateBean(testValidationVo);
+        if (validResult.hasErrors()) {
+            String errors = validResult.getErrors();
+            throw new ServiceException(errors);
+        } */
+        return ResultGenerator.genSuccessResult("请求vo检验通过");
+    }
+
 
     /***
      * 测试kafka

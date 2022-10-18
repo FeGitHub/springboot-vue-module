@@ -27,9 +27,13 @@ public class DateUtils {
      * @return
      * @throws ParseException
      */
-    public static Date parseDate(String dateString, String style) throws ParseException {
-        DateFormat theDateFormat = new SimpleDateFormat(style);
-        return theDateFormat.parse(dateString);
+    public static Date parseDate(String dateString, String style) {
+        try {
+            DateFormat theDateFormat = new SimpleDateFormat(style);
+            return theDateFormat.parse(dateString);
+        } catch (ParseException e) {
+            throw new RuntimeException("日期转换错误", e);
+        }
     }
 
 
