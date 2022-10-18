@@ -9,7 +9,9 @@ import com.company.project.core.ResultCode;
 import com.company.project.core.ServiceException;
 import com.company.project.service.ApiLogService;
 import com.company.project.service.ErrorLogService;
+import com.company.project.utils.DateUtils;
 import com.company.project.utils.RedisUtils;
+import com.company.project.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +27,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.ServletException;
@@ -33,7 +35,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -43,7 +44,7 @@ import java.util.concurrent.TimeUnit;
  * Spring MVC 配置
  */
 @Configuration
-public class WebMvcConfigurer extends WebMvcConfigurerAdapter {
+public class WebMvcConfigurer extends WebMvcConfigurationSupport {
 
     private final Logger logger = LoggerFactory.getLogger(WebMvcConfigurer.class);
     @Value("${spring.profiles.active}")
@@ -207,12 +208,11 @@ public class WebMvcConfigurer extends WebMvcConfigurerAdapter {
             return result;
         } */
         result.setCode(ResultCode.SUCCESS);
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
-        String lastUpdateStr = df.format(new Date()).toString();//最后更新时间
+        String lastUpdateStr = DateUtils.formatDate(new Date(), DateUtils.yyyy_MM_dd_HH_mm_ss);
         //非公用请求，验证token
-        String token = request.getHeader("token") == null ? "" : request.getHeader("token");//头部参数携带token
-        String tokenRedis = redisUtils.get(token) == null ? "" : redisUtils.get(token).toString();
-        if ("".equals(tokenRedis)) {//没有对应的token信息
+        String token = StringUtils.getStr(request.getHeader("token"));//头部参数携带token
+        String tokenRedis = StringUtils.getStr(redisUtils.get(token));
+        if (StringUtils.isEmpty(tokenRedis)) {//没有对应的token信息
             result.setCode(ResultCode.TOKEN_FAIL).setMessage("无效的登录信息");
             return result;
         }

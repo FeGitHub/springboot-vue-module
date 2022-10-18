@@ -3,24 +3,25 @@ package com.company.project.web;
 import com.company.project.core.Result;
 import com.company.project.core.ResultGenerator;
 import com.company.project.core.ServiceException;
-import com.company.project.dubbo.service.DubboTestService;
-import com.company.project.kafka.producer.UserLogProducer;
 import com.company.project.service.DictsService;
 import com.company.project.service.SysUserService;
-import com.company.project.service.TestTableService;
-import com.company.project.slave.model.TestTable;
+import com.company.project.utils.DateUtils;
 import com.company.project.utils.RedisUtils;
+import com.company.project.utils.StringUtils;
 import com.company.project.vo.SysUserVo;
-import org.apache.dubbo.config.annotation.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import javax.validation.constraints.NotNull;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /***
@@ -34,8 +35,6 @@ public class CommController {
     @Resource
     private DictsService dictsService;
 
-    @Autowired
-    TestTableService testTableService;
 
     @Autowired
     private RedisUtils redisUtils;
@@ -83,10 +82,9 @@ public class CommController {
      */
     @PostMapping("/login")
     public Result login(SysUserVo sysUserVo) {
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
-        String lastUpdateStr = df.format(new Date()).toString();//最后更新时间
+        String lastUpdateStr = DateUtils.formatDate(new Date(), DateUtils.yyyy_MM_dd_HH_mm_ss);//最后更新时间
         String tokenMd5 = sysUserService.checkLogin(sysUserVo);
-        if ("".equals(tokenMd5)) {
+        if (StringUtils.isEmpty(tokenMd5)) {
             throw new ServiceException("登录验证失败！");
         }
         redisUtils.set(tokenMd5, lastUpdateStr, 10L, TimeUnit.MINUTES);

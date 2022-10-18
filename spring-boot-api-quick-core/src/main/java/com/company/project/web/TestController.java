@@ -38,8 +38,6 @@ public class TestController {
     @Resource
     private DictsService dictsService;
 
-    @Autowired
-    TestTableService testTableService;
 
     @Autowired
     private RedisUtils redisUtils;
@@ -52,6 +50,8 @@ public class TestController {
     @Autowired
     private UserLogProducer kafkaSender;
 
+    @Autowired
+    private TestTableService testTableService;
 
     /***
      *  原生poi生成excel文件
@@ -92,16 +92,6 @@ public class TestController {
             }
         }
         return ResultGenerator.genSuccessResult(rtnMap);
-    }
-
-    /****
-     * 测试第二数据库
-     * @return
-     */
-    @PostMapping("/testSlaveQuery")
-    public Result testSlaveQuery() {
-        TestTable t = testTableService.testQuery();
-        return ResultGenerator.genSuccessResult(t);
     }
 
 
@@ -145,6 +135,17 @@ public class TestController {
         String retMsg = dubboTestService.testDubboService();
         log.info("dubboService:" + retMsg);
         return ResultGenerator.genSuccessResult(retMsg);
+    }
+
+
+    /****
+     * 测试第二数据库
+     * @return
+     */
+    @PostMapping("/testSlaveQuery")
+    public Result testSlaveQuery() {
+        List<TestTable> list = testTableService.findAll();
+        return ResultGenerator.genSuccessResult(list);
     }
 
 

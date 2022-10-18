@@ -101,8 +101,8 @@ public class ValidationUtil {
         public String getErrors() {
             StringBuilder sb = new StringBuilder("");
             for (ErrorMessage error : errors) {
-                //sb.append(error.getPropertyPath()).append(":").append(error.getMessage()).append(",");
-                sb.append(error.getMessage()).append(",");
+                sb.append(error.getPropertyPath()).append(":").append(error.getMessage()).append(",");
+                // sb.append(error.getMessage()).append(",");
             }
             if (!StringUtils.isEmpty(sb.toString())) {
                 sb.deleteCharAt(sb.length() - 1);
