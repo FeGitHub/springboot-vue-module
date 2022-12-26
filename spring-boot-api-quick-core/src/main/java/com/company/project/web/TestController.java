@@ -63,11 +63,12 @@ public class TestController {
         ExportExcelUtil.CreateExcelDataVo createExcelDataVo = new ExportExcelUtil.CreateExcelDataVo();
         createExcelDataVo.setTitle("标题");
         createExcelDataVo.setSheetName("excel");
+        createExcelDataVo.setMergeColumn(new int[]{0});//表示第一列有临近相同的合并成同一个
         createExcelDataVo.setHeaders(new ArrayList<String>(Arrays.asList("甲", "乙", "丙")));
         String[][] content = {
                 {"1", "2", "3"},
-                {"4", "5", "6"},
-                {"7", "8", "9"}
+                {"1", "5", "6"},
+                {"1", "8", "9"}
         };
         createExcelDataVo.setContent(content);
         HSSFWorkbook hSSFWorkbook = ExportExcelUtil.createHSSFWorkbook(createExcelDataVo);

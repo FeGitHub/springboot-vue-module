@@ -6,14 +6,19 @@ import com.company.project.master.dao.SysUserMapper;
 import com.company.project.master.model.SysUser;
 import com.company.project.service.SysUserService;
 import com.company.project.service.TokenCreateService;
+import com.company.project.utils.StringUtils;
+import com.company.project.utils.UuidUtils;
 import com.company.project.utils.ValidationUtil;
 import com.company.project.vo.SysUserVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.DigestUtils;
+import tk.mybatis.mapper.entity.Condition;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * Created by CodeGenerator on 2020/08/22.
@@ -41,7 +46,18 @@ public class SysUserServiceImpl extends AbstractService<SysUser> implements SysU
             throw new ServiceException(errors);
         }
         SysUser sysUser = new SysUser();
+        Condition condition = new Condition(SysUser.class);
+        condition.createCriteria()
+                .andEqualTo("username", sysUser.getUsername());
+        List<SysUser> sysUserList = this.findByCondition(condition);
+        if (!CollectionUtils.isEmpty(sysUserList)) {
+            throw new ServiceException("该用户已存在！");
+        }
         BeanUtils.copyProperties(sysUserVo, sysUser); // vo转po
+        if (StringUtils.isEmpty(sysUser.getId())) {
+            sysUser.setId(UuidUtils.getUuid());
+        }
+        sysUser.setPassword(DigestUtils.md5DigestAsHex(sysUser.getPassword().getBytes()));
         this.save(sysUser);
     }
 

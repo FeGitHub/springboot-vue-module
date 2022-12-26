@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.validation.constraints.NotNull;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -113,7 +112,7 @@ public class PersonController {
      * @return
      * @throws Exception
      */
-    @PostMapping("/queryList")
+  /*  @PostMapping("/queryList")
     public Result queryList(PersonVo personVo) throws Exception {
         Map<String, Object> param = PropertyUtils.describe(personVo);
         Map<String, Object> rtMap = new HashMap<String, Object>();
@@ -122,7 +121,7 @@ public class PersonController {
         rtMap.put("dataset", resultMap);//具体页面数据
         rtMap.put("total", CNT);//总记录数
         return ResultGenerator.genSuccessResult(rtMap);
-    }
+    } */
 
 
 }

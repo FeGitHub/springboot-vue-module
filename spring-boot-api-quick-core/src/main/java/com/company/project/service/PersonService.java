@@ -1,6 +1,7 @@
 package com.company.project.service;
-import com.company.project.master.model.Person;
+
 import com.company.project.core.Service;
+import com.company.project.master.model.Person;
 import com.company.project.vo.PersonVo;
 
 import java.lang.reflect.InvocationTargetException;
@@ -15,7 +16,9 @@ import java.util.Map;
 public interface PersonService extends Service<Person> {
     void saveOrUpdate(PersonVo personVo) throws ParseException, IllegalAccessException, NoSuchMethodException, InvocationTargetException, Exception;
 
-    List<Map<String ,Object>> queryMapByMap(Map<String ,Object> param);
+    List<Map<String, Object>> queryMapByMap(Map<String, Object> param);
 
     Integer CNT_Q(Map<String, Object> param);
+
+
 }
