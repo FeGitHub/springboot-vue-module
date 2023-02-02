@@ -13,7 +13,7 @@ import java.util.*;
 
 
 /***
- * map轉bean
+ *  map和bean的数据转换
  */
 public class MapToBeanUtils {
 
@@ -28,7 +28,7 @@ public class MapToBeanUtils {
     public static class MapToBeanConfig {
 
         /***
-         * 設置無需複製的字段
+         * 设置无需复制的字段
          * @return
          */
         public Set<String> getIgnoreFiled() {
@@ -73,9 +73,11 @@ public class MapToBeanUtils {
             packagePath = field[j].getDeclaringClass().getName();
             Boolean isMapHaveKey = map.containsKey(name);//對象的map是否有屬性值對應的key
             try {
-                if (ignoreFiled == null || (ignoreFiled != null && !ignoreFiled.contains(name))) {
-                    if (!strLikeListStr(packagePathList, packagePath)) {
-                        setMethod(type, name, t, map.get(name), isMapHaveKey, mapToBeanConfig);
+                if (isMapHaveKey) {//如果对应的map里面没有key,就没必要去set了，如果你要看什麼是需要單獨轉換的就打開這個
+                    if (ignoreFiled == null || (ignoreFiled != null && !ignoreFiled.contains(name))) {
+                        if (!strLikeListStr(packagePathList, packagePath)) {
+                            setMethod(type, name, t, map.get(name), isMapHaveKey, mapToBeanConfig);
+                        }
                     }
                 }
             } catch (NoSuchMethodException e) {
@@ -128,7 +130,7 @@ public class MapToBeanUtils {
 
 
     /***
-     * 值複製
+     * 值复制
      * @param type
      * @param name
      * @param t
@@ -145,11 +147,6 @@ public class MapToBeanUtils {
             m = t.getClass().getMethod(setMethod(name), new Class[]{String.class});
             if (!StringConvertUtil.isEmptyObj(val)) {
                 m.invoke(t, new Object[]{val.toString()});
-            }
-        } else if (type.equals("class java.lang.Boolean")) {
-            m = t.getClass().getMethod(setMethod(name), new Class[]{Boolean.class});
-            if (!StringConvertUtil.isEmptyObj(val)) {
-                m.invoke(t, new Object[]{StringConvertUtil.convertBoolean(val.toString())});
             }
         } else if (type.equals("class java.time.LocalDate")) {
             m = t.getClass().getMethod(setMethod(name), new Class[]{LocalDate.class});
@@ -179,11 +176,11 @@ public class MapToBeanUtils {
         } else if (isBasicDataType(type)) {//基本数据类型的转换
             setMethodBasicDataType(m, type, t, name, val);
         } else {
-            //其他的不做轉換，自行去處理
+            //非指定类型不做转换，自行去处理
             isOtherType = true;
-            //  System.out.println("要獨立轉換的字段：" + name + ", 对应的类型为:" + type);
+            System.out.println("要独立转换的字段：" + name + ", 对应的类型为:" + type);
         }
-        // 如果已知數據類型，並且map是有值的，但是為空，此時認定置空
+        //如果是已知的数据类型，并且map是有值的，但是为空，此时认定置空
         if (!isOtherType && isMapHaveKey && StringConvertUtil.isEmptyObj(val) && m != null) {
             m.invoke(t, new Object[]{null});
         }
@@ -197,13 +194,26 @@ public class MapToBeanUtils {
      * @return
      */
     public static boolean isBasicDataType(String type) {
-        return type.equals("class java.lang.Integer") || type.equals("int")
-                || type.equals("class java.lang.Double") || type.equals("double");
+        return type.equals("class java.lang.Integer")
+                || type.equals("int")
+                || type.equals("class java.lang.Double")
+                || type.equals("double")
+                || type.equals("class java.lang.Boolean")
+                || type.equals("boolean")
+                || type.equals("class java.lang.Long")
+                || type.equals("long")
+                || type.equals("class java.lang.Byte")
+                || type.equals("byte")
+                || type.equals("class java.lang.Short")
+                || type.equals("short")
+                || type.equals("class java.lang.Character")
+                || type.equals("char");
+
     }
 
 
     /***
-     * 基本數據類型的轉換
+     * 基本数据类型的转换(按需拓展)
      * @param m
      * @param type
      * @param t
@@ -235,6 +245,56 @@ public class MapToBeanUtils {
             if (!StringConvertUtil.isEmptyObj(val)) {
                 m.invoke(t, new Object[]{StringConvertUtil.convertDouble(val.toString())});
             }
+        } else if (type.equals("class java.lang.Boolean")) {
+            m = t.getClass().getMethod(setMethod(name), new Class[]{Boolean.class});
+            if (!StringConvertUtil.isEmptyObj(val)) {
+                m.invoke(t, new Object[]{StringConvertUtil.convertBoolean(val.toString())});
+            }
+        } else if (type.equals("boolean")) {
+            m = t.getClass().getMethod(setMethod(name), new Class[]{boolean.class});
+            if (!StringConvertUtil.isEmptyObj(val)) {
+                m.invoke(t, new Object[]{StringConvertUtil.convertBoolean(val.toString())});
+            }
+        } else if (type.equals("class java.lang.Long")) {
+            m = t.getClass().getMethod(setMethod(name), new Class[]{Long.class});
+            if (!StringConvertUtil.isEmptyObj(val)) {
+                m.invoke(t, new Object[]{StringConvertUtil.convertLong(val.toString())});
+            }
+        } else if (type.equals("long")) {
+            m = t.getClass().getMethod(setMethod(name), new Class[]{long.class});
+            if (!StringConvertUtil.isEmptyObj(val)) {
+                m.invoke(t, new Object[]{StringConvertUtil.convertLong(val.toString())});
+            }
+        } else if (type.equals("class java.lang.Byte")) {
+            m = t.getClass().getMethod(setMethod(name), new Class[]{Byte.class});
+            if (!StringConvertUtil.isEmptyObj(val)) {
+                m.invoke(t, new Object[]{StringConvertUtil.convertByte(val.toString())});
+            }
+        } else if (type.equals("byte")) {
+            m = t.getClass().getMethod(setMethod(name), new Class[]{byte.class});
+            if (!StringConvertUtil.isEmptyObj(val)) {
+                m.invoke(t, new Object[]{StringConvertUtil.convertByte(val.toString())});
+            }
+        } else if (type.equals("class java.lang.Short")) {
+            m = t.getClass().getMethod(setMethod(name), new Class[]{Short.class});
+            if (!StringConvertUtil.isEmptyObj(val)) {
+                m.invoke(t, new Object[]{StringConvertUtil.convertShort(val.toString())});
+            }
+        } else if (type.equals("short")) {
+            m = t.getClass().getMethod(setMethod(name), new Class[]{byte.class});
+            if (!StringConvertUtil.isEmptyObj(val)) {
+                m.invoke(t, new Object[]{StringConvertUtil.convertShort(val.toString())});
+            }
+        } else if (type.equals("class java.lang.Character")) {
+            m = t.getClass().getMethod(setMethod(name), new Class[]{Character.class});
+            if (!StringConvertUtil.isEmptyObj(val)) {
+                m.invoke(t, new Object[]{StringConvertUtil.convertCharacter(val.toString())});
+            }
+        } else if (type.equals("char")) {
+            m = t.getClass().getMethod(setMethod(name), new Class[]{char.class});
+            if (!StringConvertUtil.isEmptyObj(val)) {
+                m.invoke(t, new Object[]{StringConvertUtil.convertCharacter(val.toString())});
+            }
         }
     }
 
@@ -258,8 +318,6 @@ public class MapToBeanUtils {
         cs[0] -= 32;
         return String.valueOf(cs);
     }
-
-
 }
 
 

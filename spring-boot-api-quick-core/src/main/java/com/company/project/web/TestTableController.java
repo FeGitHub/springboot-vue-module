@@ -6,6 +6,7 @@ import com.company.project.service.TestTableService;
 import com.company.project.slave.model.TestTable;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,13 +16,16 @@ import javax.annotation.Resource;
 import java.util.List;
 
 /**
- * Created by CodeGenerator on 2022/10/18.
+ * Created by CodeGenerator on 2023/02/01.
  */
 @RestController
 @RequestMapping("/test/table")
 public class TestTableController {
     @Resource
     private TestTableService testTableService;
+
+    @Autowired
+    private com.company.project.service.test.TestFutureService testFutureService;
 
     @PostMapping("/add")
     public Result add(TestTable testTable) {
@@ -54,4 +58,15 @@ public class TestTableController {
         PageInfo pageInfo = new PageInfo(list);
         return ResultGenerator.genSuccessResult(pageInfo);
     }
+
+    @PostMapping("/testFuture")
+    public Result testFuture() {
+        return testFutureService.testFuture();
+    }
+
+    @PostMapping("/testFuture2")
+    public Result testFuture2() {
+        return testFutureService.testFuture2();
+    }
+
 }

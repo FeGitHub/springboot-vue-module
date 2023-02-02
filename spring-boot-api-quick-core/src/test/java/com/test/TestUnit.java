@@ -1,6 +1,7 @@
 package com.test;
 
 import com.company.project.utils.MapToBeanUtils;
+import com.company.project.utils.StringConvertUtil;
 import com.test.demo.mapStruct.PersonTest;
 import com.test.demo.mapStruct.PersonTestDto;
 import com.test.demo.mapStruct.PersonTestMapper;
@@ -9,6 +10,7 @@ import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class TestUnit {
@@ -47,12 +49,26 @@ public class TestUnit {
         map.put("name", "name");
         map.put("age", "16");
         map.put("source", "164");
+        map.put("testBoolean1", "true");
+        map.put("testBoolean2", "true");
         map.put("height", "3");
-        map.put("createTime", "2020-01-01");
+        map.put("createTime", "2020-01-01 23:23:24");
         MapToBeanUtils.mapToBean(map, person, config);
-        System.out.println("================");
-
     }
 
+
+    @Test
+    public void testStringConvertUtil() {
+        System.out.println(StringConvertUtil.convertTimeFormat("2020-01-01"));
+        System.out.println(StringConvertUtil.convertTimeFormat("2020-01"));
+        System.out.println(StringConvertUtil.convertTimeFormat("2020-01-01 23:23:23"));
+        System.out.println(StringConvertUtil.convertTimeFormat("2020年01月01日"));
+    }
+
+
+    @Test
+    public void testSplitStrToList() {
+        List<String> testList = StringConvertUtil.splitStrToList("1,2,3", null);
+    }
 }
 

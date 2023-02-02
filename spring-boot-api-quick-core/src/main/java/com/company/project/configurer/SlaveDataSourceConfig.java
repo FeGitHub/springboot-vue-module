@@ -9,10 +9,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import tk.mybatis.spring.mapper.MapperScannerConfigurer;
 
 import javax.sql.DataSource;
-
 import java.util.Properties;
 
 import static com.company.project.core.ProjectConstant.BASE_PACKAGE;
@@ -23,21 +23,25 @@ import static com.company.project.core.ProjectConstant.BASE_PACKAGE;
 
 @Configuration
 public class SlaveDataSourceConfig {
-    public static final String SLAVE_DB =  ".slave";
-    public static final String SLAVE_MAPPER_PACKAGE = BASE_PACKAGE +SLAVE_DB+ ".dao";
-    public static final String SLAVE_MODEL_PACKAGE = BASE_PACKAGE +SLAVE_DB+ ".model";
+    public static final String SLAVE_DB = ".slave";
+    public static final String SLAVE_MAPPER_PACKAGE = BASE_PACKAGE + SLAVE_DB + ".dao";
+    public static final String SLAVE_MODEL_PACKAGE = BASE_PACKAGE + SLAVE_DB + ".model";
 
 
     @Bean(name = "slaveDataSource")
     @ConfigurationProperties("spring.datasource.slave")
-    public DataSource slaveDataSource(){
+    public DataSource slaveDataSource() {
         return DataSourceBuilder.create().build();
     }
 
+    @Bean(name = "slaveTransactionManager")
+    public DataSourceTransactionManager getTransactionManager(@Qualifier("slaveDataSource") DataSource dataSource) {
+        return new DataSourceTransactionManager(dataSource);
+    }
 
 
     @Bean(name = "slaveSqlSessionFactory")
-    public SqlSessionFactory sqlSessionFactoryBean(@Qualifier("slaveDataSource")DataSource dataSource) throws Exception {
+    public SqlSessionFactory sqlSessionFactoryBean(@Qualifier("slaveDataSource") DataSource dataSource) throws Exception {
         SqlSessionFactoryBean factory = new SqlSessionFactoryBean();
         factory.setDataSource(dataSource);
         factory.setTypeAliasesPackage(SLAVE_MODEL_PACKAGE);
@@ -62,7 +66,6 @@ public class SlaveDataSourceConfig {
 
         return mapperScannerConfigurer;
     }
-
 
 
 }

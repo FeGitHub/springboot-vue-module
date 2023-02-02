@@ -12,6 +12,9 @@ public class TestTable {
     @Column(name = "TEST_NAME")
     private String testName;
 
+    @Column(name = "TEST_REMARK")
+    private String testRemark;
+
     /**
      * @return ID
      */
@@ -38,5 +41,19 @@ public class TestTable {
      */
     public void setTestName(String testName) {
         this.testName = testName;
+    }
+
+    /**
+     * @return TEST_REMARK
+     */
+    public String getTestRemark() {
+        return testRemark;
+    }
+
+    /**
+     * @param testRemark
+     */
+    public void setTestRemark(String testRemark) {
+        this.testRemark = testRemark;
     }
 }

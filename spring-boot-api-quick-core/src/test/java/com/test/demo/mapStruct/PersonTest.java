@@ -4,6 +4,7 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 @Data
 public class PersonTest {
@@ -21,6 +22,12 @@ public class PersonTest {
     private double height;
 
     private Date createTime;
+
+    private Boolean testBoolean1;
+
+    private boolean testBoolean2;
+
+    private List<String> testList;
 
 
 }

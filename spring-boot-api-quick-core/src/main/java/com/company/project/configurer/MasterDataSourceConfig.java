@@ -1,13 +1,9 @@
 package com.company.project.configurer;
 
-import com.baomidou.mybatisplus.extension.plugins.OptimisticLockerInterceptor;
 import com.company.project.core.Mapper;
-import com.github.pagehelper.PageHelper;
-import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.springframework.beans.factory.annotation.Qualifier;
-
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
@@ -15,34 +11,42 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import tk.mybatis.mapper.mapperhelper.MapperHelper;
 import tk.mybatis.spring.mapper.MapperScannerConfigurer;
 
 import javax.sql.DataSource;
 import java.util.Properties;
 
-import static com.company.project.core.ProjectConstant.*;
+import static com.company.project.core.ProjectConstant.BASE_PACKAGE;
 
 /**
  * Mybatis & Mapper & PageHelper 配置
  */
 @Configuration
 public class MasterDataSourceConfig {
-    public static final String MASTER_DB =  ".master";
-    public static final String MASTER_MAPPER_PACKAGE = BASE_PACKAGE +MASTER_DB+ ".dao";
-    public static final String MASTER_MODEL_PACKAGE = BASE_PACKAGE +MASTER_DB+ ".model";
+    public static final String MASTER_DB = ".master";
+    public static final String MASTER_MAPPER_PACKAGE = BASE_PACKAGE + MASTER_DB + ".dao";
+    public static final String MASTER_MODEL_PACKAGE = BASE_PACKAGE + MASTER_DB + ".model";
+
+    @Primary
+    @Bean(name = "masterTransactionManager")
+    public DataSourceTransactionManager getTransactionManager(@Qualifier("slaveDataSource") DataSource dataSource) {
+        return new DataSourceTransactionManager(dataSource);
+    }
+
 
     @Primary
     @Bean(name = "masterDataSource")
     @ConfigurationProperties("spring.datasource.master")
-    public DataSource masterDataSource(){
+    public DataSource masterDataSource() {
         return DataSourceBuilder.create().build();
     }
 
 
     @Primary
     @Bean(name = "masterSqlSessionFactory")
-    public SqlSessionFactory sqlSessionFactoryBean(@Qualifier("masterDataSource")DataSource dataSource) throws Exception {
+    public SqlSessionFactory sqlSessionFactoryBean(@Qualifier("masterDataSource") DataSource dataSource) throws Exception {
         SqlSessionFactoryBean factory = new SqlSessionFactoryBean();
         factory.setDataSource(dataSource);
         factory.setTypeAliasesPackage(MASTER_MODEL_PACKAGE);
@@ -70,7 +74,6 @@ public class MasterDataSourceConfig {
         mapperScannerConfigurer.setProperties(properties);
         return mapperScannerConfigurer;
     }
-
 
 
 }
