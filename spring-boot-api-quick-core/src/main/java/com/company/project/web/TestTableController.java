@@ -3,6 +3,7 @@ package com.company.project.web;
 import com.company.project.core.Result;
 import com.company.project.core.ResultGenerator;
 import com.company.project.service.TestTableService;
+import com.company.project.service.test.TestFutureService;
 import com.company.project.slave.model.TestTable;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -25,7 +26,8 @@ public class TestTableController {
     private TestTableService testTableService;
 
     @Autowired
-    private com.company.project.service.test.TestFutureService testFutureService;
+    private TestFutureService testFutureService;
+
 
     @PostMapping("/add")
     public Result add(TestTable testTable) {
@@ -68,5 +70,6 @@ public class TestTableController {
     public Result testFuture2() {
         return testFutureService.testFuture2();
     }
+
 
 }

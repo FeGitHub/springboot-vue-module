@@ -6,38 +6,27 @@ import com.company.project.service.TestTableService;
 import com.company.project.slave.model.TestTable;
 import com.company.project.utils.UuidUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import java.util.concurrent.Future;
 
 @Service
 public class TestFutureService {
 
+
+    @Autowired
+    private AsyncService asyncService;
+
     @Autowired
     private TestTableService testTableService;
 
-    @Async
-    public Future<String> asyncBuildProcA() throws InterruptedException {
-        Thread.sleep(1000);
-        return new AsyncResult<String>("success");
-    }
 
-    @Async
-    public Future<TestTable> asyncBuildProcB() {
-        TestTable testTable = new TestTable();
-        testTable.setId(UuidUtils.getUuid());
-        testTable.setTestName("1");
-        testTableService.save(testTable);
-        return new AsyncResult<>(testTable);
-    }
-
+    @Transactional(value = "slaveTransactionManager")
     public void saveTestTable(TestTable testTable) {
-        testTable.setTestRemark("2");
-        testTableService.update(testTable);
+      /*  testTable.setTestRemark("2");
+        testTableService.update(testTable);*/
+        System.out.println("saveTestTable:" + Thread.currentThread().getName());
     }
 
     @Transactional(value = "slaveTransactionManager")
@@ -45,10 +34,13 @@ public class TestFutureService {
         Future<String> futureA = null;
         Future<TestTable> futureB = null;
         try {
-            long startProcTime = System.currentTimeMillis();
-            futureA = asyncBuildProcA();
-            futureB = asyncBuildProcB();
-            while (true) {
+            // long startProcTime = System.currentTimeMillis();
+            futureA = asyncService.asyncBuildProcA();
+            futureB = asyncService.asyncBuildProcB();
+            futureA.get();//Future的get 是个阻塞方法
+            TestTable testTable = futureB.get();
+            saveTestTable(testTable);
+         /*   while (true) {
                 if (futureA.isDone() && futureB.isDone()) {
                     TestTable testTable = futureB.get();
                     saveTestTable(testTable);
@@ -57,9 +49,9 @@ public class TestFutureService {
                     //超時提醒
                     return ResultGenerator.genFailResult("处理超时，请重试");
                 }
-            }
+            } */
         } catch (Exception e) {
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            // TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             e.printStackTrace();
             throw new RuntimeException("操作失败");
         }
@@ -78,4 +70,6 @@ public class TestFutureService {
         }
         return ResultGenerator.genSuccessResult();
     }
+
+
 }
