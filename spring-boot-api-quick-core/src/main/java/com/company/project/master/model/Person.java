@@ -1,13 +1,15 @@
 package com.company.project.master.model;
 
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.Version;
 import java.util.Date;
-import javax.persistence.*;
 
 public class Person {
     @Id
     @Column(name = "ID")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE,generator="SEQ_FW_DEMO_GENERATOR")//定义主键的生成策略
-    @SequenceGenerator(name="SEQ_FW_DEMO_GENERATOR", sequenceName="SEQ_FW_PERSON")//采用的序列方案
+    // @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_FW_DEMO_GENERATOR")//定义主键的生成策略
+    // @SequenceGenerator(name = "SEQ_FW_DEMO_GENERATOR", sequenceName = "SEQ_FW_PERSON")//采用的序列方案
     private String id;
 
     @Column(name = "CREATE_TIME")

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import tk.mybatis.mapper.entity.Condition;
 
 import javax.annotation.Resource;
 import javax.validation.constraints.NotNull;
@@ -102,6 +103,9 @@ public class PersonController {
     public Result queryListByPageHelper(PersonVo personVo) throws Exception {
         PageHelper.startPage(1, 5);
         List<Person> list = personService.findAll();
+        Condition condition = new Condition(Person.class);
+        //这里根据参数去拼接限制条件
+        personService.findByCondition(condition);
         PageInfo<Person> info = new PageInfo<Person>(list);
         return ResultGenerator.genSuccessResult(info);
     }

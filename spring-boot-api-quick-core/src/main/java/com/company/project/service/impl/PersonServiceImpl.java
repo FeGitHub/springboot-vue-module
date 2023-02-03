@@ -6,6 +6,7 @@ import com.company.project.master.dao.PersonMapper;
 import com.company.project.master.model.Person;
 import com.company.project.service.PersonService;
 import com.company.project.utils.DateUtils;
+import com.company.project.utils.UuidUtils;
 import com.company.project.utils.ValidationUtil;
 import com.company.project.vo.PersonVo;
 import org.apache.commons.beanutils.PropertyUtils;
@@ -53,6 +54,7 @@ public class PersonServiceImpl extends AbstractService<Person> implements Person
             throw new ServiceException("该人身份证号码已存在！");
         }
         if (StringUtils.isEmpty(person.getId())) {
+            person.setId(UuidUtils.getUuid());
             this.save(person);
         } else {
             Person pBeforeUpdate = this.findById(person.getId());//未更新前的数据内容
