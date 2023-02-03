@@ -27,7 +27,7 @@ public class CorsConfig {
             corsConfiguration.addAllowedOrigin("*"); // 1 设置访问源地址
             corsConfiguration.addAllowedHeader("*"); // 2 设置访问源请求头
             corsConfiguration.addAllowedMethod("*"); // 3 设置访问源请求方法
-            corsConfiguration.setMaxAge(MAX_AGE);
+            // corsConfiguration.setMaxAge(MAX_AGE);//当前跨域请求最大有效时长
             source.registerCorsConfiguration("/**", corsConfiguration); // 4 对接口配置跨域设置
         }
         return new CorsFilter(source);

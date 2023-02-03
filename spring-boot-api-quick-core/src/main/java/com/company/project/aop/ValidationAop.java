@@ -26,6 +26,13 @@ public class ValidationAop {
     private void pointCut() {
     }
 
+
+    /****
+     * 对所有的符合条件的控制器的参数进行vo的检验
+     * @param pjp
+     * @return
+     * @throws Throwable
+     */
     @Around("pointCut()")
     public Object interceptor(ProceedingJoinPoint pjp) throws Throwable {
         Signature signature = pjp.getSignature();

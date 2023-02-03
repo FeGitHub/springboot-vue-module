@@ -22,6 +22,7 @@ import static com.company.project.core.ProjectConstant.BASE_PACKAGE;
 
 /**
  * Mybatis & Mapper & PageHelper 配置
+ * master库的配置
  */
 @Configuration
 public class MasterDataSourceConfig {

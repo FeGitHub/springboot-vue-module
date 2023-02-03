@@ -1,4 +1,5 @@
 import com.company.project.core.ProjectConstant;
+import com.company.project.utils.StringConvertUtil;
 import com.google.common.base.CaseFormat;
 import freemarker.template.TemplateExceptionHandler;
 import org.apache.commons.lang3.StringUtils;
@@ -19,7 +20,7 @@ import static com.company.project.core.ProjectConstant.*;
  */
 public class CodeGenerator {
 
-    // 以下的配置都不需要改，只要关注 ProjectConstant.java即可
+    // **********************以下的配置都不需要改，只要关注 ProjectConstant.java即可***********************************
     private static final String PROJECT_PATH = System.getProperty("user.dir");//项目在硬盘上的基础路径
     private static final String TEMPLATE_FILE_PATH = PROJECT_PATH + "/src/test/resources/generator/template";//模板位置
 
@@ -34,7 +35,7 @@ public class CodeGenerator {
     private static final String DATE = new SimpleDateFormat("yyyy/MM/dd").format(new Date());//@date
 
     public static void main(String[] args) {
-        //只要你数据库的表及你要生成的名称就行了
+        //****************只要你数据库的表及你要生成的名称就行了***********************
         genCodeByCustomModelName("TEST_TABLE", "TestTable");
     }
 
@@ -90,7 +91,7 @@ public class CodeGenerator {
 
         SqlMapGeneratorConfiguration sqlMapGeneratorConfiguration = new SqlMapGeneratorConfiguration();
         sqlMapGeneratorConfiguration.setTargetProject(PROJECT_PATH + RESOURCES_PATH);
-        sqlMapGeneratorConfiguration.setTargetPackage("mapper");
+        sqlMapGeneratorConfiguration.setTargetPackage(getMapperXml());
         context.setSqlMapGeneratorConfiguration(sqlMapGeneratorConfiguration);
 
         JavaClientGeneratorConfiguration javaClientGeneratorConfiguration = new JavaClientGeneratorConfiguration();
@@ -141,6 +142,7 @@ public class CodeGenerator {
             data.put("modelNameUpperCamel", modelNameUpperCamel);
             data.put("modelNameLowerCamel", tableNameConvertLowerCamel(tableName));
             data.put("basePackage", BASE_PACKAGE);
+            data.put("db", BASE_DB);
 
             File file = new File(PROJECT_PATH + JAVA_PATH + PACKAGE_PATH_SERVICE + modelNameUpperCamel + "Service.java");
             if (!file.getParentFile().exists()) {
@@ -174,7 +176,7 @@ public class CodeGenerator {
             data.put("modelNameUpperCamel", modelNameUpperCamel);
             data.put("modelNameLowerCamel", CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL, modelNameUpperCamel));
             data.put("basePackage", BASE_PACKAGE);
-
+            data.put("db", BASE_DB);
             File file = new File(PROJECT_PATH + JAVA_PATH + PACKAGE_PATH_CONTROLLER + modelNameUpperCamel + "Controller.java");
             if (!file.getParentFile().exists()) {
                 file.getParentFile().mkdirs();
@@ -188,6 +190,13 @@ public class CodeGenerator {
         }
 
     }
+
+
+    public static String getMapperXml() {
+        String dbPath = BASE_DB;
+        return StringConvertUtil.isEmpty(BASE_DB) ? "mapper" : "mapper" + dbPath.replace(".", "/");
+    }
+
 
     private static freemarker.template.Configuration getConfiguration() throws IOException {
         freemarker.template.Configuration cfg = new freemarker.template.Configuration(freemarker.template.Configuration.VERSION_2_3_23);

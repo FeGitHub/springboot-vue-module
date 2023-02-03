@@ -19,6 +19,7 @@ import static com.company.project.core.ProjectConstant.BASE_PACKAGE;
 
 /**
  * Mybatis & Mapper & PageHelper 配置
+ * slave从库的配置
  */
 
 @Configuration
