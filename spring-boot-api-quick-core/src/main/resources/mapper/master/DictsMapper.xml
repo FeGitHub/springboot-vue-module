@@ -12,7 +12,7 @@
     </resultMap>
 
     <select id="getDict" parameterType="string" resultType="map">
-   select CODE,NAME  from  DICTS where ITEMCODE=#{ITEMCODE}
+            select code,name  from  dicts where itemcode=#{itemcode}
   	</select>
 
 </mapper>

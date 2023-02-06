@@ -1,7 +1,7 @@
   -- 测试表
-CREATE TABLE  TEST_TABLE(
-ID VARCHAR(32) NOT NULL,
-TEST_NAME VARCHAR(32)  NULL,
-TEST_REMARK VARCHAR(32)  NULL,
-PRIMARY KEY (ID)
+create table  test_table(
+id varchar(32) not null,
+test_name varchar(32)  null,
+test_remark varchar(32)  null,
+primary key (id)
 );

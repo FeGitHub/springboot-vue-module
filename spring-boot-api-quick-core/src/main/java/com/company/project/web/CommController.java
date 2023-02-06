@@ -2,13 +2,11 @@ package com.company.project.web;
 
 import com.company.project.core.Result;
 import com.company.project.core.ResultGenerator;
-import com.company.project.core.ServiceException;
 import com.company.project.service.DictsService;
 import com.company.project.service.SysUserService;
-import com.company.project.utils.DateUtils;
 import com.company.project.utils.RedisUtils;
-import com.company.project.utils.StringUtils;
 import com.company.project.vo.SysUserVo;
+import com.company.project.vo.TokenVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -82,13 +79,9 @@ public class CommController {
      */
     @PostMapping("/login")
     public Result login(SysUserVo sysUserVo) {
-        String lastUpdateStr = DateUtils.formatDate(new Date(), DateUtils.yyyy_MM_dd_HH_mm_ss);//最后更新时间
-        String tokenMd5 = sysUserService.checkLogin(sysUserVo);
-        if (StringUtils.isEmpty(tokenMd5)) {
-            throw new ServiceException("登录验证失败！");
-        }
-        redisUtils.set(tokenMd5, lastUpdateStr, 10L, TimeUnit.MINUTES);
-        return ResultGenerator.genSuccessResult(tokenMd5);
+        TokenVo tokenVo = sysUserService.checkLogin(sysUserVo);
+        redisUtils.set(tokenVo.getToken(), tokenVo.getSysUserId(), 10L, TimeUnit.MINUTES);
+        return ResultGenerator.genSuccessResult(tokenVo.getToken());
     }
 
 }

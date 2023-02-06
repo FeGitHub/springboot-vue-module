@@ -1,5 +1,6 @@
 package com.company.project.service.impl;
 
+import com.company.project.constant.BasicServiceMessage;
 import com.company.project.core.AbstractService;
 import com.company.project.core.ServiceException;
 import com.company.project.master.dao.SysUserMapper;
@@ -10,6 +11,7 @@ import com.company.project.utils.StringUtils;
 import com.company.project.utils.UuidUtils;
 import com.company.project.utils.ValidationUtil;
 import com.company.project.vo.SysUserVo;
+import com.company.project.vo.TokenVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,6 +48,7 @@ public class SysUserServiceImpl extends AbstractService<SysUser> implements SysU
             throw new ServiceException(errors);
         }
         SysUser sysUser = new SysUser();
+        BeanUtils.copyProperties(sysUserVo, sysUser); // vo转po
         Condition condition = new Condition(SysUser.class);
         condition.createCriteria()
                 .andEqualTo("username", sysUser.getUsername());
@@ -53,7 +56,6 @@ public class SysUserServiceImpl extends AbstractService<SysUser> implements SysU
         if (!CollectionUtils.isEmpty(sysUserList)) {
             throw new ServiceException("该用户已存在！");
         }
-        BeanUtils.copyProperties(sysUserVo, sysUser); // vo转po
         if (StringUtils.isEmpty(sysUser.getId())) {
             sysUser.setId(UuidUtils.getUuid());
         }
@@ -68,7 +70,7 @@ public class SysUserServiceImpl extends AbstractService<SysUser> implements SysU
      * @param sysUserVo
      * @return
      */
-    public String checkLogin(SysUserVo sysUserVo) {
+    public TokenVo checkLogin(SysUserVo sysUserVo) {
         ValidationUtil.ValidResult validResult = ValidationUtil.validateBean(sysUserVo);
         if (validResult.hasErrors()) {
             String errors = validResult.getErrors();
@@ -79,11 +81,14 @@ public class SysUserServiceImpl extends AbstractService<SysUser> implements SysU
         sysUser.setPassword(DigestUtils.md5DigestAsHex(sysUser.getPassword().getBytes()));
         sysUser = this.mapper.selectOne(sysUser);
         if (sysUser == null || "".equals(sysUser.getId())) {
-            throw new ServiceException("账号或密码错误！");
+            throw new ServiceException(BasicServiceMessage.ERROR_LOG_INFO);
         }
-        String TOKENSTR = sysUser.getId() + sysUser.getUsername();
-        String TOKEN = DigestUtils.md5DigestAsHex(TOKENSTR.getBytes());
-        tokenCreateService.tokenRecord(TOKEN, sysUser.getId(), sysUser.getUsername());
-        return TOKEN;
+        String tokenStr = sysUser.getId() + sysUser.getUsername();
+        String token = DigestUtils.md5DigestAsHex(tokenStr.getBytes());
+        tokenCreateService.tokenRecord(token, sysUser.getId(), sysUser.getUsername());
+        TokenVo tokenVo = new TokenVo();
+        tokenVo.setToken(token);
+        tokenVo.setSysUserId(sysUser.getId());
+        return tokenVo;
     }
 }

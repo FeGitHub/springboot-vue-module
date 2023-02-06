@@ -5,18 +5,17 @@ import javax.persistence.*;
 @Table(name = "TEST_TABLE")
 public class TestTable {
     @Id
-    @Column(name = "ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
 
-    @Column(name = "TEST_NAME")
+    @Column(name = "test_name")
     private String testName;
 
-    @Column(name = "TEST_REMARK")
+    @Column(name = "test_remark")
     private String testRemark;
 
     /**
-     * @return ID
+     * @return id
      */
     public String getId() {
         return id;
@@ -30,7 +29,7 @@ public class TestTable {
     }
 
     /**
-     * @return TEST_NAME
+     * @return test_name
      */
     public String getTestName() {
         return testName;
@@ -44,7 +43,7 @@ public class TestTable {
     }
 
     /**
-     * @return TEST_REMARK
+     * @return test_remark
      */
     public String getTestRemark() {
         return testRemark;

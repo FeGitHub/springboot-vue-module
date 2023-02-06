@@ -97,10 +97,10 @@ public class PersonController {
      * 查询分页信息(通过分页插件)
      * @param personVo
      * @return
-     * @throws Exception
      */
     @PostMapping("/queryListByPageHelper")
-    public Result queryListByPageHelper(PersonVo personVo) throws Exception {
+    public Result queryListByPageHelper(PersonVo personVo) {
+        //SysUser sysUser = Currents.getCurrentUser();
         PageHelper.startPage(1, 5);
         List<Person> list = personService.findAll();
         Condition condition = new Condition(Person.class);

@@ -1,82 +1,82 @@
 --  个人信息表
-drop table if exists PERSON;
-CREATE TABLE PERSON (
-ID VARCHAR(50) NOT NULL,
-CREATE_TIME TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-LAST_UPDATE_TIME TIMESTAMP  DEFAULT CURRENT_TIMESTAMP NOT NULL,
-VERSION_NUMBER decimal DEFAULT 1 NOT NULL,
-PERSON_NAME VARCHAR(30) NOT NULL,
-GENDER CHAR(1) NOT NULL,
-BIRTH_TIME DATE NOT NULL,
-IDENTITY_NUMBER VARCHAR(30) NOT NULL,
-MARITAL_STATUS CHAR(2) NOT NULL,
-SPOUSE_NAME VARCHAR(30) ,
-PRIMARY KEY (ID)
+drop table if exists person;
+create table person (
+id varchar(50) not null,
+create_time timestamp default current_timestamp not null,
+last_update_time timestamp  default current_timestamp not null,
+version_number decimal default 1 not null,
+person_name varchar(30) not null,
+gender char(1) not null,
+birth_time date not null,
+identity_number varchar(30) not null,
+marital_status char(2) not null,
+spouse_name varchar(30) ,
+primary key (id)
 );
 
-alter table PERSON comment '人员信息表';
+alter table person comment '人员信息表';
 
 
  --  异常信息日志表 (只记录有异常信息的请求，包括业务异常)
- drop table if exists ERROR_LOG;
-CREATE TABLE ERROR_LOG (
-ID VARCHAR(50) NOT NULL,
-REQUEST_URL VARCHAR(200) NOT NULL,
-TOKEN VARCHAR(32) ,
-REQUEST_PARAMS VARCHAR(4000) ,
-CREATE_TIME TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-ERROR_INFO text,
-PRIMARY KEY (ID)
+ drop table if exists error_log;
+create table error_log (
+id varchar(50) not null,
+request_url varchar(200) not null,
+token varchar(32) ,
+request_params varchar(4000) ,
+create_time timestamp default current_timestamp not null,
+error_info text,
+primary key (id)
 );
 
-alter table ERROR_LOG comment '异常信息日志表';
-ALTER table ERROR_LOG MODIFY ID VARCHAR(32) NOT NULL COMMENT '主键';
+alter table error_log comment '异常信息日志表';
+alter table error_log modify id varchar(32) not null comment '主键';
 
 
 -- 字典表
- drop table if exists DICTS;
-CREATE TABLE  DICTS(
-ID VARCHAR(50) NOT NULL,
-ITEMCODE VARCHAR(32) NOT NULL,
-CODE VARCHAR(6) NOT NULL,
-NAME VARCHAR(32) NOT NULL,
-PRIMARY KEY (ID)
+ drop table if exists dicts;
+create table  dicts(
+id varchar(50) not null,
+itemcode varchar(32) not null,
+code varchar(6) not null,
+name varchar(32) not null,
+primary key (id)
 );
 
 -- 用户表
- drop table if exists SYS_USER;
-CREATE TABLE SYS_USER (
-ID VARCHAR(50) NOT NULL,
-USERNAME VARCHAR(32) NOT NULL,
-PASSWORD VARCHAR(32) NOT NULL,
-PRIMARY KEY (ID)
+ drop table if exists sys_user;
+create table sys_user (
+id varchar(50) not null,
+username varchar(32) not null,
+password varchar(32) not null,
+primary key (id)
 );
 
 
  --  接口请求日志表 (包含所有的请求接口日志)
-  drop table if exists API_LOG;
-CREATE TABLE API_LOG (
-ID VARCHAR(50) NOT NULL,
-REQUEST_IP VARCHAR(100) NOT NULL,
-REQUEST_URL VARCHAR(200) NOT NULL,
-REQUEST_PARAMS VARCHAR(4000),
-TOKEN VARCHAR(32) ,
-CREATE_TIME TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-PRIMARY KEY (ID)
+  drop table if exists api_log;
+create table api_log (
+id varchar(50) not null,
+request_ip varchar(100) not null,
+request_url varchar(200) not null,
+request_params varchar(4000),
+token varchar(32) ,
+create_time timestamp default current_timestamp not null,
+primary key (id)
 );
 
 
   --  接口请求日志表 (包含所有的请求接口日志)
-CREATE TABLE TOKEN_CREATE (
-ID VARCHAR(32) NOT NULL,
-USER_ID VARCHAR(32) NOT NULL,
-USER_NAME VARCHAR(32) NOT NULL,
-TOKEN VARCHAR(32) ,
-CREATE_TIME TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-PRIMARY KEY (ID)
+create table token_create (
+id varchar(32) not null,
+user_id varchar(32) not null,
+user_name varchar(32) not null,
+token varchar(32) ,
+create_time timestamp default current_timestamp not null,
+primary key (id)
 );
 
-alter table TOKEN_CREATE comment 'TOKEN获取记录表';
-ALTER table TOKEN_CREATE MODIFY ID VARCHAR(32) NOT NULL COMMENT '主键';
+alter table token_create comment 'token获取记录表';
+alter table token_create modify id varchar(32) not null comment '主键';
 
 

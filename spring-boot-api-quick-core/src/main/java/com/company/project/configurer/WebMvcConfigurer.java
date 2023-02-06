@@ -4,12 +4,15 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.support.config.FastJsonConfig;
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
+import com.company.project.constant.BasicServiceMessage;
 import com.company.project.core.Result;
 import com.company.project.core.ResultCode;
 import com.company.project.core.ServiceException;
+import com.company.project.master.model.SysUser;
 import com.company.project.service.ApiLogService;
 import com.company.project.service.ErrorLogService;
-import com.company.project.utils.DateUtils;
+import com.company.project.service.SysUserService;
+import com.company.project.utils.Currents;
 import com.company.project.utils.RedisUtils;
 import com.company.project.utils.StringUtils;
 import org.slf4j.Logger;
@@ -24,7 +27,6 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.NoHandlerFoundException;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
@@ -36,7 +38,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -62,6 +63,10 @@ public class WebMvcConfigurer extends WebMvcConfigurationSupport {
 
     @Autowired
     private ApiLogService apiLogService;
+
+    @Autowired
+    private SysUserService sysUserService;
+
 
     //使用阿里 FastJson 作为JSON MessageConverter
     @Override
@@ -98,47 +103,39 @@ public class WebMvcConfigurer extends WebMvcConfigurationSupport {
      */
     @Override
     public void configureHandlerExceptionResolvers(List<HandlerExceptionResolver> exceptionResolvers) {
-        exceptionResolvers.add(new HandlerExceptionResolver() {
-            public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object handler, Exception e) {
-                //异常信息日志记录
-                String appErrId = errorLogService.saveErrorLog(request, e);
-                Result result = new Result();
-                if (e instanceof ServiceException) {//业务失败的异常，如“账号或密码错误”
-                    result.setCode(ResultCode.FAIL).setMessage(e.getMessage());
-                    logger.info(e.getMessage());
-                } else if (e instanceof NoHandlerFoundException) {
-                    result.setCode(ResultCode.NOT_FOUND).setMessage("接口 [" + request.getRequestURI() + "] 不存在" + "," + appErrId);
-                } else if (e instanceof ServletException) {
-                    result.setCode(ResultCode.FAIL).setMessage(e.getMessage() + "," + appErrId);
-                } else if (e instanceof BindException) {
-                    result.setCode(ResultCode.FAIL).setMessage(e.getMessage() + "," + appErrId);
+        exceptionResolvers.add((request, response, handler, e) -> {
+            //异常信息日志记录
+            String appErrId = errorLogService.saveErrorLog(request, e);
+            Result result = new Result();
+            if (e instanceof ServiceException) {//业务失败的异常，如“账号或密码错误”
+                result.setCode(ResultCode.FAIL).setMessage(e.getMessage());
+                logger.info(e.getMessage());
+            } else if (e instanceof NoHandlerFoundException) {
+                result.setCode(ResultCode.NOT_FOUND).setMessage("接口 [" + request.getRequestURI() + "] 不存在" + "," + appErrId);
+            } else if (e instanceof ServletException) {
+                result.setCode(ResultCode.FAIL).setMessage(e.getMessage() + "," + appErrId);
+            } else if (e instanceof BindException) {
+                result.setCode(ResultCode.FAIL).setMessage(e.getMessage() + "," + appErrId);
+            } else {
+                result.setCode(ResultCode.INTERNAL_SERVER_ERROR).setMessage("接口 [" + request.getRequestURI() + "] 内部错误，请联系管理员" + "," + appErrId);
+                String message;
+                if (handler instanceof HandlerMethod) {
+                    HandlerMethod handlerMethod = (HandlerMethod) handler;
+                    message = String.format("接口 [%s] 出现异常，方法：%s.%s，异常摘要：%s",
+                            request.getRequestURI(),
+                            handlerMethod.getBean().getClass().getName(),
+                            handlerMethod.getMethod().getName(),
+                            e.getMessage());
                 } else {
-                    result.setCode(ResultCode.INTERNAL_SERVER_ERROR).setMessage("接口 [" + request.getRequestURI() + "] 内部错误，请联系管理员" + "," + appErrId);
-                    String message;
-                    if (handler instanceof HandlerMethod) {
-                        HandlerMethod handlerMethod = (HandlerMethod) handler;
-                        message = String.format("接口 [%s] 出现异常，方法：%s.%s，异常摘要：%s",
-                                request.getRequestURI(),
-                                handlerMethod.getBean().getClass().getName(),
-                                handlerMethod.getMethod().getName(),
-                                e.getMessage());
-                    } else {
-                        message = e.getMessage();
-                    }
-                    logger.error(message, e);
+                    message = e.getMessage();
                 }
-                responseResult(response, result);
-                return new ModelAndView();
+                logger.error(message, e);
             }
+            responseResult(response, result);
+            return new ModelAndView();
         });
     }
 
-    //解决跨域问题
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        //使用此方法配置之后再使用自定义拦截器时跨域相关配置会失效。
-        // registry.addMapping("/**");
-    }
 
     //添加拦截器
     @Override
@@ -159,7 +156,7 @@ public class WebMvcConfigurer extends WebMvcConfigurationSupport {
             @Override
             public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
                 //token认证
-                Result result = handleToken(request);
+                Result result = checkToken(request);
                 if (result.getCode() != 200) {
                     responseResult(response, result);
                     return false;
@@ -196,27 +193,21 @@ public class WebMvcConfigurer extends WebMvcConfigurationSupport {
      * @param request
      * @return
      */
-    private Result handleToken(HttpServletRequest request) {
+    private Result checkToken(HttpServletRequest request) {
         Result result = new Result();
-        //验证签名(暂时屏蔽掉)
-      /*  boolean pass = CommUtils.validateSign(request);
-        if (!pass) {
-
-            logger.warn("签名认证失败，请求接口：{}，请求IP：{}，请求参数：{}",
-                    request.getRequestURI(), CommUtils.getIpAddress(request), JSON.toJSONString(request.getParameterMap()));
-            result.setCode(ResultCode.UNAUTHORIZED).setMessage("签名认证失败");
-            return result;
-        } */
         result.setCode(ResultCode.SUCCESS);
-        String lastUpdateStr = DateUtils.formatDate(new Date(), DateUtils.yyyy_MM_dd_HH_mm_ss);
         //非公用请求，验证token
-        String token = StringUtils.getStr(request.getHeader("token"));//头部参数携带token
-        String tokenRedis = StringUtils.getStr(redisUtils.get(token));
-        if (StringUtils.isEmpty(tokenRedis)) {//没有对应的token信息
-            result.setCode(ResultCode.TOKEN_FAIL).setMessage("无效的登录信息");
+        String token = StringUtils.getStr(request.getHeader(Currents.TOKEN));//头部参数携带token
+        String sysUserId = StringUtils.getStr(redisUtils.get(token));
+        SysUser sysUser = null;
+        if (!StringUtils.isEmpty(sysUserId)) {//没有对应的token信息
+            sysUser = sysUserService.findById(sysUserId);
+        }
+        if (sysUser == null) {
+            result.setCode(ResultCode.TOKEN_FAIL).setMessage(BasicServiceMessage.INVALID_LOG_INFO);
             return result;
         }
-        redisUtils.set(token, lastUpdateStr, 10L, TimeUnit.MINUTES);
+        redisUtils.set(token, sysUser.getId(), 10L, TimeUnit.MINUTES);
         return result;
     }
 }

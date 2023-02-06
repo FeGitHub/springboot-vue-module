@@ -4,8 +4,6 @@ import com.company.project.core.Service;
 import com.company.project.master.model.Person;
 import com.company.project.vo.PersonVo;
 
-import java.lang.reflect.InvocationTargetException;
-import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
 
@@ -14,7 +12,7 @@ import java.util.Map;
  * Created by CodeGenerator on 2020/08/18.
  */
 public interface PersonService extends Service<Person> {
-    void saveOrUpdate(PersonVo personVo) throws ParseException, IllegalAccessException, NoSuchMethodException, InvocationTargetException, Exception;
+    void saveOrUpdate(PersonVo personVo) throws Exception;
 
     List<Map<String, Object>> queryMapByMap(Map<String, Object> param);
 
