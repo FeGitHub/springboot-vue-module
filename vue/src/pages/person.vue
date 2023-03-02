@@ -170,7 +170,7 @@ export default {
   mounted () {
     let param = { dicts: 'MARITAL_STATUS,GENDER' }
     https
-      .Post('/comm/getDicts', param)
+      .post('/comm/getDicts', param)
       .then(res => {
         let data = res.data
         if (data.code == 200) {
@@ -321,10 +321,9 @@ export default {
       this.resetFields('ModalForm')
     },
     ok () {
-      this.$refs.modal.visible = true;
-      this.modalLoading = false;
-      this.open();
-      
+      this.$refs.modal.visible = true
+      this.modalLoading = false
+      this.open()
     },
     /***
      * 重置表单错误信息
@@ -348,7 +347,7 @@ export default {
       }
       this.$Loading.start()
       https
-        .Post('/person/queryListByPageHelper', params)
+        .post('/person/queryListByPageHelper', params)
         .then(res => {
           this.$Loading.finish()
           let data = res.data
@@ -403,7 +402,7 @@ export default {
         content: '是否删除?',
         onOk: () => {
           https
-            .Post('/person/delete', { id: id })
+            .post('/person/delete', { id: id })
             .then(res => {
               let data = res.data
               if (data.code == 200) {
@@ -442,7 +441,7 @@ export default {
       this.open()
       this.$Loading.start()
       https
-        .Post('/person/detail', { id: id })
+        .post('/person/detail', { id: id })
         .then(res => {
           let data = res.data
           if (data.code == 200) {
@@ -499,7 +498,7 @@ export default {
           }
 
           https
-            .Post(url, this.ModalForm)
+            .post(url, this.ModalForm)
             .then(res => {
               let data = res.data
               if (data.code == 200) {

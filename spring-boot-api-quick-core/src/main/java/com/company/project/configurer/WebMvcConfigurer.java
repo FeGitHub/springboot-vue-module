@@ -51,6 +51,9 @@ public class WebMvcConfigurer extends WebMvcConfigurationSupport {
     @Value("${spring.profiles.active}")
     private String env;//当前激活的配置文件
 
+    @Value("${custom.token.check}")
+    private boolean tokenCheck;
+
 
     @Value("${api.log.switch}")
     private boolean apiLogSwitch;//当前激活的配置文件
@@ -151,21 +154,21 @@ public class WebMvcConfigurer extends WebMvcConfigurationSupport {
             }).excludePathPatterns("/swagger-resources/**", "/webjars/**", "/v2/**", "/swagger-ui.html/**");
         }
         //接口签名认证拦截器
-        //   if (!"dev".equals(env)) { //开发环境忽略token认证和签名认证
-        registry.addInterceptor(new HandlerInterceptorAdapter() {
-            @Override
-            public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-                //token认证
-                Result result = checkToken(request);
-                if (result.getCode() != 200) {
-                    responseResult(response, result);
-                    return false;
+        if (tokenCheck) {
+            registry.addInterceptor(new HandlerInterceptorAdapter() {
+                @Override
+                public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+                    //token认证
+                    Result result = checkToken(request);
+                    if (result.getCode() != 200) {
+                        responseResult(response, result);
+                        return false;
+                    }
+                    return true;
                 }
-                return true;
-            }
-        }).excludePathPatterns("/comm/**", "/test/**")//公用,测试请求
-                .excludePathPatterns("/swagger-resources/**", "/webjars/**", "/v2/**", "/swagger-ui.html/**");
-        //  }
+            }).excludePathPatterns("/comm/**", "/test/**")//公用,测试请求
+                    .excludePathPatterns("/swagger-resources/**", "/webjars/**", "/v2/**", "/swagger-ui.html/**");
+        }
     }
 
 

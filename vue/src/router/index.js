@@ -1,16 +1,21 @@
+import Vue from 'vue';
+import Router from 'vue-router';
+import person from '@/pages/PERSON';
+import test from '@/pages/test';
 
-import Vue from "vue";
-import Router from "vue-router";
-import PERSON from "@/components/PERSON";
-
-Vue.use(Router);
+Vue.use(Router)
 
 export default new Router({
   routes: [
     {
-      path: "/",
-      name: "PERSON",
-      component: PERSON
+      path: '/',
+      name: 'person',
+      component: person
+    },
+    {
+      path: '/test',
+      name: 'test',
+      component: test
     }
   ]
-});
+})

@@ -259,12 +259,12 @@ public class StringConvertUtil {
 
 
     public static void main(String[] args) {
-        LocalDate testLocalDate = convertLocalDate("2025-02-08", null);
+      /*  LocalDate testLocalDate = convertLocalDate("2025-02-08", null);
         LocalDate testLocalDate2 = convertLocalDate("2025-03", null);
         if (testLocalDate2.isAfter(testLocalDate)) {
             System.out.println(testLocalDate2.toString() + "大");
         } else {
             System.out.println(testLocalDate.toString() + "大");
-        }
+        }*/
     }
 }
