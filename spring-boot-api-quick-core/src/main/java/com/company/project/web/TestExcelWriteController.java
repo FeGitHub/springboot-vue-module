@@ -5,6 +5,7 @@ import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
+import com.company.project.master.vo.MoreWriteSheetVo;
 import com.company.project.master.vo.TempListItem;
 import com.company.project.master.vo.TempMapData;
 import com.company.project.master.vo.UserEntity1;
@@ -37,21 +38,51 @@ public class TestExcelWriteController {
      * @param response
      * @throws IOException
      */
-    @RequestMapping(value = "/testDownLoadTemplate")
-    public void testDownLoadTemplate(HttpServletResponse response) {
+    // http://localhost:8085/excel/oneWriteSheetTemplate
+    @RequestMapping(value = "/oneWriteSheetTemplate")
+    public void oneWriteSheetTemplate(HttpServletResponse response) {
+        //用于放置离散数据
         TempMapData tempMapData = new TempMapData();
         tempMapData.setYear("2023");
-        //蔬菜信息
+        //用于放置列表数据
         List<TempListItem> list = new ArrayList<>();
         TempListItem tempListItem = new TempListItem();
         tempListItem.setName("胡萝北");
         tempListItem.setNumber(10);
         list.add(tempListItem);
         TempListItem demo11 = new TempListItem();
-        demo11.setName("西红柿");
+        demo11.setName("希红事");
         demo11.setNumber(30);
         list.add(demo11);
-        easyExcelService.writeByTemplata("template/template.xlsx", "test", list, tempMapData, response);
+        easyExcelService.oneWriteSheetTemplate("template/oneWriteSheetTemplate.xlsx", "test", list, tempMapData, response);
+    }
+
+
+    /***
+     * 根據模板生成數據
+     * @param response
+     * @throws IOException
+     */
+    // http://localhost:8085/excel/moreWriteSheetTemplate
+    @RequestMapping(value = "/moreWriteSheetTemplate")
+    public void moreWriteSheetTemplate(HttpServletResponse response) {
+        //用于放置离散数据
+        TempMapData tempMapData = new TempMapData();
+        tempMapData.setYear("2023");
+        //用于放置列表数据
+        List<TempListItem> list = new ArrayList<>();
+        TempListItem tempListItem = new TempListItem();
+        tempListItem.setName("胡萝北");
+        tempListItem.setNumber(10);
+        list.add(tempListItem);
+        TempListItem demo11 = new TempListItem();
+        demo11.setName("希红事");
+        demo11.setNumber(30);
+        list.add(demo11);
+        List<MoreWriteSheetVo> moreWriteSheetVoList = new ArrayList<>();
+        moreWriteSheetVoList.add(new MoreWriteSheetVo(list, tempMapData));
+        moreWriteSheetVoList.add(new MoreWriteSheetVo(list, tempMapData));
+        easyExcelService.moreWriteSheetTemplate("template/moreWriteSheetTemplate.xlsx", "moreWriteSheetTemplate", moreWriteSheetVoList, response);
     }
 
 
@@ -61,6 +92,7 @@ public class TestExcelWriteController {
      * @param response
      * @throws IOException
      */
+    // http://localhost:8085/excel/downloadByVo
     @GetMapping("/downloadByVo")
     public void downloadByVo(HttpServletResponse response) throws IOException {
         // 这里注意使用swagger 会导致各种问题，请直接用浏览器或者用postman

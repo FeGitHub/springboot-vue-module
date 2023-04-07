@@ -32,7 +32,7 @@ public class MasterDataSourceConfig {
 
     @Primary
     @Bean(name = "masterTransactionManager")
-    public DataSourceTransactionManager getTransactionManager(@Qualifier("slaveDataSource") DataSource dataSource) {
+    public DataSourceTransactionManager getTransactionManager(@Qualifier("masterDataSource") DataSource dataSource) {
         return new DataSourceTransactionManager(dataSource);
     }
 

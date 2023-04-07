@@ -68,7 +68,11 @@ public class TestController {
         String[][] content = {
                 {"1", "2", "3"},
                 {"1", "5", "6"},
-                {"1", "8", "9"}
+                {"B", "8", "9"},
+                {"B", "8", "9"},
+                {"A", "2", "3"},
+                {"A", "5", "6"},
+                {"A", "8", "9"}
         };
         createExcelDataVo.setContent(content);
         HSSFWorkbook hSSFWorkbook = ExportExcelUtil.createHSSFWorkbook(createExcelDataVo);
