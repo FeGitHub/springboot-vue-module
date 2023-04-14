@@ -87,7 +87,7 @@ primary key (id)
 -- 存储过程日志表
 DROP TABLE IF EXISTS `procedure_log`;
 CREATE TABLE `procedure_log`  (
-  `procedure_search_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '報表查詢唯一標識',
+  `procedure_search_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '唯一標識',
   `object_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '数据库对象名称（表，视图，存储过程）',
   `message` varchar(4000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '日志信息',
   `creation_time` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3) COMMENT '創建日期',

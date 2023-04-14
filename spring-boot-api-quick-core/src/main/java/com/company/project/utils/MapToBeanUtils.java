@@ -14,6 +14,11 @@ import java.util.*;
 
 /***
  *  map和bean的数据转换
+ *  处理的逻辑是以要复制的对象的为基准，
+ *  办理实体的属性，然后用对应的属性字段名称去map里获取对应的属性变量
+ *  在基于map的数据都是字符串的前提下，将map的值转换为对应类型的数据并set
+ *  到实体里面
+ *
  */
 public class MapToBeanUtils {
 

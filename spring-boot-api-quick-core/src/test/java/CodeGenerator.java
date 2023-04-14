@@ -77,7 +77,7 @@ public class CodeGenerator {
         context.addProperty(PropertyRegistry.CONTEXT_ENDING_DELIMITER, "`");
 
         JDBCConnectionConfiguration jdbcConnectionConfiguration = new JDBCConnectionConfiguration();
-        jdbcConnectionConfiguration.setConnectionURL(ProjectConstant.JDBC_URL);
+        jdbcConnectionConfiguration.setConnectionURL(ProjectConstant.JDBC_MASTER_URL);
         jdbcConnectionConfiguration.setUserId(ProjectConstant.JDBC_USERNAME);
         jdbcConnectionConfiguration.setPassword(ProjectConstant.JDBC_PASSWORD);
         jdbcConnectionConfiguration.setDriverClass(ProjectConstant.JDBC_DIVER_CLASS_NAME);
