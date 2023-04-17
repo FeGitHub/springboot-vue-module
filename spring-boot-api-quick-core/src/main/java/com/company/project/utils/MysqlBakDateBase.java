@@ -279,9 +279,9 @@ public class MysqlBakDateBase {
         try {
             String createTableSql = generateCreateTableSql(tableName);//建表语句
             if (!StringUtils.isEmpty(createTableSql)) {
-                String dropTableSql = String.format("drop table `%s`;\n", tableName);//删除脚本
+                String dropTableSql = String.format("drop table if exists `%s`;\n", tableName);//删除脚本
                 String dropAndCreateTableSql = String.format(
-                        "\n\n\n/**\n * table name :<%s>\n *\n */\n%s%s\n",
+                        "\n\n\n/**\n * table name :<%s>\n *\n */\n%s%s;\n",
                         tableName, dropTableSql, createTableSql);
                 System.out.println(dropAndCreateTableSql);
                 FileUtils.writeFileContent(filePath, dropAndCreateTableSql);

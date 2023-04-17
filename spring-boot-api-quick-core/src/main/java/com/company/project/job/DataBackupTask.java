@@ -15,7 +15,7 @@ public class DataBackupTask {
 
     private Logger logger = LoggerFactory.getLogger(DataBackupTask.class);
 
-    @Scheduled(cron = "${custom.biz.day.cron}")
+    @Scheduled(cron = "${custom.biz.day.clockAt2Am.cron}")
     private void process() {
         logger.info("数据备份作业开始");
         try {
