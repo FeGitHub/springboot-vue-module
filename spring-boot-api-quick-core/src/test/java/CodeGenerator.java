@@ -35,9 +35,11 @@ public class CodeGenerator {
     private static final String DATE = new SimpleDateFormat("yyyy/MM/dd").format(new Date());//@date
 
     public static void main(String[] args) {
+        String tableName = "system_log";
+        String modelName = "SystemLog";
         //****************只要你数据库的表及你要生成的名称就行了***********************
-        genCodeByCustomModelName("TEST_TABLE", "TestTable");//生成整个流程
-        // genModelAndMapper(tableName, modelName);//只生成实体 model和 mapper
+        // genCodeByCustomModelName("system_log", "SystemLog");//生成整个流程
+        genModelAndMapper(tableName, modelName);//只生成实体 model和 mapper
         //  genService(tableName, modelName); //只生成service
         //  genController(tableName, modelName);//只生成控制层
 

@@ -1,11 +1,25 @@
 <template>
   <div>
-    <SubmitElDialog
+    <!-- <SubmitElDialog
       :staffName="staffName"
       :staffCode="staffCode"
       :showDialog="dialogVisible"
       @handleClose="handleClose"
-    ></SubmitElDialog>
+    ></SubmitElDialog>  -->
+    <el-select
+      v-model="value"
+      filterable
+      placeholder="请选择"
+      :filter-method="filterQuery"
+    >
+      <el-option
+        v-for="item in options"
+        :key="item.value"
+        :label="item.label"
+        :value="item.value"
+      >
+      </el-option>
+    </el-select>
   </div>
 </template>
 <script>
@@ -17,11 +31,51 @@ export default {
     return {
       staffName: '牛頂天',
       staffCode: 'XXXXXXXXXX',
-      dialogVisible: true
+      dialogVisible: true,
+      options: [
+        {
+          // 用于显示的数据
+          value: '选项1',
+          label: '黄金糕'
+        },
+        {
+          value: '选项2',
+          label: '双皮奶'
+        },
+        {
+          value: '选项3',
+          label: '蚵仔煎'
+        },
+        {
+          value: '选项4',
+          label: '龙须面'
+        },
+        {
+          value: '选项5',
+          label: '北京烤鸭'
+        }
+      ],
+      value: '', // select 选中值
+      oldOptions: [] // 保存后端原始数据
     }
   },
-  created () {},
+  created () {
+    this.init()
+  },
   methods: {
+    init () {
+      this.oldOptions = JSON.parse(JSON.stringify(this.options))
+    },
+    filterQuery (value) {
+      if (value) {
+        this.options = this.oldOptions.filter(
+          item =>
+            item.label.indexOf(value) > -1 || item.value.indexOf(value) > -1
+        )
+      } else {
+        this.options = this.oldOptions
+      }
+    },
     handleClose () {
       this.dialogVisible = false
       this.testDownload()
