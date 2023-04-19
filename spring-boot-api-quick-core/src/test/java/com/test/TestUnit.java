@@ -1,15 +1,19 @@
 package com.test;
 
-import com.company.project.utils.CmdUtil;
-import com.company.project.utils.MapToBeanUtils;
-import com.company.project.utils.StringConvertUtil;
+import com.company.project.utils.*;
 import com.test.demo.mapStruct.PersonTest;
 import com.test.demo.mapStruct.PersonTestDto;
 import com.test.demo.mapStruct.PersonTestMapper;
 import nl.flotsam.xeger.Xeger;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.net.URL;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
@@ -96,9 +100,27 @@ public class TestUnit {
     public void testCmd() {
         //System.out.println(CmdUtil.excuteCmdCommand("ping www.baidu.com"));
         //System.out.println(CmdUtil.excuteCmdCommand("shutdown -r -t 10"));
-        System.out.println(CmdUtil.excuteCmdCommand("netsh wlan connect  benti-5G"));
+        System.out.println(CmdUtil.excuteCmdCommand("netsh wlan connect  wifi"));
+    }
 
+    @Test
+    public void getByHtml() throws IOException {
+        String url = "https://www.baidu.com/";
+        Document document = Jsoup.parse((new URL(url)), 30000);
+        Elements elements = document.getElementsByTag("img");
+        for (Element el : elements) {
+            System.out.println(el.attr("src"));
+        }
+    }
 
+    @Test
+    public void downloadByUrl() throws Exception {
+        DownloadByUrlUtils.downloadByUrl("https://dss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/qrcode/qrcode@2x-daf987ad02.png", "test.png", null);
+    }
+
+    @Test
+    public void makeFileFolderExists() throws Exception {
+        FileUtils.makeFileFolderExists("D:\\test");
     }
 
 

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.Date;
 
 
 /**
@@ -26,6 +27,7 @@ public class SystemLogServiceImpl extends AbstractService<SystemLog> implements 
         SystemLog systemLog = new SystemLog();
         systemLog.setId(UuidUtils.getUuid());
         systemLog.setType(type);
+        systemLog.setCreationTime(new Date());
         systemLog.setMessage(msg);
         save(systemLog);
     }

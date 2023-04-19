@@ -7,6 +7,7 @@ import com.company.project.dubbo.service.DubboTestService;
 import com.company.project.kafka.producer.UserLogProducer;
 import com.company.project.service.DictsService;
 import com.company.project.service.TestTableService;
+import com.company.project.service.download.DownloadService;
 import com.company.project.slave.model.TestTable;
 import com.company.project.utils.ExportExcelUtil;
 import com.company.project.utils.HttpURLConnectionUtils;
@@ -52,6 +53,10 @@ public class TestController {
 
     @Autowired
     private TestTableService testTableService;
+
+    @Autowired
+    private DownloadService downloadService;
+
 
     /***
      *  原生poi生成excel文件
@@ -207,6 +212,18 @@ public class TestController {
             String result = generator.generate();
             log.info(result);
         }
+        return ResultGenerator.genSuccessResult();
+    }
+
+
+    /****
+     * 下载资源测试
+     * @return
+     */
+    @PostMapping("/getPictureAndVideoByUrl")
+    public Result getPictureAndVideoByUrl() throws Exception {
+        String url = "https://www.baidu.com/";
+        downloadService.getPictureAndVideoByUrl(url);
         return ResultGenerator.genSuccessResult();
     }
 

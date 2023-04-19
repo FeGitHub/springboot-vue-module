@@ -1,11 +1,8 @@
 package com.company.project.service.task;
 
-import com.company.project.constant.SystemLogOperatorType;
-import com.company.project.service.impl.SystemLogServiceImpl;
 import com.company.project.utils.CmdUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,52 +29,68 @@ public class NetWorkCheckTaskService {
 
     private static String NET_WORK_LINK_SUCCESS = "已成功连接网络！";
 
+    private static String CHECK_NET_ADDRESS = "www.baidu.com";
+
     private Logger logger = LoggerFactory.getLogger(NetWorkCheckTaskService.class);
 
-    @Autowired
-    private SystemLogServiceImpl systemLogServiceImpl;
 
     /***
      *  维护网络
      */
     @Transactional
-    public void netWorkCheckTask() {
+    public String netWorkCheckTask() {
+        StringBuffer msg = new StringBuffer("网络检查");
         if (!isNetWork()) {//网络连接失败
-            logger.info("正在尝试重新连接网络...");
+            packageMsg(msg, "正在尝试重新连接网络");
             String netWorkLinkMsg = CmdUtil.excuteCmdCommand("netsh wlan connect  " + ALEADY_LINK_WIFI_NAME);//尝试连接网络
             if (netWorkLinkMsg.indexOf(NET_WORK_SUCCESS_MSG) == -1) {
                 NETWOEK_LINK_FAIL_COUNT++;
-                logger.info("网络连接失败:" + NETWOEK_LINK_FAIL_COUNT);
+                packageMsg(msg, "网络连接失败==>" + NETWOEK_LINK_FAIL_COUNT);
             } else {
                 //已成功连接网络
-                logger.info(NET_WORK_LINK_SUCCESS);
+                packageMsg(msg, NET_WORK_LINK_SUCCESS);
+                NETWOEK_LINK_FAIL_COUNT = 0;
             }
             if (NETWOEK_LINK_FAIL_COUNT == NETWOEK_LINK_FAIL_STAND) {//如果出现多次网络连接失败，直接重启
-                logger.info(RE_BOOT_TEXT);
-                systemLogServiceImpl.saveLog(SystemLogOperatorType.NET_WORK_CHECK, RE_BOOT_TEXT);
+                packageMsg(msg, RE_BOOT_TEXT);
                 CmdUtil.excuteCmdCommand("shutdown -r -t 10");
             }
         } else {
             //网络正常
-            logger.info(NET_WORK_TEXT);
+            packageMsg(msg, NET_WORK_TEXT);
         }
+        return msg.toString();
+    }
+
+
+    /***
+     * 封装检查信息
+     * @param msg
+     * @param appendMsg
+     * @return
+     */
+    public StringBuffer packageMsg(StringBuffer msg, String appendMsg) {
+        logger.info(appendMsg);
+        msg.append("::").append(appendMsg);
+        return msg;
     }
 
 
     /****
      * 判断网络是否正常的依据
-     * @return
+     *  true 网络正常
      */
     public boolean isNetWork() {
         String netWorkCheckMsg = "";
         Integer failNum = 0;
         for (int i = 0; i < CHECK_NETWOEK_COUNT; i++) {
-            netWorkCheckMsg = CmdUtil.excuteCmdCommand("ping www.baidu.com");
+            netWorkCheckMsg = CmdUtil.excuteCmdCommand("ping " + CHECK_NET_ADDRESS);
             if (netWorkCheckMsg.indexOf(NET_CHECK_FAIL_MSG) > -1) {
                 failNum++;
             }
         }
         logger.info("检测网络失败次数:" + failNum.toString());
+        //失败的次数小于五分之一就判断为正常
         return (failNum / CHECK_NETWOEK_COUNT) < 0.2;
     }
 }

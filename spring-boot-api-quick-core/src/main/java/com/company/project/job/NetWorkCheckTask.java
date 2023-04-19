@@ -25,14 +25,13 @@ public class NetWorkCheckTask {
     private NetWorkCheckTaskService netWorkCheckTaskService;
 
 
-    // @Scheduled(cron = "${custom.biz.network.check.cron}")
-    @Scheduled(cron = "${custom.biz.network.test.cron}")
+    @Scheduled(cron = "${custom.biz.network.check.cron}")
+    // @Scheduled(cron = "${custom.biz.network.test.cron}")
     private void process() {
         String msg = "";
         logger.info("网络检查【开始】...");
         try {
-            netWorkCheckTaskService.netWorkCheckTask();
-            msg = "网络检查完成";
+            msg = netWorkCheckTaskService.netWorkCheckTask();
         } catch (Exception e) {
             logger.error("网络检查【异常】：", e);
             msg = e.getMessage();

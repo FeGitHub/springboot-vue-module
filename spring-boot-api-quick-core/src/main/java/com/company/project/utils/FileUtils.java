@@ -1,6 +1,13 @@
 package com.company.project.utils;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.*;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -24,11 +31,9 @@ public class FileUtils {
             if (!file.exists()) {
                 // 创建目录
                 file.mkdirs();
-
             }
             // 文件
             String filePath = path + fileName;
-
             Date now = new Date();
             SimpleDateFormat f = new SimpleDateFormat("今天是" + "yyyy年MM月dd日 E kk点mm分ss秒");
             String suffix = f.format(now);
@@ -38,14 +43,11 @@ public class FileUtils {
                 // 如果不存在
                 // 创建文件
                 file.createNewFile();
-
             } else {
                 // 如果已存在，创建一个新的文件
-
                 file = new File(filePath);
                 file.createNewFile();
             }
-
             return file;
         } catch (Exception e) {
             System.err.println("创建文件异常");
@@ -55,6 +57,7 @@ public class FileUtils {
 
     /**
      * <创建文件>
+     * 如果对应的文件夹不存在就创建
      *
      * @param
      * @param
@@ -77,12 +80,35 @@ public class FileUtils {
             }
             //创建文件
             file.createNewFile();
-
             return file;
         } catch (Exception e) {
             System.err.println("创建文件异常");
             throw e;
         }
+    }
+
+
+    /***
+     * 判断队对应的文件夹是否存在，不存在就创建
+     * @param fileFolder
+     */
+    public static boolean makeFileFolderExists(String fileFolder) {
+        File file = new File(fileFolder);
+        if (!file.exists() && !file.isDirectory()) {
+            file.mkdirs();
+            return false;
+        }
+        return true;
+    }
+
+
+    /***
+     * 获取文件后缀名
+     * @param fileName
+     * @return
+     */
+    public static String getSuffixName(String fileName) {
+        return fileName.substring(fileName.lastIndexOf("."));
     }
 
     /**
@@ -154,9 +180,28 @@ public class FileUtils {
             if (null != outputStream) {
                 outputStream.close();
             }
-
         }
-
     }
+
+    /**
+     * 创建ResponseEntity<byte[]>对象,用于下载字节数组文件
+     *
+     * @param req      请求
+     * @param data     文件字节数组
+     * @param fileName 下载时显示的文件名
+     * @return
+     */
+    public static ResponseEntity<byte[]> createResEntity(HttpServletRequest req, byte[] data, String fileName) {
+        HttpHeaders headers = new HttpHeaders();
+        try {
+            headers.setContentDispositionFormData("attachment", URLEncoder.encode(fileName, "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+        //设置响应方式为二进制，以二进制流传输
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        return new ResponseEntity<byte[]>(data, headers, HttpStatus.OK);
+    }
+
 
 }

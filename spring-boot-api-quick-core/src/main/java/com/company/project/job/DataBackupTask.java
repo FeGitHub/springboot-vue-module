@@ -1,11 +1,8 @@
 package com.company.project.job;
 
-import com.company.project.constant.SystemLogOperatorType;
-import com.company.project.service.impl.SystemLogServiceImpl;
 import com.company.project.utils.MysqlBakDateBase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -15,8 +12,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class DataBackupTask {
 
-    @Autowired
-    private SystemLogServiceImpl systemLogServiceImpl;
+    // @Autowired
+    // private SystemLogServiceImpl systemLogServiceImpl;
 
 
     private Logger logger = LoggerFactory.getLogger(DataBackupTask.class);
@@ -33,6 +30,6 @@ public class DataBackupTask {
             msg = e.getMessage();
         }
         logger.info("数据备份作业结束");
-        systemLogServiceImpl.saveLog(SystemLogOperatorType.DATA_BACK_UP, msg);
+        // systemLogServiceImpl.saveLog(SystemLogOperatorType.DATA_BACK_UP, msg);
     }
 }
