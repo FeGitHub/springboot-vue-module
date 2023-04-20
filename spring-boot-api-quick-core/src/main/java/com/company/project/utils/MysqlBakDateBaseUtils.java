@@ -1,5 +1,6 @@
 package com.company.project.utils;
 
+import com.company.project.constant.ApplicationProperties;
 import com.company.project.core.ProjectConstant;
 
 import java.math.BigDecimal;
@@ -11,7 +12,7 @@ import java.util.List;
 /**
  * 利用jdbc备份mysql数据库--不用mysqldump
  */
-public class MysqlBakDateBase {
+public class MysqlBakDateBaseUtils {
 
     private String DRIVER = ProjectConstant.JDBC_DIVER_CLASS_NAME;
 
@@ -21,6 +22,7 @@ public class MysqlBakDateBase {
 
     private String PASSWORD = ProjectConstant.JDBC_PASSWORD;
 
+    private String DEFAULT_BACK_UP_FILE_SQL = "\\数据备份_.sql";
 
     // 备份的文件地址
     private String filePath;
@@ -38,7 +40,7 @@ public class MysqlBakDateBase {
      * @param password    密码
      * @param bakFilePath 备份的地址
      */
-    public MysqlBakDateBase(String ip, String database, String userName, String password, String bakFilePath) {
+    public MysqlBakDateBaseUtils(String ip, String database, String userName, String password, String bakFilePath) {
         try {
             Class.forName(this.DRIVER);
             if (!StringUtils.isEmpty(ip) && !StringUtils.isEmpty(database)) {
@@ -51,7 +53,8 @@ public class MysqlBakDateBase {
                 this.PASSWORD = password;
             }
             if (StringUtils.isEmpty(bakFilePath)) {
-                bakFilePath = ProjectConstant.BACK_UP_DATA_FILE_PATH;
+                FileUtils.makeFileFolderExists(ApplicationProperties.backUpDataFilePath);
+                bakFilePath = ApplicationProperties.backUpDataFilePath + DEFAULT_BACK_UP_FILE_SQL;
             }
             String datetime = DateUtils.formatDate(new Date(), DateUtils.yyyy_MM_dd_HH_mm_ss_chin);
             //自动加上时间戳
@@ -519,7 +522,7 @@ public class MysqlBakDateBase {
         if (StringUtils.isEmpty(database)) {
             database = ProjectConstant.DETAULT_DATABASE;
         }
-        new MysqlBakDateBase(ip, database, userName, password, bakFilePath).startBak(database);
+        new MysqlBakDateBaseUtils(ip, database, userName, password, bakFilePath).startBak(database);
     }
 
 

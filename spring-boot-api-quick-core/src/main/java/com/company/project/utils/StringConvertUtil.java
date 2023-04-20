@@ -28,6 +28,8 @@ public class StringConvertUtil {
 
     public static final String STANDARD_TIME_FORMAT_PATTERN = "yyyy-MM-dd HH:mm:ss";
 
+    public static final String yyyy_MM_dd_HH_mm_ss_chin = "yyyy年MM月dd日HH时mm分ss秒";
+
 
     /**
      * @param obj
@@ -66,6 +68,11 @@ public class StringConvertUtil {
         matcher = pattern.matcher(str);
         if (matcher.find()) {//yyyy-MM
             return STANDARD_YEAR_MONTH_FORMAT_PATTERN;
+        }
+        pattern = Pattern.compile("(\\d){4}年(\\d){2}月(\\d){2}日(\\d){2}时(\\d){2}分(\\d){2}秒");
+        matcher = pattern.matcher(str);
+        if (matcher.find()) {// yyyy年MM月dd日HH时mm分ss秒
+            return yyyy_MM_dd_HH_mm_ss_chin;
         }
         pattern = Pattern.compile("(\\d){4}年(\\d){2}月(\\d){2}日");
         matcher = pattern.matcher(str);

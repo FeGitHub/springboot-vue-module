@@ -23,9 +23,6 @@ public final class ProjectConstant {
     public static final String JDBC_PASSWORD = "root";
     public static final String JDBC_DIVER_CLASS_NAME = "com.mysql.cj.jdbc.Driver";
 
-
-    public static final String BACK_UP_DATA_FILE_PATH = "D:\\数据备份_.sql";
-
     public static final String DETAULT_DATABASE = "test";
 
 }

@@ -4,4 +4,6 @@ import com.company.project.core.Mapper;
 import com.company.project.master.model.SystemLog;
 
 public interface SystemLogMapper extends Mapper<SystemLog> {
+
+    void delLogBefore7Day();
 }

@@ -19,7 +19,7 @@ public class DownloadByUrlUtils {
      * @param fileName 文件名，不包含文件路径需要自己配置
      */
     public static boolean downloadByUrl(String url, String fileName, String downloadPath) {
-        downloadPath = StringUtils.isEmpty(downloadPath) ? ApplicationProperties.getDownloadPath() : downloadPath;
+        downloadPath = StringUtils.isEmpty(downloadPath) ? ApplicationProperties.downloadPath : downloadPath;
         String fullpath = downloadPath + "\\" + fileName;
         BufferedInputStream inputStream = null;
         FileOutputStream fileOutputStream = null;

@@ -32,7 +32,7 @@ public class DownloadService {
 
     public void getPictureAndVideoByUrl(String url) throws Exception {
         String now = DateUtils.formatDate(new Date(), DateUtils.yyyyMMdd);
-        String downloadPath = ApplicationProperties.getDownloadPath() + "\\" + now;
+        String downloadPath = ApplicationProperties.downloadPath + "\\" + now;
         Document document = Jsoup.parse((new URL(url)), 30000);
         Elements imgs = document.getElementsByTag("img");//图片
         Elements videos = document.getElementsByTag("video");//视频

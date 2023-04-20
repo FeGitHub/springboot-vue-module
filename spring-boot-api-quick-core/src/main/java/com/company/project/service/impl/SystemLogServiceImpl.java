@@ -32,4 +32,11 @@ public class SystemLogServiceImpl extends AbstractService<SystemLog> implements 
         save(systemLog);
     }
 
+
+    @Transactional
+    public void delLogBefore7Day() {
+        systemLogMapper.delLogBefore7Day();
+    }
+
+
 }
