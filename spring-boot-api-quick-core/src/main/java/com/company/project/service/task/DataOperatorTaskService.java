@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /***
  * 数据处理服务作业服务
@@ -39,10 +39,10 @@ public class DataOperatorTaskService {
         systemLogServiceImpl.delLogBefore7Day();
         //把数据库备份文件7天之前的文件删除
         File file = new File(ApplicationProperties.backUpDataFilePath);
-        LocalDate beforeNow7 = LocalDate.now().plusDays(-7);
+        LocalDateTime beforeNow7 = LocalDateTime.now().plusDays(-7);
         for (File fileItem : file.listFiles()) {
             if (isDataBaseBackUpFile(fileItem)) {
-                LocalDate operatorTime = getLocalDateByFileName(fileItem);
+                LocalDateTime operatorTime = getLocalDateByFileName(fileItem);
                 if (operatorTime != null && operatorTime.isBefore(beforeNow7)) {
                     logger.info("删除文件==>" + fileItem.getName());
                     fileItem.delete();
@@ -63,8 +63,8 @@ public class DataOperatorTaskService {
     /****
      *  获取数据库备份文件中的时间信息
      */
-    public LocalDate getLocalDateByFileName(File file) {
+    public LocalDateTime getLocalDateByFileName(File file) {
         String[] nameArr = file.getName().split("_");
-        return StringConvertUtil.convertLocalDate(nameArr[1], null);
+        return StringConvertUtil.convertLocalDateTime(nameArr[1], null);
     }
 }

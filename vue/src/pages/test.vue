@@ -1,12 +1,12 @@
 <template>
   <div>
-    <!-- <SubmitElDialog
+    <SubmitElDialog
       :staffName="staffName"
       :staffCode="staffCode"
       :showDialog="dialogVisible"
       @handleClose="handleClose"
-    ></SubmitElDialog>  -->
-    <el-select
+    ></SubmitElDialog>
+    <!--  <el-select
       v-model="value"
       filterable
       placeholder="请选择"
@@ -19,11 +19,12 @@
         :value="item.value"
       >
       </el-option>
-    </el-select>
+    </el-select> -->
   </div>
 </template>
 <script>
-import { testDownLoadTemplate } from '@/api/test/testApi';
+// import { testDownLoadTemplate, createPdfByTemplate } from '@/api/test/testApi';
+import { createPdfByTemplate } from '@/api/test/testApi';
 import utils from '@/utils';
 export default {
   mounted () {},
@@ -81,8 +82,11 @@ export default {
       this.testDownload()
     },
     testDownload () {
-      testDownLoadTemplate({}).then(res => {
+      /* testDownLoadTemplate({}).then(res => {
         utils.downloadExcel(res.data, '測試下載excel')
+      }) */
+      createPdfByTemplate({}).then(res => {
+        utils.download(res.data, '測試下載pdf.pdf')
       })
     }
   }

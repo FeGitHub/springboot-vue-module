@@ -6,6 +6,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
@@ -203,5 +204,23 @@ public class FileUtils {
         return new ResponseEntity<byte[]>(data, headers, HttpStatus.OK);
     }
 
+
+    public static void writeFileToResponse(HttpServletResponse response, byte[] content) {
+        ByteArrayInputStream in;
+        OutputStream out;
+        try {
+            in = new ByteArrayInputStream(content);
+            out = response.getOutputStream();
+            byte[] b = new byte[content.length];
+            while ((in.read(b)) != -1) {
+                out.write(b);
+                out.flush();
+            }
+            in.close();
+            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 }

@@ -1,8 +1,12 @@
-export function downloadExcel (data, fileName) {
-  if (fileName.indexOf('.xlsx') === -1) {
-    fileName = fileName + '.xlsx';
+export function download (data, fileName) {
+  let blob
+  if (fileName.indexOf('.pdf') > -1) {
+    blob = new Blob([data], { type: 'application/pdf' })
+  } else if (fileName.indexOf('.xlsx') === -1) {
+    blob = new Blob([data], { type: 'application/vnd.ms-excel' })
+  } else {
+    throw new Error('please check the file suffix name')
   }
-  let blob = new Blob([data], { type: 'application/vnd.ms-excel' })
   let url = window.URL.createObjectURL(blob)
   const link = document.createElement('a') // 创建a标签
   link.href = url
@@ -48,5 +52,5 @@ export function isCardId (card) {
 export default {
   getBirthday,
   isCardId,
-  downloadExcel
+  download
 }

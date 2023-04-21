@@ -11,3 +11,15 @@ export function testDownLoadTemplate (data) {
     data: data
   })
 }
+
+/***
+ * 导出
+ */
+export function createPdfByTemplate (data) {
+  return https.request({
+    url: '/test/createPdfByTemplate',
+    method: 'post',
+    responseType: 'blob',
+    data: data
+  })
+}

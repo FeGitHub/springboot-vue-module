@@ -9,6 +9,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class ApplicationProperties {
 
+    public static String templatePath;//下载资源保存地址
+
+
     public static String downloadPath;//下载资源保存地址
 
     public static String backUpDataFilePath;//数据库数据备份地址

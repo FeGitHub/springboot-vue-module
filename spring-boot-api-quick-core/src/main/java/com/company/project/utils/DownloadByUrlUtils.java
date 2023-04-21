@@ -28,8 +28,6 @@ public class DownloadByUrlUtils {
             URL path = new URL(url);
             inputStream = new BufferedInputStream(path.openStream());
             fileOutputStream = new FileOutputStream(fullpath);
-
-
             byte[] bytes = new byte[1024];//1m
             int len = 0;//为什么需要记录长度，便于在写入的时候确定长度
             while ((len = inputStream.read(bytes)) != -1) {
