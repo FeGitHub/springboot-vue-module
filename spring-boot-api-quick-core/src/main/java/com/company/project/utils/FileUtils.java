@@ -204,6 +204,11 @@ public class FileUtils {
         return new ResponseEntity<byte[]>(data, headers, HttpStatus.OK);
     }
 
+    /***
+     * 从文件中读取二进制流数据
+     * @param file
+     * @return
+     */
     public static byte[] getBytesByFile(File file) {
         try {
             //获取输入流
@@ -219,7 +224,6 @@ public class FileUtils {
             fis.close();
             //改变为byte[]
             byte[] data = bos.toByteArray();
-            //
             bos.close();
             return data;
         } catch (Exception e) {
@@ -229,13 +233,19 @@ public class FileUtils {
     }
 
 
+    /***
+     *  将二进制流数据写入到响应数据中
+     * @param response
+     * @param content
+     */
     public static void writeFileToResponse(HttpServletResponse response, byte[] content) {
         ByteArrayInputStream in;
         OutputStream out;
         try {
             in = new ByteArrayInputStream(content);
             out = response.getOutputStream();
-            byte[] b = new byte[content.length];
+            //缓冲器的作用原理
+            byte[] b = new byte[1024];//https://www.cnblogs.com/taoyangui-zhaochen/p/10881892.html
             while ((in.read(b)) != -1) {
                 out.write(b);
                 out.flush();

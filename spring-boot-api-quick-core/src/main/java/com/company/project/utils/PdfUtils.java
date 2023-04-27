@@ -32,7 +32,7 @@ public class PdfUtils {
      *
      * @param templateFile 模板文件名
      * @param args         模板参数
-     * @param pdfFile      生成文件路径
+     * @param pdfFile      生成文件路径（如果为空则不生成对应的文件，可以直接利用文件的二进制流）
      */
     public static byte[] createPdfByHtmlTemplate(String templateFile, Map<String, String> args, String pdfFile) {
         FileOutputStream output = null;

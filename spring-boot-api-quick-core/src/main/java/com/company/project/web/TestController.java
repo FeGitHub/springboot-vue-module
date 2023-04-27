@@ -330,6 +330,9 @@ public class TestController {
     public void createPdfByTemplate(HttpServletResponse response) throws IOException {
         Map<String, String> para = new HashMap<>();
         para.put("name", "成功人士");
+        para.put("age", "万岁");
+        para.put("sex", "超人");
+        para.put("job", "无业游民");
         byte[] content = PdfUtils.createPdfByHtmlTemplate("template.html", para, null);
         FileUtils.writeFileToResponse(response, content);
     }
