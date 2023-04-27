@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -119,8 +120,13 @@ public class TestUnit {
     }
 
     @Test
-    public void makeFileFolderExists() throws Exception {
+    public void makeFileFolderExists() {
         FileUtils.makeFileFolderExists("D:\\test");
+    }
+
+    @Test
+    public void testLocalDate() {
+        System.out.println(DateUtils.formatLocalDateTime(LocalDateTime.now(), DateUtils.yyyy_MM_dd_HH_mm));
     }
 
 

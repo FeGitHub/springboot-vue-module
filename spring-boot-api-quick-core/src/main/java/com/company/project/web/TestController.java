@@ -8,21 +8,28 @@ import com.company.project.kafka.producer.UserLogProducer;
 import com.company.project.service.DictsService;
 import com.company.project.service.TestTableService;
 import com.company.project.service.download.DownloadService;
+import com.company.project.service.pdf.PdfService;
 import com.company.project.slave.model.TestTable;
 import com.company.project.utils.*;
 import com.company.project.vo.TestValidationVo;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 import nl.flotsam.xeger.Xeger;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
-import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -37,6 +44,10 @@ public class TestController {
     public static final Logger log = LoggerFactory.getLogger(TestController.class);
     @Resource
     private DictsService dictsService;
+
+
+    @Resource
+    private PdfService pdfService;
 
     // @Autowired
     //private PdfTableUtils pdfUtils;
@@ -230,18 +241,14 @@ public class TestController {
     }
 
 
-    /****
-     *  根据模板生成pdf
+    /***
+     * 动态生成pdf
      * @param response
+     * @throws Exception
      */
-    @RequestMapping(value = "/createPdfByTemplate")
-    public void createPdfByTemplate(HttpServletResponse response) {
-        Map<String, String> data = new HashMap<String, String>();
-        //key为pdf模板的form表单的名字，value为需要填充的值
-        data.put("aText", "AAA123");
-        data.put("bText", "中文");
-        ByteArrayOutputStream fileSteam = PdfUtils.createPdfByTemplate("pdfTemplate.pdf", null, data);
-        FileUtils.writeFileToResponse(response, fileSteam.toByteArray());
+    @GetMapping(value = "/createPdfByTableTest")
+    public void createPdfByTableTest(HttpServletResponse response) throws Exception {
+        pdfService.createTable(response);
     }
 
 
@@ -250,7 +257,7 @@ public class TestController {
      * @param response
      * @throws Exception
      */
-  /*  @GetMapping(value = "/createPdfByTable")
+    @GetMapping(value = "/createPdfByTable")
     public void createPdf(HttpServletResponse response) throws Exception {
         // 告诉浏览器用什么软件可以打开此文件
         response.setHeader("content-Type", "application/pdf");
@@ -261,44 +268,71 @@ public class TestController {
         // 格式化日期
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         // 创建标题
-        PdfPTable createTitle = pdfUtils.createTitle("请假申请");
+        PdfPTable createTitle = PdfTableUtils.createTitle("请假申请");
         document.add(createTitle);
         // 公司名称
-        PdfPTable createHead = pdfUtils.createHead("XXXXX有限公司", "申请日期:" + dateFormat.format(new Date()));
+        PdfPTable createHead = PdfTableUtils.createHead("XXXXX有限公司", "申请日期:" + dateFormat.format(new Date()));
         document.add(createHead);
         // 申请人
-        PdfPTable createExpenseManagement = pdfUtils.createExpenseManagement("申请人:", "张三");
+        PdfPTable createExpenseManagement = PdfTableUtils.createExpenseManagement("申请人:", "张三");
         document.add(createExpenseManagement);
         // 申请部门
-        PdfPTable createExpenseManagement2 = pdfUtils.createExpenseManagement("请假类型:", "病假");
+        PdfPTable createExpenseManagement2 = PdfTableUtils.createExpenseManagement("请假类型:", "病假");
         document.add(createExpenseManagement2);
         // 暂支事由
-        PdfPTable createExpenseManagement3 = pdfUtils.createExpenseManagement("开始日期:", "2020-12-11");
+        PdfPTable createExpenseManagement3 = PdfTableUtils.createExpenseManagement("开始日期:", "2020-12-11");
         document.add(createExpenseManagement3);
         // 暂支方式
-        PdfPTable createExpenseManagement4 = pdfUtils.createExpenseManagement("结束日期:", "2020-12-12");
+        PdfPTable createExpenseManagement4 = PdfTableUtils.createExpenseManagement("结束日期:", "2020-12-12");
         document.add(createExpenseManagement4);
         // 暂支金额
-        PdfPTable createExpenseManagement5 = pdfUtils.createExpenseManagement("请假销售:", "5");
+        PdfPTable createExpenseManagement5 = PdfTableUtils.createExpenseManagement("请假销售:", "5");
         document.add(createExpenseManagement5);
         // 还款方式
-        PdfPTable createExpenseManagement6 = pdfUtils.createExpenseManagement("请假事由:", "感冒了");
+        PdfPTable createExpenseManagement6 = PdfTableUtils.createExpenseManagement("请假事由:", "感冒了");
         document.add(createExpenseManagement6);
         // 审批流程
-        PdfPTable createTable3 = pdfUtils.createTable(1, 100);
-        PdfPCell createPdfPCell4 = pdfUtils.createPdfPCell("审批流程", PdfTableUtils.messFont, 1);
+        PdfPTable createTable3 = PdfTableUtils.createTable(1, 100);
+        PdfPCell createPdfPCell4 = PdfTableUtils.createPdfPCell("审批流程", PdfTableUtils.messFont, 1);
         createTable3.addCell(createPdfPCell4);
         document.add(createTable3);
         // 打印审批人
         for (int i = 0; i < 4; i++) {
-            PdfPTable createApprover = pdfUtils.createApprover("张三", "同意", "通过", dateFormat.format(new Date()));
+            PdfPTable createApprover = PdfTableUtils.createApprover("张三", "同意", "通过", dateFormat.format(new Date()));
             document.add(createApprover);
         }
         // 打印时间
-        PdfPTable createHead2 = pdfUtils.createHead("打印时间:" + dateFormat.format(new Date()), "打印人:张三");
+        PdfPTable createHead2 = PdfTableUtils.createHead("打印时间:" + dateFormat.format(new Date()), "打印人:张三");
         document.add(createHead2);
         document.close();
-    }  */
+    }
+
+
+    /****
+     *  根据模板生成pdf
+     * @param response
+     */
+    @GetMapping(value = "/createPdfByPdfTemplate")
+    @PostMapping(value = "/createPdfByPdfTemplate")
+    public void createPdfByPdfTemplate(HttpServletResponse response) {
+        Map<String, String> data = new HashMap<String, String>();
+        //key为pdf模板的form表单的名字，value为需要填充的值
+        data.put("aText", "AAA123");
+        data.put("bText", "中文中文中文文中文");
+        ClassPathResource fpr = new ClassPathResource("template/pdfTemplate.pdf");
+        byte[] content = PdfUtils.createPdfByPdfTemplate(fpr.getPath(), null, data);
+        FileUtils.writeFileToResponse(response, content);
+    }
+
+
+    @GetMapping(value = "/createPdfByHtmlTemplate")
+    @PostMapping(value = "/createPdfByHtmlTemplate")
+    public void createPdfByTemplate(HttpServletResponse response) throws IOException {
+        Map<String, String> para = new HashMap<>();
+        para.put("name", "成功人士");
+        byte[] content = PdfUtils.createPdfByHtmlTemplate("template.html", para, null);
+        FileUtils.writeFileToResponse(response, content);
+    }
 
 
 }

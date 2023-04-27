@@ -20,6 +20,8 @@ public class DateUtils {
 
     public static final String yyyy_MM_dd_HH_mm_ss = "yyyy-MM-dd HH:mm:ss";
 
+    public static final String yyyy_MM_dd_HH_mm = "yyyy-MM-dd HH:mm";
+
     public static final String yyyy_MM_dd_HH_mm_ss_chin = "yyyy年MM月dd日HH时mm分ss秒";
 
     /**
@@ -61,6 +63,14 @@ public class DateUtils {
      * @return 标准格式的字符串
      */
     public static String formatLocalDate(LocalDate date, String style) {
+        if (date == null) {
+            return "";
+        }
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(style);
+        return date.format(formatter);
+    }
+
+    public static String formatLocalDateTime(LocalDateTime date, String style) {
         if (date == null) {
             return "";
         }

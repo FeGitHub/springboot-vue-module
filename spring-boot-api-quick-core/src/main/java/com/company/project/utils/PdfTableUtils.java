@@ -74,7 +74,7 @@ public class PdfTableUtils {
      * @param column
      * @return
      */
-    public PdfPTable createTable(Integer column) {
+    public static PdfPTable createTable(Integer column) {
         PdfPTable table = new PdfPTable(column);
         // 设置表格宽度
         table.setWidthPercentage(50);
@@ -90,7 +90,7 @@ public class PdfTableUtils {
      * @param wdith
      * @return
      */
-    public PdfPTable createTable(Integer column, Integer wdith) {
+    public static PdfPTable createTable(Integer column, Integer wdith) {
         PdfPTable table = new PdfPTable(column);
         // 设置宽度
         table.setWidthPercentage(wdith);
@@ -106,7 +106,7 @@ public class PdfTableUtils {
      * @param font
      * @return
      */
-    public PdfPCell createPdfPCell(String name, Font font) {
+    public static PdfPCell createPdfPCell(String name, Font font) {
         PdfPCell cell;
         // 第一行
         cell = new PdfPCell(new Paragraph(name, font));
@@ -127,7 +127,7 @@ public class PdfTableUtils {
      * @param title
      * @return
      */
-    public PdfPTable createTitle(String title) {
+    public static PdfPTable createTitle(String title) {
         PdfPTable createTable = createTable(1);
         PdfPCell createPdfPCell = createPdfPCell(title, PdfTableUtils.titleFont);
         createTable.addCell(createPdfPCell);
@@ -142,7 +142,7 @@ public class PdfTableUtils {
      * @param colspan
      * @return
      */
-    public PdfPCell createPdfPCell(String name, Font font, Integer colspan, Integer border) {
+    public static PdfPCell createPdfPCell(String name, Font font, Integer colspan, Integer border) {
         PdfPCell cell;
         cell = new PdfPCell(new Paragraph(name, font));
         cell.setHorizontalAlignment(Cell.ALIGN_LEFT); // 设置水平居中
@@ -159,10 +159,9 @@ public class PdfTableUtils {
      * @param name
      * @param font
      * @param colspan
-     * @param border
      * @return
      */
-    public PdfPCell createPdfPCell(String name, Font font, Integer colspan) {
+    public static PdfPCell createPdfPCell(String name, Font font, Integer colspan) {
         PdfPCell cell;
         cell = new PdfPCell(new Paragraph(name, font));
         cell.setHorizontalAlignment(Cell.ALIGN_LEFT); // 设置水平居中
@@ -179,7 +178,7 @@ public class PdfTableUtils {
      * @param content
      * @return
      */
-    public PdfPTable createExpenseManagement(String title, String content) {
+    public static PdfPTable createExpenseManagement(String title, String content) {
         PdfPTable table = createTable(4, 100);
         PdfPCell cell = createPdfPCell(title, PdfTableUtils.messFont, 1);
         table.addCell(cell);
@@ -197,7 +196,7 @@ public class PdfTableUtils {
      * @param date
      * @return
      */
-    public PdfPTable createApprover(String name, String conclusion, String remark, String date) {
+    public static PdfPTable createApprover(String name, String conclusion, String remark, String date) {
         PdfPTable table = createTable(4, 100);
         PdfPCell cell = createPdfPCell("审批人:" + name, PdfTableUtils.messFont, 1);
         table.addCell(cell);
@@ -218,7 +217,7 @@ public class PdfTableUtils {
      * @param date
      * @return
      */
-    public PdfPTable createHead(String content, String content2) {
+    public static PdfPTable createHead(String content, String content2) {
         PdfPTable createTable = createTable(3, 100);
         PdfPCell createPdfPCell = createPdfPCell(content, PdfTableUtils.messFont, 1, 0);
         createTable.addCell(createPdfPCell);
