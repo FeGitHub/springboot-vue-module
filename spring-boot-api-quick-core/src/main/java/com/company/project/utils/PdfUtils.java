@@ -19,6 +19,7 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import org.springframework.core.io.ClassPathResource;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.*;
 
@@ -26,6 +27,17 @@ import java.util.*;
  * pdf生成工具
  */
 public class PdfUtils {
+
+    /****
+     * 设置pdf下载
+     * @throws UnsupportedEncodingException
+     */
+    public static void setPdfDownloadType(HttpServletResponse response, String fileName) throws UnsupportedEncodingException {
+        response.setContentType("application/pdf;charset=UTF-8");
+        response.setCharacterEncoding("UTF-8");
+        response.setHeader("Content-Disposition", "attachment;fileName=" + java.net.URLEncoder.encode(fileName + ".pdf", "UTF-8"));  //为了下载的东西不乱码而设置前三个格式
+    }
+
 
     /**
      * 填充html模板

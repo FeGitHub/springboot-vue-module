@@ -1,12 +1,13 @@
 <template>
   <div>
-    <SubmitElDialog
+    <ShowPdf></ShowPdf>
+    <!--  <SubmitElDialog
       :staffName="staffName"
       :staffCode="staffCode"
       :showDialog="dialogVisible"
       @handleClose="handleClose"
     ></SubmitElDialog>
-    <!--  <el-select
+  <el-select
       v-model="value"
       filterable
       placeholder="请选择"
@@ -93,6 +94,12 @@ export default {
 }
 </script>
 <style>
+html,
+body {
+  height: 100%;
+  padding: 0;
+  margin: 0;
+}
 .success {
   position: relative;
   left: -160px;

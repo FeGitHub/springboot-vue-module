@@ -29,6 +29,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -314,7 +315,7 @@ public class TestController {
      */
     @GetMapping(value = "/createPdfByPdfTemplate")
     @PostMapping(value = "/createPdfByPdfTemplate")
-    public void createPdfByPdfTemplate(HttpServletResponse response) {
+    public void createPdfByPdfTemplate(HttpServletResponse response) throws UnsupportedEncodingException {
         Map<String, String> data = new HashMap<String, String>();
         //key为pdf模板的form表单的名字，value为需要填充的值
         data.put("aText", "AAA123");
@@ -322,6 +323,7 @@ public class TestController {
         ClassPathResource fpr = new ClassPathResource("template/pdfTemplate.pdf");
         byte[] content = PdfUtils.createPdfByPdfTemplate(fpr.getPath(), null, data);
         FileUtils.writeFileToResponse(response, content);
+        // PdfUtils.setPdfDownloadType(response, "测试");
     }
 
 

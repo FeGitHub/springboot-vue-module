@@ -84,19 +84,17 @@ public class WebMvcConfigurer extends WebMvcConfigurationSupport {
         converters.add(converter);
     }
 
+
     /**
-     * 手动给swagger-ui.html指定路径
-     *
-     * @param registry
+     * ·
+     * 静态资源映射
      */
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        //   if("dev".equals(env)||"test".equals(env)){//开发环境和测试环境才打开swagger-ui.html测试接口
-        registry.addResourceHandler("swagger-ui.html")
-                .addResourceLocations("classpath:/META-INF/resources/");
-        registry.addResourceHandler("/webjars/**")
-                .addResourceLocations("classpath:/META-INF/resources/webjars/");
-        //   }
+        registry.addResourceHandler("/**").addResourceLocations("classpath:/META-INF/resources/")
+                .addResourceLocations("classpath:/resources/").addResourceLocations("classpath:/static/")
+                .addResourceLocations("classpath:/public/");
+        super.addResourceHandlers(registry);
     }
 
 
@@ -151,7 +149,7 @@ public class WebMvcConfigurer extends WebMvcConfigurationSupport {
                     apiLogService.saveApiLog(request);
                     return true;
                 }
-            }).excludePathPatterns("/swagger-resources/**", "/webjars/**", "/v2/**", "/swagger-ui.html/**");
+            }).excludePathPatterns("/swagger-resources/**", "/webjars/**", "/v2/**", "/swagger-ui.html/**", "/static/**");
         }
         //接口签名认证拦截器
         if (tokenCheck) {
