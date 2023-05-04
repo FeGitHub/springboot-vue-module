@@ -322,5 +322,14 @@
     <orderEntry type="library" name="Maven: com.itextpdf:layout:7.1.12" level="project" />
     <orderEntry type="library" name="Maven: com.itextpdf:svg:7.1.12" level="project" />
     <orderEntry type="library" name="Maven: com.itextpdf:styled-xml-parser:7.1.12" level="project" />
+    <orderEntry type="module-library">
+      <library name="Maven: com.aspose.words:aspose-words:19.5">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/aspose-words-19.5.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>
