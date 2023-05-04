@@ -1,6 +1,6 @@
 <template>
   <div class="pdfbodys" :style="{ height: screenHeight + 'px' }">
-    <iframe :src="src" width="100%" height="100%" frameborder="0"></iframe>
+    <iframe :src="pdfSrc" height="100%" width="100%" frameborder="0"></iframe>
   </div>
 </template>
 <script>
@@ -14,12 +14,16 @@ export default {
   },
   data () {
     return {
-      src: 'http://localhost:8085/showPdf/pdfjs/web/viewer.html',
+      backendSrc: 'http://localhost:8085',
       screenWeight: 0, // 屏幕宽度
       screenHeight: 0 // 屏幕高度
     }
   },
-
+  computed: {
+    pdfSrc () {
+      return this.backendSrc + '/pdfjs/web/viewer.html';
+    }
+  },
   mounted () {
     this.screenWeight = document.documentElement.clientWidth
     this.screenHeight = document.documentElement.clientHeight
