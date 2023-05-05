@@ -1,9 +1,11 @@
 <template>
   <div>
-    <div class="box">AAA</div>
-    <!--<ShowPdf></ShowPdf>-->
+    <div class="box" @click="clickA">AAA</div>
     <div class="pdf-box">
-      <ShowPdf></ShowPdf>
+      <ShowPdf
+        :prop-code-pdf-src="propCodePdfSrc"
+        :prop-no-code-pdf-src="propNoCodePdfSrc"
+      ></ShowPdf>
     </div>
     <div class="box">CCC</div>
   </div>
@@ -12,10 +14,21 @@
 export default {
   mounted () {},
   data () {
-    return {}
+    return {
+      propCodePdfSrc: '/test/createPdfByPdfTemplate',
+      propNoCodePdfSrc: '/test/createPdfByHtmlTemplate'
+    }
   },
   created () {},
-  methods: {}
+  methods: {
+    clickA () {
+      if (this.propNoCodePdfSrc === '/test/createPdfByPdfTemplate') {
+        this.propNoCodePdfSrc = '/test/createPdfByHtmlTemplate';
+      } else {
+        this.propNoCodePdfSrc = '/test/createPdfByPdfTemplate';
+      }
+    }
+  }
 }
 </script>
 <style>
