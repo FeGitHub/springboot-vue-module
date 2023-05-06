@@ -2242,9 +2242,11 @@ var SecondaryToolbar = {
      * @param evt
      */
     printClick: function secondaryToolbarPrintClick(evt) {
-        // window.print();
-        // 向父vue页面发送信息
-        customPrint()
+        if (OVER_WRITE_PRINT) {//重寫打印的方法
+            customPrint()
+        } else {
+            window.print();
+        }
         this.close();
     },
 
@@ -6948,10 +6950,14 @@ var PDFViewerApplication = {
      * @param scale
      */
     setInitialView: function pdfViewSetInitialView(storedHash, scale) {
+        //**** custom do start ***
         var urlPath = decodeURIComponent(window.location.href)
-        console.log("urlPath", urlPath)
-
-
+        var urlParam = GetRequest(urlPath);
+        console.log("urlParam", urlParam)
+        OVER_WRITE_PRINT = urlParam['overWritePrint'] === 'true' ? true : false;
+        SHOW_LOG = urlParam['showLog'] === 'true' ? true : false;
+        console.log("OVER_WRITE_PRINT", OVER_WRITE_PRINT)
+        //**** custom do end ***
         this.isInitialViewSet = true;
         // When opening a new file, when one is already loaded in the viewer,
         // ensure that the 'pageNumber' element displays the correct value.

@@ -3,8 +3,8 @@
     <div class="box" @click="clickA">AAA</div>
     <div class="pdf-box">
       <ShowPdf
-        :prop-code-pdf-src="propCodePdfSrc"
-        :prop-no-code-pdf-src="propNoCodePdfSrc"
+        :print-pdf-src-biz="printPdfSrcBiz"
+        :show-pdf-src-biz="showPdfSrcBiz"
       ></ShowPdf>
     </div>
     <div class="box">CCC</div>
@@ -15,17 +15,17 @@ export default {
   mounted () {},
   data () {
     return {
-      propCodePdfSrc: '/test/createPdfByPdfTemplate',
-      propNoCodePdfSrc: '/test/createPdfByHtmlTemplate'
+      printPdfSrcBiz: '/test/createPdfByPdfTemplate',
+      showPdfSrcBiz: '/test/createPdfByHtmlTemplate'
     }
   },
   created () {},
   methods: {
     clickA () {
-      if (this.propNoCodePdfSrc === '/test/createPdfByPdfTemplate') {
-        this.propNoCodePdfSrc = '/test/createPdfByHtmlTemplate';
+      if (this.showPdfSrcBiz === '/test/createPdfByPdfTemplate') {
+        this.showPdfSrcBiz = '/test/createPdfByHtmlTemplate';
       } else {
-        this.propNoCodePdfSrc = '/test/createPdfByPdfTemplate';
+        this.showPdfSrcBiz = '/test/createPdfByPdfTemplate';
       }
     }
   }
