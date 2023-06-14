@@ -30,6 +30,23 @@ public class TestUnit {
         }
     }
 
+
+    @Test
+    public void testAuthentication() throws Exception {
+        //  String username = "Safp";
+        String idType = "5";
+        String idNum = "18250237";
+        String splitStr = "&";
+        String secretKey = "ABCDEFGH";
+        String key = "0x1122334455667788";
+        // 證件編號 加上 分隔符 加上 證件類型 加上 分隔符再加公職局的secret key, 以DES方式加密
+        StringBuffer password = new StringBuffer("");
+        password.append(idNum).append(splitStr).append(idType).append(splitStr).append(secretKey);
+
+
+    }
+
+
     @Test
     public void test() {
         PersonTest person = new PersonTest();
@@ -134,5 +151,7 @@ public class TestUnit {
     public void testSplitStrToList() {
         List<String> testList = StringConvertUtil.splitStrToList("1,2,3", null);
     }
+
+
 }
 

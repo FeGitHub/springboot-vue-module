@@ -185,6 +185,29 @@ public class FileUtils {
     }
 
     /**
+     * 流输出到文件的方法
+     */
+    public static void copyInputStreamToFile(InputStream inputStream, String filePath) throws IOException {
+        File file = new File(filePath);
+        try (FileOutputStream outputStream = new FileOutputStream(file)) {
+            int read;
+            byte[] bytes = new byte[1024];
+            while ((read = inputStream.read(bytes)) != -1) {
+                outputStream.write(bytes, 0, read);
+            }
+        }
+    }
+
+    /**
+     * 流输出到文件的方法
+     */
+    public static void copyInputStreamToFile(byte[] content, String filePath) throws IOException {
+        InputStream sbs = new ByteArrayInputStream(content);
+        copyInputStreamToFile(sbs, filePath);
+    }
+
+
+    /**
      * 创建ResponseEntity<byte[]>对象,用于下载字节数组文件
      *
      * @param req      请求

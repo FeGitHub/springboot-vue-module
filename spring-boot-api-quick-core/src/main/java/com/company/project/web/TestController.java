@@ -17,6 +17,7 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import nl.flotsam.xeger.Xeger;
+import org.apache.commons.io.IOUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.slf4j.Logger;
@@ -29,6 +30,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -107,6 +109,9 @@ public class TestController {
      */
     @PostMapping("/testDicts")
     public Result testDicts(@RequestParam String dicts) {
+        String authorization = RequestHeaderUtils.getAuthorization();
+        String Username = RequestHeaderUtils.getUsernameByAuth(authorization);
+        String password = RequestHeaderUtils.getPasswordByAuth(authorization);
         String[] arr = dicts.split(",");
         Map<String, Object> rtnMap = new HashMap<String, Object>();
         for (String dictStr : arr) {
@@ -329,14 +334,33 @@ public class TestController {
 
     @GetMapping(value = "/createPdfByHtmlTemplate")
     @PostMapping(value = "/createPdfByHtmlTemplate")
-    public void createPdfByTemplate(HttpServletResponse response) throws IOException {
+    public void createPdfByTemplate(HttpServletResponse response) throws Exception {
         Map<String, String> para = new HashMap<>();
         para.put("name", "成功人士");
         para.put("age", "万岁");
         para.put("sex", "超人");
         para.put("job", "无业游民");
         byte[] content = PdfUtils.createPdfByHtmlTemplate("template.html", para, null);
+        System.out.println(Base64.getEncoder().encodeToString(content));
+        //  FileUtils.copyInputStreamToFile(content, "D://dev/test123.pdf");
         FileUtils.writeFileToResponse(response, content);
+    }
+
+    /***
+     *
+     * @param
+     * @return
+     */
+    @GetMapping(value = "/getPdfPostByBasicAuth")
+    // @PostMapping("/getPdfPostByBasicAuth")
+    public void getPdfPostByBasicAuth(HttpServletResponse response) throws IOException {
+        String requestUrl = "http://localhost:8086/test/createPdfByHtmlTemplate";
+        String params = "{}";
+        String Username = "Safp";
+        String password = "/D38CNcdz/kwBQ1kmEIukLu2AOjVO0b8kXupDZ9/MGE=";
+        // InputStream content = OkHttpClientUtils.okHttpClientDownloadPdf(requestUrl, params, Username, password, false);
+        InputStream content = HttpsUtils.sendPostByBasicAuthGetStream(requestUrl, params, Username, password);
+        FileUtils.copyInputStreamToFile(IOUtils.toByteArray(content), "D://dev/test成功了.pdf");
     }
 
 

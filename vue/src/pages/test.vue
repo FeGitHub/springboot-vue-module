@@ -1,6 +1,7 @@
 <template>
   <div>
-    <ShowPdf></ShowPdf>
+    <!--<ShowPdf></ShowPdf> -->
+    <ListTip />
     <!--  <SubmitElDialog
       :staffName="staffName"
       :staffCode="staffCode"

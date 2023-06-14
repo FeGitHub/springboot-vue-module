@@ -21,7 +21,7 @@ public class NetWorkCheckTaskService {
 
     private static int NETWOEK_LINK_FAIL_COUNT = 0;//记录网络连接失败的次数
 
-    private static String ALEADY_LINK_WIFI_NAME = "wifi";//本机已经连接过的wifi连接（用于自动连接）
+    private static String ALEADY_LINK_WIFI_NAME = "benti-5G";//本机已经连接过的wifi连接（用于自动连接）
 
     private static String RE_BOOT_TEXT = "重启系统...";
 

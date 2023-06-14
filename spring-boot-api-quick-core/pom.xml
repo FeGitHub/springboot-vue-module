@@ -274,7 +274,7 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>easyexcel</artifactId>
-            <version>2.1.4</version>
+            <version>2.2.10</version>
         </dependency>
 
 
@@ -323,6 +323,34 @@
             <version>19.5</version>
             <scope>system</scope>
             <systemPath>${basedir}/lib/aspose-words-19.5.jar</systemPath>
+        </dependency>
+
+        <!-- e-iceblue -->
+        <dependency>
+            <groupId>e-iceblue</groupId>
+            <artifactId>spire.office.free</artifactId>
+            <version>5.3.1</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/lib/spire.office.free-5.3.1.jar</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.10</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
+            <version>3.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+            <version>4.9.3</version>
         </dependency>
 
     </dependencies>

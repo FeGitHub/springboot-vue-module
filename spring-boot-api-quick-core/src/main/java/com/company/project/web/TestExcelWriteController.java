@@ -10,7 +10,11 @@ import com.company.project.master.vo.TempListItem;
 import com.company.project.master.vo.TempMapData;
 import com.company.project.master.vo.UserEntity1;
 import com.company.project.service.easyExcel.EasyExcelService;
+import com.company.project.service.easyExcel.MyMergeStrategy;
+import com.company.project.service.easyExcel.StyleUtils;
+import com.company.project.service.easyExcel.TestEasyExcelDataService;
 import com.company.project.service.test.ExcelService;
+import com.company.project.vo.OrderExportVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,6 +35,9 @@ public class TestExcelWriteController {
 
     @Autowired
     private EasyExcelService easyExcelService;
+
+    @Autowired
+    private TestEasyExcelDataService testEasyExcelDataService;
 
 
     /***
@@ -121,6 +128,52 @@ public class TestExcelWriteController {
             }
         }
     }
+
+
+    /**
+     * 根據實體vo導出excel
+     *
+     * @param response
+     * @throws IOException
+     */
+    @GetMapping("/testMergeExcel")
+    public void testMergeExcel(HttpServletResponse response) throws IOException, IllegalAccessException {
+      /*  List<OrderExportVO> orderExportVOS = testEasyExcelDataService.getOrderExportVO();
+        // 设置单元格样式
+        HorizontalCellStyleStrategy horizontalCellStyleStrategy =
+                new HorizontalCellStyleStrategy(StyleUtils.getHeadStyle(), StyleUtils.getContentStyle());
+        //  自定义合并单元格策略
+        String fileName = "D://註解合併.xls";
+        // HorizontalCellStyleStrategy horizontalCellStyleStrategy = easyExcelService.getCenterHorizontalCellStyleStrategy();
+        EasyExcel.write(fileName, OrderExportVO.class)
+                .registerWriteHandler(horizontalCellStyleStrategy)
+                .registerWriteHandler(new MyMergeStrategy<>(orderExportVOS))
+                .sheet("模板").doWrite(orderExportVOS); */
+        response.setContentType("application/vnd.ms-excel");
+        response.setCharacterEncoding("utf-8");
+        // 这里URLEncoder.encode可以防止中文乱码 当然和easyexcel没有关系
+        String fileName = URLEncoder.encode("测试", "UTF-8");
+        response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".xlsx");
+        ExcelWriter excelWriter = null;
+        try {
+            List<OrderExportVO> orderExportVOS = testEasyExcelDataService.getOrderExportVO();
+            HorizontalCellStyleStrategy horizontalCellStyleStrategy =
+                    new HorizontalCellStyleStrategy(StyleUtils.getHeadStyle(), StyleUtils.getContentStyle());
+            excelWriter = EasyExcel.write(response.getOutputStream(), OrderExportVO.class).build();
+            WriteSheet writeSheet = EasyExcel.writerSheet("模板")
+                    .registerWriteHandler(horizontalCellStyleStrategy)
+                    .registerWriteHandler(new MyMergeStrategy<>(orderExportVOS))
+                    .head(OrderExportVO.class).build();
+            excelWriter.write(orderExportVOS, writeSheet);
+        } finally {
+            // 千万别忘记finish 会帮忙关闭流
+            if (excelWriter != null) {
+                excelWriter.finish();
+            }
+        }
+
+    }
+
 
 
 /*    @RequestMapping("/testExcel")

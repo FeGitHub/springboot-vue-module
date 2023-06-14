@@ -24,7 +24,6 @@ import java.util.List;
 @Service
 public class EasyExcelService {
 
-
     /***
      * 設置response基本的參數設置
      * @param response
@@ -43,7 +42,7 @@ public class EasyExcelService {
      * 獲取格式居中策略
      * @return
      */
-    public HorizontalCellStyleStrategy getCenterHorizontalCellStyleStrategy() {
+    public static HorizontalCellStyleStrategy getCenterHorizontalCellStyleStrategy() {
         WriteCellStyle headWriteCellStyle = new WriteCellStyle();
         //设置头居中
         headWriteCellStyle.setHorizontalAlignment(HorizontalAlignment.CENTER);
