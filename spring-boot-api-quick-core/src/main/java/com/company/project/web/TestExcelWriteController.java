@@ -9,7 +9,7 @@ import com.company.project.master.vo.MoreWriteSheetVo;
 import com.company.project.master.vo.TempListItem;
 import com.company.project.master.vo.TempMapData;
 import com.company.project.master.vo.UserEntity1;
-import com.company.project.service.easyExcel.EasyExcelMergeStrategy;
+import com.company.project.service.easyExcel.EasyExcelRowMergeStrategy;
 import com.company.project.service.easyExcel.EasyExcelService;
 import com.company.project.service.easyExcel.EasyExcelStyleUtils;
 import com.company.project.service.easyExcel.TestEasyExcelDataService;
@@ -162,7 +162,7 @@ public class TestExcelWriteController {
             excelWriter = EasyExcel.write(response.getOutputStream(), TestMergeExcelVO.class).build();
             WriteSheet writeSheet = EasyExcel.writerSheet("模板")
                     .registerWriteHandler(horizontalCellStyleStrategy)
-                    .registerWriteHandler(new EasyExcelMergeStrategy<>(orderExportVOS))
+                    .registerWriteHandler(new EasyExcelRowMergeStrategy<>(orderExportVOS))
                     .head(TestMergeExcelVO.class).build();
             excelWriter.write(orderExportVOS, writeSheet);
         } finally {

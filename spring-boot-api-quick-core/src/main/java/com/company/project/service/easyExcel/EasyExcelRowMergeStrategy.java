@@ -1,13 +1,8 @@
 package com.company.project.service.easyExcel;
 
-import com.alibaba.excel.enums.CellDataTypeEnum;
-import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.util.CollectionUtils;
-import com.alibaba.excel.util.StringUtils;
 import com.alibaba.excel.write.merge.AbstractMergeStrategy;
-import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
-import com.alibaba.excel.write.metadata.holder.WriteTableHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -17,32 +12,71 @@ import java.lang.reflect.Field;
 import java.util.*;
 
 
+/***
+ * 行合并策略
+ * 所有的ExcelRowMerge都会围绕 ExcelRowMergeKey的范围内进行数据的合并
+ * @param <T>
+ */
 @Slf4j
-public class EasyExcelMergeStrategy<T> extends AbstractMergeStrategy {
-
-
+public class EasyExcelRowMergeStrategy<T> extends AbstractMergeStrategy {
     // 主键值集合
     private List<String> primaryIdList = new ArrayList<>();
-    // 需要合并的列index
+    // 标记了要合并的列号
     Set<Integer> colIndexSet = new HashSet<>();
 
+    // key==>列号  value==>对应此列的所有数据
     Map<Integer, List<String>> mapColumnIndex = new HashMap<>();
 
+    // 被标记的key对应的列序号
     private Integer excelKeyColumnIndex;
 
     /**
      * 从数据里获取合并的信息
      */
-    public EasyExcelMergeStrategy(List<T> data) throws IllegalAccessException {
+    public EasyExcelRowMergeStrategy(List<T> data) throws IllegalAccessException {
         if (data.size() == 0) {
             throw new RuntimeException("no data exception");
         }
+        //收集主键集合信息
+        setPrimaryIdList(data);
+        //收集合并列信息
+        setColIndexSet(data);
+        //设置列号和列数据的映射
+        setMapColumnIndex(data);
+    }
+
+
+    /****
+     * 收集合并列信息
+     * @param data
+     */
+    public void setColIndexSet(List<T> data) {
+        // 获取需要合并的列
+        T row = data.get(0);
+        Class<?> aClass = row.getClass();
+        Field[] fields = getAllDeclaredFields(aClass);
+        for (int columnIndex = 0; columnIndex < fields.length; columnIndex++) {
+            Field field = fields[columnIndex];
+            ExcelRowMerge merge = field.getDeclaredAnnotation(ExcelRowMerge.class);
+            if (null != merge && merge.isMerge()) {
+                colIndexSet.add(columnIndex);
+            }
+        }
+    }
+
+
+    /***
+     * 收集主键集合信息
+     * @param data
+     * @throws IllegalAccessException
+     */
+    public void setPrimaryIdList(List<T> data) throws IllegalAccessException {
         for (T row : data) {
             Class<?> type = row.getClass();
             Field[] fields = getAllDeclaredFields(type);
             Integer i = 0;
             for (Field field : fields) {
-                ExcelKey key = field.getDeclaredAnnotation(ExcelKey.class);
+                ExcelRowMergeKey key = field.getDeclaredAnnotation(ExcelRowMergeKey.class);
                 if (null != key) {
                     excelKeyColumnIndex = i;
                     field.setAccessible(true);
@@ -57,28 +91,20 @@ public class EasyExcelMergeStrategy<T> extends AbstractMergeStrategy {
                 }
             }
         }
-        // 获取需要合并的列
-        T row = data.get(0);
-        Class<?> aClass = row.getClass();
-        Field[] fields = getAllDeclaredFields(aClass);
-        for (int i = 0; i < fields.length; i++) {
-            Field field = fields[i];
-            ExcelMerge merge = field.getDeclaredAnnotation(ExcelMerge.class);
-            if (null != merge && merge.isMerge()) {
-
-                colIndexSet.add(i);
-            }
-        }
-        setMapColumnIndex(data);
     }
 
+    /****
+     * 设置列号和列数据的映射
+     * @param data
+     * @throws IllegalAccessException
+     */
     public void setMapColumnIndex(List<T> data) throws IllegalAccessException {
         for (T row : data) {
             Class<?> type = row.getClass();
             Field[] fields = getAllDeclaredFields(type);
             for (int columnIndex = 0; columnIndex < fields.length; columnIndex++) {
                 Field field = fields[columnIndex];
-                ExcelMerge merge = field.getDeclaredAnnotation(ExcelMerge.class);
+                ExcelRowMerge merge = field.getDeclaredAnnotation(ExcelRowMerge.class);
                 if (null != merge && merge.isMerge()) {//该列属于合并列
                     field.setAccessible(true);
                     Object filedValue = field.get(row);
@@ -115,7 +141,6 @@ public class EasyExcelMergeStrategy<T> extends AbstractMergeStrategy {
      * 合并单元格方法
      */
     protected void merge(Sheet sheet, Cell cell, Head head, Integer relativeRowIndex) {
-
         // 行坐标
         int rowIndex = cell.getRowIndex();
         // 列坐标
@@ -127,31 +152,38 @@ public class EasyExcelMergeStrategy<T> extends AbstractMergeStrategy {
         boolean mergeContains = colIndexSet.contains(columnIndex);
         int startRowIndex = rowIndex;
         int endRowIndex = startRowIndex + (downRows == null ? 0 : downRows);
-        int startColumnIndex = columnIndex;
-        int endColumnIndex = columnIndex;
         //合并单元格区域只有一个单元格时，不合并
-        if (endRowIndex == startRowIndex && endColumnIndex == startColumnIndex) {
+        if (endRowIndex == startRowIndex) {
             return;
         }
         if (null != downRows && mergeContains) {
             // 创建单元格范围地址
-            CellRangeAddress cellRangeAddress = new CellRangeAddress(startRowIndex, endRowIndex, startColumnIndex, endColumnIndex);
+            CellRangeAddress cellRangeAddress = new CellRangeAddress(startRowIndex, endRowIndex, columnIndex, columnIndex);
             sheet.addMergedRegionUnsafe(cellRangeAddress);
         }
     }
 
+    /***
+     * 计算合并信息，key是合并开始的序号，value是可向前合并的步数
+     * @param columnIndex
+     * @return
+     */
     public Map<Integer, Integer> getMergeRowMap(Integer columnIndex) {
         Map<Integer, Integer> mergeRowMap = new HashMap<>();
         List<String> computeList;
-        if (columnIndex == excelKeyColumnIndex) {
+        if (excelKeyColumnIndex != null && columnIndex == excelKeyColumnIndex) {//获取可合并的主键序号
             computeList = primaryIdList;
             for (int i = 0; i < computeList.size(); i++) {
                 mergeRowMap.put(i, getStepsBeforeMeetNotSame(i, computeList, true));
             }
         } else {
-            computeList = mapColumnIndex.get(columnIndex);
-            for (int i = 0; i < computeList.size(); i++) {
-                mergeRowMap.put(i, getStepsBeforeMeetNotSame(i, computeList, false));
+            if (colIndexSet.contains(columnIndex)) {//属于要合并的列
+                computeList = mapColumnIndex.get(columnIndex);
+                for (int i = 0; i < computeList.size(); i++) {
+                    mergeRowMap.put(i, getStepsBeforeMeetNotSame(i, computeList, false));
+                }
+            } else {
+                mergeRowMap.put(columnIndex, 0);//不要合并
             }
         }
         return mergeRowMap;
@@ -186,44 +218,4 @@ public class EasyExcelMergeStrategy<T> extends AbstractMergeStrategy {
         }
         return steps;
     }
-
-
-    public Map<Integer, Integer> computeByMergeKey(List<String> computeList) {
-        Map<Integer, Integer> mergeRowMap = new HashMap<>();
-        // 主键索引
-        int idIndex = 0;
-        // 主键临时值
-        String tempValue = null;
-        // 主键不相同
-        for (int i = 0; i < computeList.size(); i++) {
-            if (null == tempValue) {
-                tempValue = computeList.get(i);
-            }
-            String id = computeList.get(i);
-            if (!id.equals(tempValue)) {
-                mergeRowMap.put(idIndex, (i - 1) - idIndex);
-                idIndex = i;
-                tempValue = null;
-            }
-            if (computeList.size() - 1 == i) {
-                mergeRowMap.put(idIndex, i - idIndex);
-            }
-        }
-        return mergeRowMap;
-    }
-
-
-    @Override
-    public void afterCellDataConverted(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder, CellData cellData, Cell cell, Head head, Integer relativeRowIndex, Boolean isHead) {
-        // 如果字符类型的单元格值为空字符串，那就设置成“/”
-        if (cellData.getType().equals(CellDataTypeEnum.STRING) && StringUtils.isEmpty(cellData.getStringValue())) {
-            cellData.setStringValue("/");
-        }
-        // 如果数字类型的单元格值为空，那就设置成“/”
-        if (cellData.getType().equals(CellDataTypeEnum.NUMBER) && null == cellData.getNumberValue()) {
-            cellData.setStringValue("/");
-        }
-        super.afterCellDataConverted(writeSheetHolder, writeTableHolder, cellData, cell, head, relativeRowIndex, isHead);
-    }
-
 }

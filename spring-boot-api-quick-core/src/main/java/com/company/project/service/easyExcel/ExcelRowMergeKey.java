@@ -5,8 +5,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/***
+ * 列合并的判定主键
+ */
 @Target({ElementType.FIELD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ExcelMerge {
-    boolean isMerge() default true;
+public @interface ExcelRowMergeKey {
+    String value() default "";
 }
