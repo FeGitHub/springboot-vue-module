@@ -1,6 +1,7 @@
 package com.company.project.vo;
 
 
+import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.annotation.write.style.ColumnWidth;
 import com.company.project.service.easyExcel.ExcelKey;
 import com.company.project.service.easyExcel.ExcelMerge;
@@ -17,7 +18,7 @@ import java.util.Date;
  */
 @Data
 
-public class OrderExportVO {
+public class TestMergeExcelVO {
 
     /**
      * 订单号
@@ -25,33 +26,25 @@ public class OrderExportVO {
     @ExcelKey
     @ExcelMerge
     @ColumnWidth(40)
+    // @ExcelIgnore
+    @ExcelProperty("订单号")
     private String orderNo;
 
     /**
      * 订单名称
      */
+    @ExcelMerge
+    @ColumnWidth(40)
+    @ExcelProperty("订单名称")
     private String orderName;
 
     /**
      * 创建时间
      */
     @ExcelMerge
+    @ColumnWidth(40)
+    @ExcelProperty("创建时间")
     private Date orderCreateTime;
 
-
-    /**
-     * 订单明细号
-     */
-    private String orderDetailNo;
-
-    /**
-     * 订单明细名称
-     */
-    private String orderDetailName;
-
-    /**
-     * 创建时间
-     */
-    private Date orderDetailCreateTime;
 
 }

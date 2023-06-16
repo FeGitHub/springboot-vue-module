@@ -9,12 +9,12 @@ import com.company.project.master.vo.MoreWriteSheetVo;
 import com.company.project.master.vo.TempListItem;
 import com.company.project.master.vo.TempMapData;
 import com.company.project.master.vo.UserEntity1;
+import com.company.project.service.easyExcel.EasyExcelMergeStrategy;
 import com.company.project.service.easyExcel.EasyExcelService;
-import com.company.project.service.easyExcel.MyMergeStrategy;
-import com.company.project.service.easyExcel.StyleUtils;
+import com.company.project.service.easyExcel.EasyExcelStyleUtils;
 import com.company.project.service.easyExcel.TestEasyExcelDataService;
 import com.company.project.service.test.ExcelService;
-import com.company.project.vo.OrderExportVO;
+import com.company.project.vo.TestMergeExcelVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -156,14 +156,14 @@ public class TestExcelWriteController {
         response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".xlsx");
         ExcelWriter excelWriter = null;
         try {
-            List<OrderExportVO> orderExportVOS = testEasyExcelDataService.getOrderExportVO();
+            List<TestMergeExcelVO> orderExportVOS = testEasyExcelDataService.getOrderExportVO();
             HorizontalCellStyleStrategy horizontalCellStyleStrategy =
-                    new HorizontalCellStyleStrategy(StyleUtils.getHeadStyle(), StyleUtils.getContentStyle());
-            excelWriter = EasyExcel.write(response.getOutputStream(), OrderExportVO.class).build();
+                    new HorizontalCellStyleStrategy(EasyExcelStyleUtils.getHeadStyle(), EasyExcelStyleUtils.getContentStyle());
+            excelWriter = EasyExcel.write(response.getOutputStream(), TestMergeExcelVO.class).build();
             WriteSheet writeSheet = EasyExcel.writerSheet("模板")
                     .registerWriteHandler(horizontalCellStyleStrategy)
-                    .registerWriteHandler(new MyMergeStrategy<>(orderExportVOS))
-                    .head(OrderExportVO.class).build();
+                    .registerWriteHandler(new EasyExcelMergeStrategy<>(orderExportVOS))
+                    .head(TestMergeExcelVO.class).build();
             excelWriter.write(orderExportVOS, writeSheet);
         } finally {
             // 千万别忘记finish 会帮忙关闭流

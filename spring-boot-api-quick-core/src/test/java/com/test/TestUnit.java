@@ -16,9 +16,7 @@ import java.math.BigDecimal;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class TestUnit {
     public static void main(String[] args) {
@@ -28,6 +26,32 @@ public class TestUnit {
             String result = generator.generate();
             System.out.println(result);
         }
+    }
+
+    @Test
+    public void getMergeRowMap() {
+        List<String> primaryIdList = Arrays.asList("A", "B", "B", "C", "C");
+        Map<Integer, Integer> mergeRowMap = new HashMap<>();
+        // 主键索引
+        int idIndex = 0;
+        // 主键临时值
+        String tempValue = null;
+        // 主键不相同
+        for (int i = 0; i < primaryIdList.size(); i++) {
+            if (null == tempValue) {
+                tempValue = primaryIdList.get(i);
+            }
+            String id = primaryIdList.get(i);
+            if (!id.equals(tempValue)) {
+                mergeRowMap.put(idIndex, (i - 1) - idIndex);
+                idIndex = i;
+                tempValue = null;
+            }
+            if (primaryIdList.size() - 1 == i) {
+                mergeRowMap.put(idIndex, i - idIndex);
+            }
+        }
+        System.out.println(mergeRowMap.toString());
     }
 
 
@@ -44,6 +68,23 @@ public class TestUnit {
         password.append(idNum).append(splitStr).append(idType).append(splitStr).append(secretKey);
 
 
+    }
+
+    @Test
+    public void getStepsWhenMeetNotSame() {
+        Integer startIndex = 0;
+        List<String> computeList = Arrays.asList("A", "A", "A", "B", "B", "A");
+        int steps = 0;
+        Set repeatSet = new HashSet();
+        repeatSet.add(computeList.get(startIndex));
+        for (int i = startIndex + 1; i < computeList.size(); i++) {
+            if (repeatSet.add(computeList.get(i))) {
+                System.out.println(steps);
+                return;
+            }
+            steps++;
+        }
+        System.out.println(steps);
     }
 
 

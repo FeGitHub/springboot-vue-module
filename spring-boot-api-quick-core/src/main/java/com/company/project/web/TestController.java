@@ -354,7 +354,7 @@ public class TestController {
     @GetMapping(value = "/getPdfPostByBasicAuth")
     // @PostMapping("/getPdfPostByBasicAuth")
     public void getPdfPostByBasicAuth(HttpServletResponse response) throws IOException {
-        String requestUrl = "http://localhost:8086/test/createPdfByHtmlTemplate";
+        String requestUrl = "http://localhost:8888/test/createPdfByHtmlTemplate";
         String params = "{}";
         String Username = "Safp";
         String password = "/D38CNcdz/kwBQ1kmEIukLu2AOjVO0b8kXupDZ9/MGE=";

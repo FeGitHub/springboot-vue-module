@@ -1,3 +1,6 @@
+// https://blog.csdn.net/xiao1215fei/article/details/125542456
+
+
 var OVER_WRITE_PRINT = false;//是否重写打印方法
 var SHOW_LOG = false;//是否打印日志信息
 /****
