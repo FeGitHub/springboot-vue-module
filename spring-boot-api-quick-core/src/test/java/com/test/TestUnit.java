@@ -11,6 +11,9 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.junit.Test;
 
+import javax.script.Invocable;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
@@ -191,6 +194,35 @@ public class TestUnit {
     @Test
     public void testSplitStrToList() {
         List<String> testList = StringConvertUtil.splitStrToList("1,2,3", null);
+    }
+
+    @Test
+    public void testJavaScript() throws Exception {
+        ScriptEngineManager manager = new ScriptEngineManager();
+        ScriptEngine engine = manager.getEngineByName("JavaScript");
+        Invocable inv = (Invocable) engine;
+        String javascriptPath = "E:/Ecal.js";
+        engine.eval("load('" + javascriptPath + "')");
+        Object myCalculations = engine.get("myCalculations");
+        int x = 10;
+        int y = 5;
+        Object addingResult = inv.invokeMethod(myCalculations, "addition", x, y);
+        System.out.println("Your addition result will be: " + addingResult);
+    }
+
+
+    @Test
+    public void testJavaScript2() throws Exception {
+        ScriptEngineManager manager = new ScriptEngineManager();
+        ScriptEngine engine = manager.getEngineByName("JavaScript");
+        Invocable inv = (Invocable) engine;
+        String javascriptPath = "E:/crypto.js";
+        engine.eval("load('" + javascriptPath + "')");
+        Object myCalculations = engine.get("myCalculations");
+        int x = 10;
+        int y = 5;
+        Object addingResult = inv.invokeMethod(myCalculations, "addition", x, y);
+        System.out.println("Your addition result will be: " + addingResult);
     }
 
 

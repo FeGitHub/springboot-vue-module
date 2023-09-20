@@ -30,6 +30,7 @@ public class NetWorkCheckTask {
     private void process() {
         String msg = "";
         logger.info("网络检查【开始】...");
+        // CmdUtil.excuteCmdCommand("netsh wlan connect  " + NetWorkCheckTaskService.ALEADY_LINK_WIFI_NAME);//尝试连接网络
         try {
             msg = netWorkCheckTaskService.netWorkCheckTask();
         } catch (Exception e) {

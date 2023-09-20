@@ -74,19 +74,17 @@ public class EasyExcelRowMergeStrategy<T> extends AbstractMergeStrategy {
         for (T row : data) {
             Class<?> type = row.getClass();
             Field[] fields = getAllDeclaredFields(type);
-            Integer i = 0;
-            for (Field field : fields) {
-                ExcelRowMergeKey key = field.getDeclaredAnnotation(ExcelRowMergeKey.class);
+            for (int columnIndex = 0; columnIndex < fields.length; columnIndex++) {
+                ExcelRowMergeKey key = fields[columnIndex].getDeclaredAnnotation(ExcelRowMergeKey.class);
                 if (null != key) {
-                    excelKeyColumnIndex = i;
-                    field.setAccessible(true);
-                    Object filedValue = field.get(row);
-                    field.setAccessible(false);
+                    excelKeyColumnIndex = columnIndex;
+                    fields[columnIndex].setAccessible(true);
+                    Object filedValue = fields[columnIndex].get(row);
+                    fields[columnIndex].setAccessible(false);
                     if (null != filedValue) {
                         // 添加合并主键值
                         primaryIdList.add(String.valueOf(filedValue));
                     }
-                    i++;
                     break;
                 }
             }

@@ -13,14 +13,6 @@ import java.util.Date;
 
 public class TestMergeExcelVO {
 
-    /**
-     * 订单号
-     */
-    @ExcelRowMergeKey
-    @ExcelRowMerge
-    @ColumnWidth(40)
-    @ExcelProperty("订单号")
-    private String orderNo;
 
     /**
      * 订单名称
@@ -29,6 +21,16 @@ public class TestMergeExcelVO {
     @ColumnWidth(40)
     @ExcelProperty("订单名称")
     private String orderName;
+
+    /**
+     * 订单号
+     */
+    @ExcelRowMergeKey
+    @ExcelRowMerge
+    @ColumnWidth(40)
+    @ExcelProperty("订单号122")
+    private String orderNo;
+
 
     /**
      * 创建时间
