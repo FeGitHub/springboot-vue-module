@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -72,6 +73,39 @@ public class TestController {
 
     @Autowired
     private DownloadService downloadService;
+
+
+    /**
+     * 根据内容生成二维码
+     *
+     * @return
+     */
+    @ResponseBody
+    @PostMapping(value = "/createQRCode")
+    public String createQRCode() {
+        String base64Str = "";
+        try {
+            String url = "https://www.baidu.com/";
+            base64Str = QrCodeUtils.getQrCodeJumpBase64(url);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+        return base64Str;
+    }
+
+    /***
+     * 上传有二维码的图片
+     * @param file
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping("/qrCodeImageUpload")
+    @ResponseBody
+    public String qrCodeImageUpload(MultipartFile file) throws IOException {
+        String url = QrCodeUtils.getQrCodeUrl(file.getBytes());
+        System.out.println(url);
+        return url;
+    }
 
 
     /***

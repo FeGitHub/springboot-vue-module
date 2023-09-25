@@ -6,6 +6,9 @@ import showPdfDemo from '@/pages/showPdfDemo';
 
 Vue.use(Router)
 
+/****
+ *  路由控制器
+ */
 export default new Router({
   routes: [
     {

@@ -1,7 +1,8 @@
 <template>
   <div>
     <!--<ShowPdf></ShowPdf> -->
-    <ListTip />
+    <!-- <ListTip /> -->
+    <img v-if="qrCodeSrc" style="height: 500px;" :src="qrCodeSrc" />
     <!--  <SubmitElDialog
       :staffName="staffName"
       :staffCode="staffCode"
@@ -26,12 +27,13 @@
 </template>
 <script>
 // import { testDownLoadTemplate, createPdfByTemplate } from '@/api/test/testApi';
-import { createPdfByTemplate } from '@/api/test/testApi';
+import { createPdfByTemplate, createQRCode } from '@/api/test/testApi';
 import utils from '@/utils';
 export default {
   mounted () {},
   data () {
     return {
+      qrCodeSrc: '',
       staffName: '牛頂天',
       staffCode: 'XXXXXXXXXX',
       dialogVisible: true,
@@ -66,8 +68,12 @@ export default {
     this.init()
   },
   methods: {
-    init () {
+    async init () {
       this.oldOptions = JSON.parse(JSON.stringify(this.options))
+      let res = await createQRCode()
+      let base64Str = res.data
+      let base64Pre = 'data:image/jpeg;base64,';
+      this.qrCodeSrc = base64Pre + base64Str
     },
     filterQuery (value) {
       if (value) {
