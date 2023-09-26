@@ -1,5 +1,7 @@
 package com.company.project.utils;
 
+import org.apache.commons.io.IOUtils;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -279,5 +281,24 @@ public class FileUtils {
             e.printStackTrace();
         }
     }
+
+
+    /***
+     * 获取文件的二进制流
+     * @return
+     */
+    public static byte[] getTemplateFile(String templatePath) {
+        byte[] fileContent;
+        try {
+            // templatePath="template/test.pdf";
+            ClassPathResource fpr = new ClassPathResource(templatePath);
+            InputStream inputStream = fpr.getInputStream();
+            fileContent = IOUtils.toByteArray(inputStream);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return fileContent;
+    }
+
 
 }
