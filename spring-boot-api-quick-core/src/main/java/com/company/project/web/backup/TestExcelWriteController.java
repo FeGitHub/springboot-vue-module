@@ -1,30 +1,14 @@
-package com.company.project.web;
+package com.company.project.web.backup;
 
 
-import com.alibaba.excel.EasyExcel;
-import com.alibaba.excel.ExcelWriter;
-import com.alibaba.excel.write.metadata.WriteSheet;
-import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
-import com.company.project.master.vo.MoreWriteSheetVo;
-import com.company.project.master.vo.TempListItem;
-import com.company.project.master.vo.TempMapData;
-import com.company.project.master.vo.UserEntity1;
-import com.company.project.service.easyExcel.EasyExcelRowMergeStrategy;
 import com.company.project.service.easyExcel.EasyExcelService;
-import com.company.project.service.easyExcel.EasyExcelStyleUtils;
 import com.company.project.service.easyExcel.TestEasyExcelDataService;
 import com.company.project.service.test.ExcelService;
-import com.company.project.vo.TestMergeExcelVO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.List;
 
 
 @RestController
@@ -39,12 +23,15 @@ public class TestExcelWriteController {
     @Autowired
     private TestEasyExcelDataService testEasyExcelDataService;
 
+    /*
 
-    /***
-     * 根據模板生成數據
-     * @param response
-     * @throws IOException
      */
+/***
+ * 根據模板生成數據
+ * @param response
+ * @throws IOException
+ *//*
+
     // http://localhost:8085/excel/oneWriteSheetTemplate
     @RequestMapping(value = "/oneWriteSheetTemplate")
     public void oneWriteSheetTemplate(HttpServletResponse response) {
@@ -65,11 +52,13 @@ public class TestExcelWriteController {
     }
 
 
-    /***
-     * 根據模板生成數據
-     * @param response
-     * @throws IOException
-     */
+    */
+/***
+ * 根據模板生成數據
+ * @param response
+ * @throws IOException
+ *//*
+
     // http://localhost:8085/excel/moreWriteSheetTemplate
     @RequestMapping(value = "/moreWriteSheetTemplate")
     public void moreWriteSheetTemplate(HttpServletResponse response) {
@@ -93,12 +82,14 @@ public class TestExcelWriteController {
     }
 
 
-    /**
-     * 根據實體vo導出excel
-     *
-     * @param response
-     * @throws IOException
-     */
+    */
+/**
+ * 根據實體vo導出excel
+ *
+ * @param response
+ * @throws IOException
+ *//*
+
     // http://localhost:8085/excel/downloadByVo
     @GetMapping("/downloadByVo")
     public void downloadByVo(HttpServletResponse response) throws IOException {
@@ -130,15 +121,18 @@ public class TestExcelWriteController {
     }
 
 
-    /**
-     * 根據實體vo導出excel
-     *
-     * @param response
-     * @throws IOException
-     */
+    */
+/**
+ * 根據實體vo導出excel
+ *
+ * @param response
+ * @throws IOException
+ *//*
+
     @GetMapping("/testMergeExcel")
     public void testMergeExcel(HttpServletResponse response) throws IOException, IllegalAccessException {
-      /*  List<OrderExportVO> orderExportVOS = testEasyExcelDataService.getOrderExportVO();
+      */
+/*  List<OrderExportVO> orderExportVOS = testEasyExcelDataService.getOrderExportVO();
         // 设置单元格样式
         HorizontalCellStyleStrategy horizontalCellStyleStrategy =
                 new HorizontalCellStyleStrategy(StyleUtils.getHeadStyle(), StyleUtils.getContentStyle());
@@ -148,7 +142,8 @@ public class TestExcelWriteController {
         EasyExcel.write(fileName, OrderExportVO.class)
                 .registerWriteHandler(horizontalCellStyleStrategy)
                 .registerWriteHandler(new MyMergeStrategy<>(orderExportVOS))
-                .sheet("模板").doWrite(orderExportVOS); */
+                .sheet("模板").doWrite(orderExportVOS); *//*
+
         response.setContentType("application/vnd.ms-excel");
         response.setCharacterEncoding("utf-8");
         // 这里URLEncoder.encode可以防止中文乱码 当然和easyexcel没有关系
@@ -176,6 +171,7 @@ public class TestExcelWriteController {
 
 
 
+*/
 /*    @RequestMapping("/testExcel")
     @ResponseBody
     public void testExcel(@RequestParam("excelInput") MultipartFile excelInput) throws IOException {
@@ -188,7 +184,9 @@ public class TestExcelWriteController {
             String stringCellValue = row.getCell(0).getStringCellValue(); // 第一列数据
             System.out.println(stringCellValue);
         }
-    }*/
+    }*//*
 
+
+     */
 
 }
