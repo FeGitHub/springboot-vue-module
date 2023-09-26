@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
+import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.validation.BindException;
 import org.springframework.web.method.HandlerMethod;
@@ -37,7 +38,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -80,7 +81,13 @@ public class WebMvcConfigurer extends WebMvcConfigurationSupport {
         // 按需配置，更多参考FastJson文档哈
         converter.setFastJsonConfig(config);
         converter.setDefaultCharset(Charset.forName("UTF-8"));
-        converter.setSupportedMediaTypes(Arrays.asList(MediaType.APPLICATION_JSON_UTF8));
+        final ByteArrayHttpMessageConverter arrayHttpMessageConverter = new ByteArrayHttpMessageConverter();
+        final List<MediaType> list = new ArrayList<>();
+        list.add(MediaType.APPLICATION_JSON_UTF8);
+        list.add(MediaType.IMAGE_JPEG);
+        list.add(MediaType.IMAGE_PNG);
+        list.add(MediaType.APPLICATION_OCTET_STREAM);
+        arrayHttpMessageConverter.setSupportedMediaTypes(list);
         converters.add(converter);
     }
 
@@ -211,4 +218,6 @@ public class WebMvcConfigurer extends WebMvcConfigurationSupport {
         redisUtils.set(token, sysUser.getId(), 10L, TimeUnit.MINUTES);
         return result;
     }
+
+
 }
