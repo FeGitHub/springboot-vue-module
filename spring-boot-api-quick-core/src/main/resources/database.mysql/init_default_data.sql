@@ -1,0 +1,2 @@
+INSERT INTO config (`id`,`configType`,`configTypeName`,`propName1`,`propVal1`,`propName2`,`propVal2`,`propName3`,`propVal3`,`propName4`,`propVal4`) VALUES ('1','mail','邮件配置','发送邮箱','XXXX@qq.com','授权码','XXXXX',null,null,null,null);
+INSERT INTO config (`id`,`configType`,`configTypeName`,`propName1`,`propVal1`,`propName2`,`propVal2`,`propName3`,`propVal3`,`propName4`,`propVal4`) VALUES ('2','instructMail','指令用户邮箱','允许的邮箱','XXXXX@qq.com',null,null,null,null,null,null);
