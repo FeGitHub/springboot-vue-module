@@ -1,11 +1,16 @@
 package com.company.project.web;
 
+import com.company.project.master.model.Config;
+import com.company.project.service.impl.ConfigServiceImpl;
 import com.company.project.utils.FileUtils;
+import com.company.project.utils.MailUtils;
 import com.company.project.utils.QrCodeUtils;
 import com.company.project.utils.ZipUtils;
+import com.company.project.vo.util.mail.SendMailVo;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,6 +29,9 @@ import java.util.List;
 public class TestController {
 
     public static final Logger log = LoggerFactory.getLogger(TestController.class);
+
+    @Autowired
+    private ConfigServiceImpl configServiceImpl;
 
     /**
      * 根据内容生成二维码
@@ -74,6 +82,20 @@ public class TestController {
             i++;
         }
         return ZipUtils.downloadZip("下载.zip", downloadFileDtoList, response);
+    }
+
+
+    /**
+     * 邮件发送
+     *
+     * @return
+     */
+    @ResponseBody
+    @PostMapping(value = "/sendMail")
+    public void sendMail() {
+        Config config = configServiceImpl.findBy("configtype", "mail");
+        MailUtils.setConfig(config);
+        MailUtils.sendMail(new SendMailVo("XXX@qq.com", "系统通知", "系统通知内容"));
     }
 
 }

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.company.project.master.dao.ConfigMapper">
+  <resultMap id="BaseResultMap" type="com.company.project.master.model.Config">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="configType" jdbcType="VARCHAR" property="configtype" />
+    <result column="configTypeName" jdbcType="VARCHAR" property="configtypename" />
+    <result column="propName1" jdbcType="VARCHAR" property="propname1" />
+    <result column="propVal1" jdbcType="VARCHAR" property="propval1" />
+    <result column="propName2" jdbcType="VARCHAR" property="propname2" />
+    <result column="propVal2" jdbcType="VARCHAR" property="propval2" />
+    <result column="propName3" jdbcType="VARCHAR" property="propname3" />
+    <result column="propVal3" jdbcType="VARCHAR" property="propval3" />
+    <result column="propName4" jdbcType="VARCHAR" property="propname4" />
+    <result column="propVal4" jdbcType="VARCHAR" property="propval4" />
+  </resultMap>
+</mapper>
