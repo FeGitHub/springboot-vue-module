@@ -123,4 +123,9 @@ public class DateUtils {
         }
     }
 
+    public static boolean sameDate(Date d1, Date d2) {
+        SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMdd");
+        return fmt.format(d1).equals(fmt.format(d2));
+    }
+
 }

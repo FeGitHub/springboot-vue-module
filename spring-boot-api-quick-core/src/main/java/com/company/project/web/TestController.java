@@ -94,7 +94,7 @@ public class TestController {
     @PostMapping(value = "/sendMail")
     public void sendMail() {
         Config config = configServiceImpl.findBy("configtype", "mail");
-        MailUtils.setConfig(config);
+        MailUtils.setSendMailConfig(config);
         MailUtils.sendMail(new SendMailVo("XXX@qq.com", "系统通知", "系统通知内容"));
     }
 

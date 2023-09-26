@@ -17,8 +17,8 @@ public final class ProjectConstant {
 
 
     //数据库的相关配置(这个是用来生成代码的数据库配置，和项目运行无关)
-    public static final String JDBC_MASTER_URL = "jdbc:mysql://169.254.128.0:3306/test?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai";
-    public static final String JDBC_SLAVE_URL = "jdbc:mysql://169.254.128.0:3306/slave?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai";
+    public static final String JDBC_MASTER_URL = "jdbc:mysql://192.168.80.128/test?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai";
+    public static final String JDBC_SLAVE_URL = "jdbc:mysql://192.168.80.128:3306/slave?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai";
     public static final String JDBC_USERNAME = "root";
     public static final String JDBC_PASSWORD = "root";
     public static final String JDBC_DIVER_CLASS_NAME = "com.mysql.cj.jdbc.Driver";
