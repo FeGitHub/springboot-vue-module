@@ -1,5 +1,6 @@
 package com.company.project.service.mail;
 
+import com.alibaba.excel.util.CollectionUtils;
 import com.company.project.master.model.Config;
 import com.company.project.service.impl.ConfigServiceImpl;
 import com.company.project.utils.DateUtils;
@@ -27,8 +28,19 @@ public class MailService {
 
     private Config instructUserConfig = null;
 
-    private static String instructKey = "指令动作";
+    private static String instructKey = "命令";
 
+    @Autowired
+    private MailOrderService mailOrderService;
+
+
+    public void initMailUtils() {
+        if (mainConfig == null) {
+            mainConfig = configServiceImpl.findBy("configtype", "mail");
+            MailUtils.setReceiveMailConfig(mainConfig);
+            MailUtils.setSendMailConfig(mainConfig);
+        }
+    }
 
     /**
      * 获取今天内最新的信息
@@ -41,11 +53,11 @@ public class MailService {
             MailUtils.setReceiveMailConfig(mainConfig);
         }
         List<ImapEmailInfo> result = MailUtils.receiveMail(Boolean.FALSE);//只找未读的
-        if (result.size() > 0) {
+        if (!CollectionUtils.isEmpty(result)) {
             Comparator<ImapEmailInfo> byReceivedDateDesc = Comparator.comparing(ImapEmailInfo::getReceivedDate).reversed();
             result.sort(Comparator.nullsLast(byReceivedDateDesc));
         } else {
-            // logger.info("不存在未读的最新信息");
+            logger.info("不存在未读的最新信息");
         }
         return result.stream().findFirst().orElse(null);
     }
@@ -70,6 +82,7 @@ public class MailService {
                         System.out.println(email.getSubject());
                         System.out.println(email.getSender());
                         System.out.println(email.getContent());
+                        mailOrderService.doByOrder(email);
                         readMailList.add(email.getMessageID());
                         MailUtils.readMail(readMailList);
                     }

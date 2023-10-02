@@ -1,8 +1,11 @@
 package com.company.project.utils;
 
 import com.company.project.master.model.Config;
+import com.company.project.vo.mail.DoMailAction;
+import com.company.project.vo.mail.GetMailAction;
 import com.company.project.vo.util.mail.ImapEmailInfo;
 import com.company.project.vo.util.mail.SendMailVo;
+import org.springframework.util.StopWatch;
 
 import javax.mail.*;
 import javax.mail.internet.AddressException;
@@ -19,17 +22,19 @@ import java.util.Properties;
  *   邮件服务工具类
  */
 public class MailUtils {
-    private static String SEND_MAIL_ADRESS = "XXX";
 
-    private static String SEND_AUTHORIZE_CODE = "XXXXXXXXXXXX";
 
-    private static String RECEIVE_MAIL_ADRESS = "XXXXXXXXXXXX";
+    private static String SEND_MAIL_ADRESS = "";
 
-    private static String RECEIVE_AUTHORIZE_CODE = "XXXX";
+    private static String SEND_AUTHORIZE_CODE = "";
+
+    private static String RECEIVE_MAIL_ADRESS = "";
+
+    private static String RECEIVE_AUTHORIZE_CODE = "";
 
     public static void main(String[] args) {
-        // sendMail(new SendMailVo("XXX@qq.com", "标题", "这是提示的信息"));
-        List<ImapEmailInfo> result = receiveMail(null);
+        //sendMail(new SendMailVo("2498082473@qq.com", "标题", "这是提示的信息"));
+       /* List<ImapEmailInfo> result = receiveMail(null);
         if (result.size() > 0) {
             for (ImapEmailInfo email : result) {
                 System.out.println(email.getSubject());
@@ -37,26 +42,26 @@ public class MailUtils {
                 System.out.println(email.getContent());
                 System.out.println(email.getReceivedDate() != null ? DateUtils.formatDate(email.getReceivedDate(), DateUtils.yyyy_MM_dd) : "");
             }
-        }
+        }*/
     }
 
     /***
      * 重新设置配置发送信息
-     * @param mainConfig
+     * @param mailConfig
      */
-    public static void setSendMailConfig(Config mainConfig) {
-        SEND_MAIL_ADRESS = mainConfig.getPropval1();
-        SEND_AUTHORIZE_CODE = mainConfig.getPropval2();
+    public static void setSendMailConfig(Config mailConfig) {
+        SEND_MAIL_ADRESS = mailConfig.getPropval1();
+        SEND_AUTHORIZE_CODE = mailConfig.getPropval2();
     }
 
 
     /***
      * 重新设置配置接收信息
-     * @param mainConfig
+     * @param mailConfig
      */
-    public static void setReceiveMailConfig(Config mainConfig) {
-        RECEIVE_MAIL_ADRESS = mainConfig.getPropval1();
-        RECEIVE_AUTHORIZE_CODE = mainConfig.getPropval2();
+    public static void setReceiveMailConfig(Config mailConfig) {
+        RECEIVE_MAIL_ADRESS = mailConfig.getPropval1();
+        RECEIVE_AUTHORIZE_CODE = mailConfig.getPropval2();
     }
 
 
@@ -97,45 +102,13 @@ public class MailUtils {
         }
     }
 
+
     /***
-     * 接收邮件
-     * @throws Exception
+     * 找出未读的邮件
+     * @param folder
+     * @return
+     * @throws MessagingException
      */
-    public static List<ImapEmailInfo> receiveMail(Boolean readStatue) {
-        List<ImapEmailInfo> result = new ArrayList();
-        try {
-            String pop3Server = "smtp.qq.com";
-            String protocol = "imap";
-            String username = RECEIVE_MAIL_ADRESS;
-            String password = RECEIVE_AUTHORIZE_CODE;
-            Properties props = new Properties();
-            props.setProperty("mail.transport.protocol", protocol); // 使用的协议（JavaMail规范要求）
-            props.setProperty("mail.smtp.host", pop3Server); // 发件人的邮箱的 SMTP服务器地址
-            // 获取连接
-            Session session = Session.getDefaultInstance(props);
-            session.setDebug(false);
-            // 获取Store对象
-            Store store = session.getStore(protocol);
-            store.connect(pop3Server, username, password); // POP3服务器的登陆认证
-            // 通过POP3协议获得Store对象调用这个方法时，邮件夹名称只能指定为"INBOX"
-            Folder folder = store.getFolder("INBOX");// 获得用户的邮件帐户
-            folder.open(Folder.READ_WRITE); // 设置对邮件帐户的访问权限
-            Message[] messages = folder.getMessages();// 得到邮箱帐户中的所有邮件;
-            if (Boolean.FALSE.equals(readStatue)) {
-                messages = findUnReadMessages(folder);
-            }
-            if (messages != null && messages.length > 0) {
-                result = parseEmail(messages);
-            }
-            folder.close(false);// 关闭邮件夹对象
-            store.close(); // 关闭连接对象
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        return result;
-    }
-
-
     public static Message[] findUnReadMessages(Folder folder) throws MessagingException {
         Flags seen = new Flags(Flags.Flag.SEEN);
         FlagTerm unseenFlagTerm = new FlagTerm(seen, false);
@@ -144,10 +117,38 @@ public class MailUtils {
 
 
     /***
-     * 接收邮件
+     * 将邮件标记为已读
      * @throws Exception
      */
     public static void readMail(List<String> readMailList) {
+        //操作的类型
+        DoMailAction doMailAction = new DoMailAction(DoMailAction.readMail);
+        //标记已读的对象
+        doMailAction.setReadMailList(readMailList);
+        doMailOperator(doMailAction);
+    }
+
+    /***
+     * 接收邮件
+     * @throws Exception
+     */
+    public static List<ImapEmailInfo> receiveMail(Boolean readStatue) {
+        StopWatch sw = new StopWatch("接收邮件");
+        sw.start("接收邮件开始...");
+        DoMailAction doMailAction = new DoMailAction(DoMailAction.receiveMail);
+        doMailAction.setReadStatue(readStatue);
+        List<ImapEmailInfo> result = doMailOperator(doMailAction).getImapEmailInfoList();
+        sw.stop();
+        System.out.printf("接收邮件耗时：%d%s.\n", sw.getLastTaskTimeMillis(), "ms");
+        return result;
+    }
+
+    /***
+     * 操作邮箱
+     * @throws Exception
+     */
+    public static GetMailAction doMailOperator(DoMailAction doMailAction) {
+        GetMailAction getMailAction = new GetMailAction();
         try {
             String pop3Server = "smtp.qq.com";
             String protocol = "imap";
@@ -165,12 +166,22 @@ public class MailUtils {
             // 通过POP3协议获得Store对象调用这个方法时，邮件夹名称只能指定为"INBOX"
             Folder folder = store.getFolder("INBOX");// 获得用户的邮件帐户
             folder.open(Folder.READ_WRITE); // 设置对邮件帐户的访问权限
-            Message[] messages = folder.getMessages();// 得到邮箱帐户中的所有邮件
-            if (messages != null && messages.length > 0) {
-                for (Message message : messages) {
-                    MimeMessage msg = (MimeMessage) message;
-                    if (readMailList.indexOf(msg.getMessageID()) > -1) {
-                        message.setFlag(Flags.Flag.SEEN, true);
+            if (DoMailAction.receiveMail.equals(doMailAction.getDoType())) {//接收邮件信息
+                Message[] messages = folder.getMessages();// 得到邮箱帐户中的所有邮件;
+                if (Boolean.FALSE.equals(doMailAction.getReadStatue())) {
+                    messages = findUnReadMessages(folder);
+                }
+                if (messages != null && messages.length > 0) {
+                    getMailAction.setImapEmailInfoList(parseEmail(messages));
+                }
+            } else if (DoMailAction.readMail.equals(doMailAction.getDoType())) {//标记邮件为可读
+                Message[] messages = folder.getMessages();// 得到邮箱帐户中的所有邮件
+                if (messages != null && messages.length > 0) {
+                    for (Message message : messages) {
+                        MimeMessage msg = (MimeMessage) message;
+                        if (doMailAction.getReadMailList().indexOf(msg.getMessageID()) > -1) {
+                            message.setFlag(Flags.Flag.SEEN, true);
+                        }
                     }
                 }
             }
@@ -179,6 +190,7 @@ public class MailUtils {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+        return getMailAction;
     }
 
 
