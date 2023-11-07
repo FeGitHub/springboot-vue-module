@@ -57,7 +57,7 @@ public class MailService {
             Comparator<ImapEmailInfo> byReceivedDateDesc = Comparator.comparing(ImapEmailInfo::getReceivedDate).reversed();
             result.sort(Comparator.nullsLast(byReceivedDateDesc));
         } else {
-            logger.info("不存在未读的最新信息");
+            // logger.info("不存在未读的最新信息");
         }
         return result.stream().findFirst().orElse(null);
     }

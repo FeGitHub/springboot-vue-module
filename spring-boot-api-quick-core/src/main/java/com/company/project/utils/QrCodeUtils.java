@@ -20,7 +20,7 @@ import java.util.HashMap;
 public class QrCodeUtils {
 
     public static void main(String[] args) {
-        String base64Url = getQrCodeJumpBase64("https://app.gov.mo/vi-dev/1/?key=1&data=x01|x02|x03|x04|x05|x06|x07|x08|x09|x10|x11&sign= MEQCIDiRN7v_sr9sJQG_2d7QlV4Es9aiHOvXtZih24VjGO9ZAiAW5wk4KUBMVqPShrdoJkSmWIV85I4eT7nK6gVp3NVvvQ==");
+        String base64Url = getQrCodeJumpBase64("https://app.gov.mo/vi-dev/1/?key=1&data=x01|x02|x03|x04|x05|x06|x07|x08|x09|x10|x11&sign=MEQCIDiRN7v_sr9sJQG_2d7QlV4Es9aiHOvXtZih24VjGO9ZAiAW5wk4KUBMVqPShrdoJkSmWIV85I4eT7nK6gVp3NVvvQ==");
         System.out.println(base64Url);
         System.out.println(getQrCodeUrl(base64Url));
     }
@@ -58,6 +58,38 @@ public class QrCodeUtils {
             return "";
         }
     }
+
+
+    /****
+     * 將url轉換為二維碼數據的base64字符串
+     * @param url
+     * @return
+     */
+    public static byte[] getQrCodeToByte(String url) {
+        int width = 300;
+        int height = 300;
+        // 定义二维码的参数
+        HashMap<EncodeHintType, Object> hints = new HashMap<>();
+        // 定义字符集编码格式
+        hints.put(EncodeHintType.CHARACTER_SET, "utf-8");
+        // 纠错的等级 L > M > Q > H 纠错的能力越高可存储的越少，一般使用M
+        hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.M);
+        // 设置图片边距
+        hints.put(EncodeHintType.MARGIN, 2);
+        try {
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            // 最终生成 参数列表 （1.内容 2.格式 3.宽度 4.高度 5.二维码参数）
+            BitMatrix bitMatrix = new MultiFormatWriter().encode(url, BarcodeFormat.QR_CODE, width, height, hints);
+            BufferedImage image = toBufferedImage(bitMatrix);
+            ImageIO.write(image, "png", out);
+            byte[] bytes = out.toByteArray();
+            return bytes;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 
     public static BufferedImage toBufferedImage(BitMatrix matrix) {
         int width = matrix.getWidth();

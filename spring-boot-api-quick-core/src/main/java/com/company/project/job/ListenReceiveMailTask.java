@@ -21,10 +21,10 @@ public class ListenReceiveMailTask {
     @Scheduled(cron = "${custom.biz.five.second.do.cron}")
 
     private void process() {
-        logger.info("邮件收集开始");
+        // logger.info("邮件收集开始");
         ImapEmailInfo email = mailService.getTodayLastMsg();
         mailService.doByMail(email);
-        logger.info("邮件收集结束");
+        //  logger.info("邮件收集结束");
        /* if (email != null) {
             System.out.println(email.getSubject());
             System.out.println(email.getSender());

@@ -8,11 +8,12 @@ import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
-import com.lowagie.text.Cell;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+
+//import com.lowagie.text.Cell;
 
 @Service
 public class PdfService {
@@ -39,8 +40,8 @@ public class PdfService {
     public PdfPCell createBorderCell(String name, Integer colspan) {
         PdfPCell cell;
         cell = new PdfPCell(new Paragraph(name, PdfTableUtils.messFont));
-        cell.setHorizontalAlignment(Cell.ALIGN_LEFT);
-        cell.setVerticalAlignment(Cell.ALIGN_MIDDLE);
+        // cell.setHorizontalAlignment(Cell.ALIGN_LEFT);
+        // cell.setVerticalAlignment(Cell.ALIGN_MIDDLE);
         cell.setMinimumHeight(20);
         cell.setColspan(colspan);
         return cell;
@@ -50,8 +51,8 @@ public class PdfService {
     public PdfPCell createNoBorderCell(String name, Integer colspan) {
         PdfPCell cell;
         cell = new PdfPCell(new Paragraph(name, PdfTableUtils.messFont));
-        cell.setHorizontalAlignment(Cell.ALIGN_LEFT);
-        cell.setVerticalAlignment(Cell.ALIGN_MIDDLE);
+        //  cell.setHorizontalAlignment(Cell.ALIGN_LEFT);
+        // cell.setVerticalAlignment(Cell.ALIGN_MIDDLE);
         cell.setMinimumHeight(20);
         cell.setColspan(colspan);
         cell.setBorder(0);

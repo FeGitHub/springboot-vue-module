@@ -40,6 +40,12 @@ public class CommController {
     private SysUserService sysUserService;
 
 
+    @PostMapping("/test")
+    public void test() {
+        log.info("=test=123");
+    }
+
+
     /***
      * 字典接口
      * @param dicts

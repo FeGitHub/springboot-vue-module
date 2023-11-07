@@ -6,15 +6,22 @@ import com.company.project.service.DictsService;
 import com.company.project.service.TestTableService;
 import com.company.project.service.download.DownloadService;
 import com.company.project.service.pdf.PdfService;
-import com.company.project.utils.RedisUtils;
+import com.company.project.utils.*;
 import org.apache.dubbo.config.annotation.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /****
@@ -326,7 +333,9 @@ public class BackupController01 {
         FileUtils.writeFileToResponse(response, content);
     }
 
-    *//***
+    */
+
+    /***
      *
      * @param
      * @return
@@ -360,5 +369,106 @@ public class BackupController01 {
         }
         return ZipUtils.downloadZip("下载.zip", downloadFileDtoList, response);
     }*/
+    @ResponseBody
+    @PostMapping(value = "/test")
+    public String test() throws IOException {
+        String base64Str = "";
+        ClassPathResource fpr = new ClassPathResource("template/test.pdf");
+        InputStream inputStream = fpr.getInputStream();
+        base64Str = Base64Utils.fileToBase64Str(InputStreamToFileConverter.convert(inputStream));
+        log.info(base64Str);
+        return base64Str;
+    }
 
+
+    @GetMapping(value = "/createPdfByPdfTemplate")
+    @PostMapping(value = "/createPdfByPdfTemplate")
+    public void createPdfByPdfTemplate(HttpServletResponse response) throws UnsupportedEncodingException {
+        Map<String, String> data = new HashMap<String, String>();
+        //key为pdf模板的form表单的名字，value为需要填充的值
+        data.put("aText", "AAA123");
+        data.put("bText", "中文中文中文文中文");
+        ClassPathResource fpr = new ClassPathResource("template/pdfTemplate.pdf");
+        byte[] content = PdfUtils.createPdfByPdfTemplate(fpr.getPath(), null, data);
+        FileUtils.writeFileToResponse(response, content);
+        FileUtils.writeFileToResponse(response, FileUtils.getTemplateFile("template/test.pdf"));
+    }
+
+
+    @PostMapping(value = "/testPdf")
+    public String testPdf(HttpServletResponse response) throws IOException {
+        String base64Str = "";
+        ClassPathResource fpr = new ClassPathResource("template/test.pdf");
+        InputStream inputStream = fpr.getInputStream();
+        base64Str = Base64Utils.fileToBase64Str(InputStreamToFileConverter.convert(inputStream));
+        log.info(base64Str);
+        return "data:application/pdf;base64," + base64Str;
+    }
+
+
+    @GetMapping(value = "/createPdfByHtmlTemplate")
+    @PostMapping(value = "/createPdfByHtmlTemplate")
+    public void createPdfByTemplate(HttpServletResponse response) throws Exception {
+        Map<String, String> para = new HashMap<>();
+        para.put("name", "成功人士");
+        para.put("age", "万岁");
+        para.put("sex", "超人");
+        para.put("job", "无业游民");
+        byte[] content = PdfUtils.createPdfByHtmlTemplate("template.html", para, null);
+        System.out.println(Base64.getEncoder().encodeToString(content));
+        //  FileUtils.copyInputStreamToFile(content, "D://dev/test123.pdf");
+        FileUtils.writeFileToResponse(response, content);
+    }
+
+
+    /**
+     * 根据内容生成二维码
+     *
+     * @return
+     */
+/*    @ResponseBody
+    @PostMapping(value = "/createQRCode")
+    public String createQRCode() {
+        String base64Str = "";
+        try {
+            String url = "https://www.baidu.com/";
+            base64Str = QrCodeUtils.getQrCodeJumpBase64(url);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+        return base64Str;
+    }*/
+/*
+    @ApiOperation(value = "批量下载", notes = "下载ZIP压缩包")
+    @RequestMapping(value = "/downloadZip", method = RequestMethod.GET)
+    public ResponseEntity downloadZip(HttpServletResponse response) throws Exception {
+        List<ZipUtils.DownloadFileVo> downloadFileDtoList = new ArrayList<>();
+        // 这里的i的作用是保证文件名唯一，否则往ZIP中添加文件会报异常
+        for (int i = 0; i <= 3; i++) {
+            // 你的每一个文件字节流
+            byte[] bytes = FileUtils.getTemplateFile("template/test.pdf");
+            String fileName = i + ".pdf";
+            ZipUtils.DownloadFileVo dto = new ZipUtils.DownloadFileVo();
+            dto.setFileName(fileName);
+            dto.setByteDataArr(bytes);
+            downloadFileDtoList.add(dto);
+            i++;
+        }
+        return ZipUtils.downloadZip("下载.zip", downloadFileDtoList, response);
+    }
+*/
+
+
+    /**
+     * 邮件发送
+     *
+     * @return
+     */
+/*    @ResponseBody
+    @PostMapping(value = "/sendMail")
+    public void sendMail() {
+        Config config = configServiceImpl.findBy("configtype", "mail");
+        MailUtils.setSendMailConfig(config);
+        MailUtils.sendMail(new SendMailVo("XXX@qq.com", "系统通知", "系统通知内容"));
+    }*/
 }

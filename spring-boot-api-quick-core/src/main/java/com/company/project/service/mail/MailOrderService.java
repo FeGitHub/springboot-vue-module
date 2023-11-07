@@ -46,6 +46,7 @@ public class MailOrderService {
         for (String order : closeKeyList) {
             if (email.getContent().indexOf(order) > -1) {
                 CmdUtil.excuteCmdCommand("shutdown -r -t 10");
+                MailUtils.sendMail(new SendMailVo(email.getSender(), "机器回复", "正在关闭电脑......"));
             }
         }
     }

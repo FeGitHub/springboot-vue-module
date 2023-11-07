@@ -7,7 +7,6 @@ import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
-import com.lowagie.text.Cell;
 import org.springframework.stereotype.Repository;
 
 import java.io.IOException;
@@ -113,9 +112,9 @@ public class PdfTableUtils {
         // 设置文字可以居中
         cell.setUseAscender(true);
         // 设置水平居中
-        cell.setHorizontalAlignment(Cell.ALIGN_CENTER);
+        //  cell.setHorizontalAlignment(Cell.ALIGN_CENTER);
         // 设置垂直居中
-        cell.setVerticalAlignment(Cell.ALIGN_MIDDLE);
+        //  cell.setVerticalAlignment(Cell.ALIGN_MIDDLE);
         // 设置边框
         cell.setBorder(0);
         return cell;
@@ -145,8 +144,8 @@ public class PdfTableUtils {
     public static PdfPCell createPdfPCell(String name, Font font, Integer colspan, Integer border) {
         PdfPCell cell;
         cell = new PdfPCell(new Paragraph(name, font));
-        cell.setHorizontalAlignment(Cell.ALIGN_LEFT); // 设置水平居中
-        cell.setVerticalAlignment(Cell.ALIGN_MIDDLE); // 设置垂直居中
+        // cell.setHorizontalAlignment(Cell.ALIGN_LEFT); // 设置水平居中
+        // cell.setVerticalAlignment(Cell.ALIGN_MIDDLE); // 设置垂直居中
         cell.setMinimumHeight(20);// 设置单元格的高度
         cell.setBorderWidth(border);// 设置边框
         cell.setColspan(colspan);// 设置占用几列
@@ -164,8 +163,8 @@ public class PdfTableUtils {
     public static PdfPCell createPdfPCell(String name, Font font, Integer colspan) {
         PdfPCell cell;
         cell = new PdfPCell(new Paragraph(name, font));
-        cell.setHorizontalAlignment(Cell.ALIGN_LEFT); // 设置水平居中
-        cell.setVerticalAlignment(Cell.ALIGN_MIDDLE); // 设置垂直居中
+        // cell.setHorizontalAlignment(Cell.ALIGN_LEFT); // 设置水平居中
+        //  cell.setVerticalAlignment(Cell.ALIGN_MIDDLE); // 设置垂直居中
         cell.setMinimumHeight(20);// 设置单元格的高度
         cell.setColspan(colspan);
         return cell;

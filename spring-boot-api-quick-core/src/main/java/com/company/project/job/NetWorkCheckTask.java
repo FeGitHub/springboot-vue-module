@@ -3,6 +3,7 @@ package com.company.project.job;
 import com.company.project.constant.SystemLogOperatorType;
 import com.company.project.service.impl.SystemLogServiceImpl;
 import com.company.project.service.task.NetWorkCheckTaskService;
+import com.company.project.utils.CmdUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,7 @@ public class NetWorkCheckTask {
     private void process() {
         String msg = "";
         logger.info("网络检查【开始】...");
-        // CmdUtil.excuteCmdCommand("netsh wlan connect  " + NetWorkCheckTaskService.ALEADY_LINK_WIFI_NAME);//尝试连接网络
+        CmdUtil.excuteCmdCommand("netsh wlan connect  " + NetWorkCheckTaskService.ALEADY_LINK_WIFI_NAME);//尝试连接网络
         try {
             msg = netWorkCheckTaskService.netWorkCheckTask();
         } catch (Exception e) {

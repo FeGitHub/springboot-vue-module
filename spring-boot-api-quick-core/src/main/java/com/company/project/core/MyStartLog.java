@@ -28,6 +28,7 @@ public class MyStartLog implements CommandLineRunner {
         log.info("+ =================================================================================");
         log.info("+                        项目启动成功!!!                                           ");
         log.info("+        swagger访问地址:http://localhost:" + port + "/swagger-ui.html             ");
+        log.info("+        pdfjs访问地址:http://localhost:" + port + "/pdfjs/web/viewer.html         ");
         log.info("+ =================================================================================");
     }
 

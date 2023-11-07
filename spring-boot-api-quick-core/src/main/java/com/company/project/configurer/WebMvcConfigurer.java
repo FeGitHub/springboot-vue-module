@@ -8,6 +8,7 @@ import com.company.project.constant.BasicServiceMessage;
 import com.company.project.core.Result;
 import com.company.project.core.ResultCode;
 import com.company.project.core.ServiceException;
+import com.company.project.exception.BizTipException;
 import com.company.project.master.model.SysUser;
 import com.company.project.service.ApiLogService;
 import com.company.project.service.ErrorLogService;
@@ -124,6 +125,8 @@ public class WebMvcConfigurer extends WebMvcConfigurationSupport {
                 result.setCode(ResultCode.FAIL).setMessage(e.getMessage() + "," + appErrId);
             } else if (e instanceof BindException) {
                 result.setCode(ResultCode.FAIL).setMessage(e.getMessage() + "," + appErrId);
+            } else if (e instanceof BizTipException) {
+                result.setCode(ResultCode.INTERNAL_SERVER_ERROR).setMessage(e.getMessage());
             } else {
                 result.setCode(ResultCode.INTERNAL_SERVER_ERROR).setMessage("接口 [" + request.getRequestURI() + "] 内部错误，请联系管理员" + "," + appErrId);
                 String message;

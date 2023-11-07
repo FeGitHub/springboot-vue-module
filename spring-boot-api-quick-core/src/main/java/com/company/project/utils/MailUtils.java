@@ -33,7 +33,7 @@ public class MailUtils {
     private static String RECEIVE_AUTHORIZE_CODE = "";
 
     public static void main(String[] args) {
-        //sendMail(new SendMailVo("2498082473@qq.com", "标题", "这是提示的信息"));
+        //sendMail(new SendMailVo("XXXXXXXXXXXX@qq.com", "标题", "这是提示的信息"));
        /* List<ImapEmailInfo> result = receiveMail(null);
         if (result.size() > 0) {
             for (ImapEmailInfo email : result) {
@@ -139,7 +139,7 @@ public class MailUtils {
         doMailAction.setReadStatue(readStatue);
         List<ImapEmailInfo> result = doMailOperator(doMailAction).getImapEmailInfoList();
         sw.stop();
-        System.out.printf("接收邮件耗时：%d%s.\n", sw.getLastTaskTimeMillis(), "ms");
+        // System.out.printf("接收邮件耗时：%d%s.\n", sw.getLastTaskTimeMillis(), "ms");
         return result;
     }
 
@@ -209,7 +209,9 @@ public class MailUtils {
             ImapEmailInfo emailInfo = new ImapEmailInfo();
             emailInfo.setMessage(message);
             emailInfo.setMessageID(msg.getMessageID());
-            emailInfo.setSubject(MimeUtility.decodeText(msg.getSubject()));
+            if (msg != null && StringUtils.isNotEmpty(msg.getSubject())) {
+                emailInfo.setSubject(MimeUtility.decodeText(msg.getSubject()));
+            }
             emailInfo.setSender(getSenderAddress(msg));
             emailInfo.setReceivedDate(msg.getReceivedDate());
             StringBuffer content = new StringBuffer();
