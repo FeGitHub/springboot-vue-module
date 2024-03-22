@@ -1,11 +1,16 @@
 package com.company.project.utils;
 
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileItemFactory;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.io.IOUtils;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -300,5 +305,47 @@ public class FileUtils {
         return fileContent;
     }
 
+    /**
+     * multipartFile转File
+     **/
+    public static File multipartFile2File(MultipartFile multipartFile) {
+        File file = null;
+        if (multipartFile != null) {
+            try {
+                file = File.createTempFile("tmp", null);
+                multipartFile.transferTo(file);
+                System.gc();
+                file.deleteOnExit();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return file;
+    }
+
+    public MultipartFile fileToMultipartFile(File file) {
+        FileItem fileItem = createFileItem(file);
+        MultipartFile multipartFile = new CommonsMultipartFile(fileItem);
+        return multipartFile;
+    }
+
+    private static FileItem createFileItem(File file) {
+        FileItemFactory factory = new DiskFileItemFactory(16, null);
+        FileItem item = factory.createItem("textField", "text/plain", true, file.getName());
+        int bytesRead = 0;
+        byte[] buffer = new byte[8192];
+        try {
+            FileInputStream fis = new FileInputStream(file);
+            OutputStream os = item.getOutputStream();
+            while ((bytesRead = fis.read(buffer, 0, 8192)) != -1) {
+                os.write(buffer, 0, bytesRead);
+            }
+            os.close();
+            fis.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return item;
+    }
 
 }

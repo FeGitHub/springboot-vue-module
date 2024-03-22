@@ -124,4 +124,12 @@ CREATE TABLE `config`  (
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '系统配置表';
 
 
-
+-- 用户配置
+drop table if exists user_config;
+create table user_config (
+id varchar(50) not null,
+user_login varchar(500) not null,
+user_token varchar(500) not null,
+user_remark varchar(500) not null,
+primary key (id)
+);

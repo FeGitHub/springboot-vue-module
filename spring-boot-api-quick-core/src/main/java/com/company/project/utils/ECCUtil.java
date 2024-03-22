@@ -28,7 +28,7 @@ public class ECCUtil {
         Security.addProvider(new BouncyCastleProvider());
     }
 
-    public static void main(String[] args) throws Exception {
+  /*  public static void main(String[] args) throws Exception {
         // 測試文本
         byte[] plain = "11223344|440112345|3|20231017|900|20231019|20231017".getBytes();
         // 生成秘鑰對
@@ -50,11 +50,33 @@ public class ECCUtil {
         System.out.println(verify);
         // 加解密
         final byte[] encrypt = eccEncrypt(publicKey, plain);
-        final byte[] decrypt = eccDecrypt(privateKey, encrypt);
+        String encryptBase64Str = Base64.encodeBase64String(encrypt);
+        System.out.println("加密文本以base64展示：" + encryptBase64Str);
+        final byte[] decrypt = eccDecrypt(privateKey, Base64.decodeBase64(encryptBase64Str));
+        //final byte[] decrypt = eccDecrypt(privateKey, encrypt);
+        System.out.println("解密文本：" + new String(decrypt));
         System.out.println(new String(decrypt).equals(new String(plain)));
 
-    }
+    } */
 
+    public static void main(String[] args) throws Exception {
+        // 測試文本
+        byte[] plain = "11223344|440112345|3|20231017|900|20231019|20231017".getBytes();
+        PublicKey publicKey = getPublicKey("MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEpWUK8fn6TtPb02MiVBWtoEbqfgNitjoaHvnD1fVRQOoJ3ZSfagE9a92D4xRv78/qzAlC8cyjrP4efaKHyXK1Iw==");
+        PrivateKey privateKey = getPrivateKey("MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgO8W8taCO4M/EQRrJxopcnMgWQd0Y1KcDmTVvC9hrANuhRANCAASlZQrx+fpO09vTYyJUFa2gRup+A2K2Ohoe+cPV9VFA6gndlJ9qAT1r3YPjFG/vz+rMCULxzKOs/h59oofJcrUj");
+        final byte[] sign = eccSign(privateKey, plain);
+        System.out.println("簽名驗證：" + Base64.encodeBase64String(sign));
+        final boolean verify = eccVerify(publicKey, plain, sign);
+        System.out.println(verify);
+        // 加解密
+        final byte[] encrypt = eccEncrypt(publicKey, plain);
+        String encryptBase64Str = Base64.encodeBase64String(encrypt);
+        System.out.println("加密文本以base64展示：" + encryptBase64Str);
+        final byte[] decrypt = eccDecrypt(privateKey, Base64.decodeBase64(encryptBase64Str));
+        //final byte[] decrypt = eccDecrypt(privateKey, encrypt);
+        System.out.println("解密文本：" + new String(decrypt));
+        System.out.println(new String(decrypt).equals(new String(plain)));
+    }
 
     /**
      * 生成密钥对.

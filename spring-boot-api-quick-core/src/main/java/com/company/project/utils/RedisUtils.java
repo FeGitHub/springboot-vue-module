@@ -14,7 +14,7 @@ public class RedisUtils {
     @Autowired
     private RedisTemplate redisTemplate;
 
-//https://blog.csdn.net/weixin_40623736/article/details/98097708
+    //https://blog.csdn.net/weixin_40623736/article/details/98097708
 
     /**
      * 写入缓存

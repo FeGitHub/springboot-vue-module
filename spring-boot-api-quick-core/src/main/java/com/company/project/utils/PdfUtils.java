@@ -1,6 +1,5 @@
 package com.company.project.utils;
 
-import com.company.project.constant.ApplicationProperties;
 import com.itextpdf.html2pdf.ConverterProperties;
 import com.itextpdf.html2pdf.HtmlConverter;
 import com.itextpdf.kernel.geom.PageSize;
@@ -27,6 +26,7 @@ import java.util.*;
  * pdf生成工具
  */
 public class PdfUtils {
+
 
     /****
      * 设置pdf下载
@@ -66,15 +66,8 @@ public class PdfUtils {
             fontProvider.addFont(simsunFpr.getPath());
             props.setFontProvider(fontProvider);
             props.setCharset("utf-8");
-            String newPdfFile = StringUtils.isEmpty(pdfFile) ? ApplicationProperties.downloadPath + "\\" + UuidUtils.getUuid() + ".pdf" : pdfFile;
-            pdfRes = new File(newPdfFile);
+            pdfRes = File.createTempFile(UuidUtils.getUuid(), ".pdf");
             output = new FileOutputStream(pdfRes);
-            // 转换为PDF文档
-            if (newPdfFile.indexOf("/") > 0) {
-                File path = new File(newPdfFile.substring(0, newPdfFile.indexOf("/")));
-                if (!path.exists())
-                    path.mkdirs();
-            }
             PdfDocument pdf = new PdfDocument(new PdfWriter(output));
             pdf.setDefaultPageSize(PageSize.A4);
             Document document = HtmlConverter.convertToDocument(html, pdf, props);

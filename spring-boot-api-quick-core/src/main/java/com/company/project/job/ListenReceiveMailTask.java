@@ -1,7 +1,6 @@
 package com.company.project.job;
 
 import com.company.project.service.mail.MailService;
-import com.company.project.vo.util.mail.ImapEmailInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +21,8 @@ public class ListenReceiveMailTask {
 
     private void process() {
         // logger.info("邮件收集开始");
-        ImapEmailInfo email = mailService.getTodayLastMsg();
-        mailService.doByMail(email);
+        //  ImapEmailInfo email = mailService.getTodayLastMsg();
+        //  mailService.doByMail(email);
         //  logger.info("邮件收集结束");
        /* if (email != null) {
             System.out.println(email.getSubject());

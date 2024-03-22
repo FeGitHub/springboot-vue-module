@@ -2,9 +2,9 @@ package com.company.project.service.biz;
 
 import com.company.project.exception.BizTipException;
 import com.company.project.utils.ECCUtil;
-import com.company.project.utils.QrCodeUtils;
 import com.company.project.utils.StringUtils;
 import com.company.project.utils.UrlUtils;
+import com.company.project.utils.qrcode.QrCodeUtils;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.dubbo.common.URL;
 import org.slf4j.Logger;
@@ -25,7 +25,7 @@ public class QrCodeService {
 
     public static final Logger logger = LoggerFactory.getLogger(QrCodeService.class);
 
-    private static String urlPrefix = "https://myweb";
+    private static String urlPrefix = "https://uat-ga.safp.gov.mo";
 
     private static String key = "1";
 

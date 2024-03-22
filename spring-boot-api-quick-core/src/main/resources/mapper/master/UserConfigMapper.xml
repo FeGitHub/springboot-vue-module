@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.company.project.master.dao.UserConfigMapper">
+  <resultMap id="BaseResultMap" type="com.company.project.master.model.UserConfig">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="user_login" jdbcType="VARCHAR" property="userLogin" />
+    <result column="user_token" jdbcType="VARCHAR" property="userToken" />
+    <result column="user_remark" jdbcType="VARCHAR" property="userRemark" />
+  </resultMap>
+</mapper>

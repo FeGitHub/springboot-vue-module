@@ -1,5 +1,9 @@
 package com.company.project.utils;
 
+import com.company.project.job.NetWorkCheckTask;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
@@ -8,6 +12,13 @@ import java.io.InputStreamReader;
  */
 public class CmdUtil {
 
+    private static Logger logger = LoggerFactory.getLogger(NetWorkCheckTask.class);
+
+
+    public static void main(String[] args) {
+        excuteCmdCommand("convert --version");
+    }
+
     /**
      * 执行一个cmd命令
      *
@@ -15,6 +26,7 @@ public class CmdUtil {
      * @return 命令执行结果字符串，如出现异常返回null
      */
     public static String excuteCmdCommand(String cmdCommand) {
+        logger.info("===>" + cmdCommand);
         StringBuilder stringBuilder = new StringBuilder();
         Process process;
         try {
@@ -25,7 +37,9 @@ public class CmdUtil {
             while ((line = bufferedReader.readLine()) != null) {
                 stringBuilder.append(line + "\n");
             }
-            return stringBuilder.toString();
+            String result = stringBuilder.toString();
+            logger.info("<===" + result);
+            return result;
         } catch (Exception e) {
             e.printStackTrace();
             return null;

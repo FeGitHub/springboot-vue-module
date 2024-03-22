@@ -1,18 +1,12 @@
 package com.company.project.web;
 
-import com.company.project.service.biz.QrCodeService;
-import com.company.project.utils.FileUtils;
-import com.company.project.utils.QrCodeUtils;
-import com.company.project.utils.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.company.project.utils.SplitDayUtils;
+import com.company.project.vo.SplitDayUtilsVo;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Map;
+import java.util.List;
 
 
 /****
@@ -22,17 +16,28 @@ import java.util.Map;
 @RequestMapping("/test")
 public class TestController {
 
-    public static final Logger log = LoggerFactory.getLogger(TestController.class);
+
+    @ResponseBody
+    @PostMapping(value = "/splitDayUtils")
+    public List<String> splitDayUtils(HttpServletResponse response, @RequestBody SplitDayUtilsVo vo) {
+        return SplitDayUtils.run(vo);
+    }
+
+
+
+
+   /* public static final Logger log = LoggerFactory.getLogger(TestController.class);
 
     @Autowired
     private QrCodeService qrCodeService;
 
 
-    /**
+
+    *//**
      * 根据内容生成二维码
      *
      * @return
-     */
+     *//*
     @ResponseBody
     @PostMapping(value = "/createQRCodeImage")
     public void createQRCodeImage(HttpServletResponse response, @RequestBody Map<String, Object> requestData) throws Exception {
@@ -43,12 +48,12 @@ public class TestController {
     }
 
 
-    /***
+    *//***
      * 上传有二维码的图片
      * @param file
      * @return
      * @throws IOException
-     */
+     *//*
     @PostMapping("/qrCodeImageUpload")
     @ResponseBody
     public QrCodeService.QrCodeDataVo qrCodeImageUpload(MultipartFile file) throws IOException {
@@ -56,6 +61,6 @@ public class TestController {
         QrCodeService.QrCodeDataVo qrCodeDataVo = qrCodeService.getUrlData(url);
         return qrCodeDataVo;
     }
-
+*/
 
 }

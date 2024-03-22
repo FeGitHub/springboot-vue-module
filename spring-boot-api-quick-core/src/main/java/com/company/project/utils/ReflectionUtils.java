@@ -35,6 +35,9 @@ public class ReflectionUtils {
         }
     }
 
+    public static Field findField(Class<?> clazz, String name) {
+        return org.springframework.util.ReflectionUtils.findField(clazz, name);
+    }
 
     /***
      *  获取

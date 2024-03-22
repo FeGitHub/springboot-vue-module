@@ -15,7 +15,8 @@ public class MailOrderService {
     private List<String> replayKeyList = Arrays.asList("回复邮件", "邮件回复");
 
 
-    private List<String> closeKeyList = Arrays.asList("电脑关机");
+    private List<String> closeKeyList = Arrays.asList("关机", "重启");
+
 
     /***
      * 总控制器
@@ -50,4 +51,6 @@ public class MailOrderService {
             }
         }
     }
+
+
 }

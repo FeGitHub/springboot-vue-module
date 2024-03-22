@@ -9,6 +9,9 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 
 @Component
 @Order(1)
@@ -23,11 +26,13 @@ public class MyStartLog implements CommandLineRunner {
     public static final Logger log = LoggerFactory.getLogger(MyStartLog.class);
 
     @Override
-    public void run(String... args) {
+    public void run(String... args) throws UnknownHostException {
         initService.init();
+        InetAddress localHost = InetAddress.getLocalHost();
         log.info("+ =================================================================================");
         log.info("+                        项目启动成功!!!                                           ");
         log.info("+        swagger访问地址:http://localhost:" + port + "/swagger-ui.html             ");
+        log.info("+        swagger访问地址:http://" + localHost.getHostAddress() + ":" + port + "/swagger-ui.html");
         log.info("+        pdfjs访问地址:http://localhost:" + port + "/pdfjs/web/viewer.html         ");
         log.info("+ =================================================================================");
     }

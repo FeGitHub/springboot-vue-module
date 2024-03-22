@@ -6,22 +6,15 @@ import com.company.project.service.DictsService;
 import com.company.project.service.TestTableService;
 import com.company.project.service.download.DownloadService;
 import com.company.project.service.pdf.PdfService;
-import com.company.project.utils.*;
+import com.company.project.utils.RedisUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.Map;
 
 
 /****
@@ -369,6 +362,7 @@ public class BackupController01 {
         }
         return ZipUtils.downloadZip("下载.zip", downloadFileDtoList, response);
     }*/
+/*
     @ResponseBody
     @PostMapping(value = "/test")
     public String test() throws IOException {
@@ -380,7 +374,9 @@ public class BackupController01 {
         return base64Str;
     }
 
+*/
 
+/*
     @GetMapping(value = "/createPdfByPdfTemplate")
     @PostMapping(value = "/createPdfByPdfTemplate")
     public void createPdfByPdfTemplate(HttpServletResponse response) throws UnsupportedEncodingException {
@@ -393,8 +389,9 @@ public class BackupController01 {
         FileUtils.writeFileToResponse(response, content);
         FileUtils.writeFileToResponse(response, FileUtils.getTemplateFile("template/test.pdf"));
     }
+*/
 
-
+/*
     @PostMapping(value = "/testPdf")
     public String testPdf(HttpServletResponse response) throws IOException {
         String base64Str = "";
@@ -403,10 +400,10 @@ public class BackupController01 {
         base64Str = Base64Utils.fileToBase64Str(InputStreamToFileConverter.convert(inputStream));
         log.info(base64Str);
         return "data:application/pdf;base64," + base64Str;
-    }
+    }*/
 
 
-    @GetMapping(value = "/createPdfByHtmlTemplate")
+/*    @GetMapping(value = "/createPdfByHtmlTemplate")
     @PostMapping(value = "/createPdfByHtmlTemplate")
     public void createPdfByTemplate(HttpServletResponse response) throws Exception {
         Map<String, String> para = new HashMap<>();
@@ -418,7 +415,7 @@ public class BackupController01 {
         System.out.println(Base64.getEncoder().encodeToString(content));
         //  FileUtils.copyInputStreamToFile(content, "D://dev/test123.pdf");
         FileUtils.writeFileToResponse(response, content);
-    }
+    }*/
 
 
     /**
